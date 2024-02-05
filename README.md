@@ -3,7 +3,7 @@
 
 # Skanda: SEO-Optimized Blog Framework
 
-Skanda is an open-source, high-performance blog framework crafted with Node.js, ScyllaDB, and TailwindCSS. Inspired by the swift and strategic Hindu deity, Skanda, this framework is designed to empower developers, bloggers, and content creators with a tool that prioritizes SEO, speed, and aesthetic flexibility.
+Skanda is an open-source, high-performance blog framework crafted with Node.js, ScyllaDB, and TailwindCSS.This framework is designed to empower developers, bloggers, and content creators with a tool that prioritizes SEO, speed, and aesthetic flexibility.
 
 ## Features
 
@@ -22,7 +22,7 @@ Skanda is an open-source, high-performance blog framework crafted with Node.js, 
 2. **Installation**
    - Clone the repository:
      ```bash
-     git clone https://github.com/yourusername/skanda.git
+     git clone https://github.com/telecmi/skanda.git
      ```
    - Navigate to the project directory and install dependencies:
      ```bash

@@ -1,9 +1,14 @@
-import Page from '../components/admin/page'
+// import Page from '../components/admin/page'
+import Dashboard from '../components/admin/home'
+import React from 'react';
 
 function App() {
   return (
     <div className="App">
-      <Page />
+
+      <Dashboard />
+
+      {/* <Page /> */}
     </div>
   );
 }

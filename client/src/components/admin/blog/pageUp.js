@@ -112,7 +112,7 @@ class Page extends Component {
 
             blogData.primary.push({ "time": Date.now() })
 
-            axios.post('https://d078-202-21-44-91.ngrok-free.app/blog_add', blogData).then((res) => {
+            axios.post('https://bf18-202-21-44-91.ngrok-free.app/blog_add', blogData).then((res) => {
             }).catch((err) => { })
         } else {
             alert("Please fill in all the fields before submitting.");

@@ -13,6 +13,11 @@ export class AppStateProvider extends Component {
     deleteBlogData: '',
     addBlogModal: false,
     editBlogModal: false,
+    blogMetaData: '',
+    blogOgData: '',
+    blogArtData: '',
+    blogTwitterData: '',
+    blogTableData: '',
   };
 
   setAddUserModal = (e) => { this.setState({ addUserModal: e }) };
@@ -24,17 +29,22 @@ export class AppStateProvider extends Component {
   setAddBlogModal = (e) => { this.setState({ addBlogModal: e }) };
   setEditBlogModal = (e) => { this.setState({ editBlogModal: e }) };
   setDeleteBlogData = (e) => { this.setState({ deleteBlogData: e }) };
+  setBlogMetaData = (e) => { this.setState({ blogMetaData: e }) };
+  setBlogOgData = (e) => { this.setState({ blogOgData: e }) };
+  setBlogArtData = (e) => { this.setState({ blogArtData: e }) };
+  setBlogTwitterData = (e) => { this.setState({ blogTwitterData: e }) };
+  setBlogTableData = (e) => { this.setState({ blogTableData: e }) };
 
   render() {
     const { children } = this.props;
-    const { editUserModal, deleteUserModal, addUserModal, editUserData, deleteBlogModal, editBlogData, addBlogModal, deleteBlogData, editBlogModal } = this.state;
+    const { editUserModal, deleteUserModal, addUserModal, editUserData, deleteBlogModal, editBlogData, addBlogModal, deleteBlogData, editBlogModal, blogMetaData, blogArtData, blogOgData, blogTwitterData, blogTableData } = this.state;
 
     return (
       <AppStateContext.Provider
         value={{
-          addUserModal, editUserModal, deleteUserModal, editUserData, deleteBlogModal, editBlogData, addBlogModal, deleteBlogData, editBlogModal,
+          addUserModal, editUserModal, deleteUserModal, editUserData, deleteBlogModal, editBlogData, addBlogModal, deleteBlogData, editBlogModal, blogMetaData, blogArtData, blogOgData, blogTwitterData, blogTableData,
 
-          setAddUserModal: this.setAddUserModal, setEditUserModal: this.setEditUserModal, setDeleteUserModal: this.setDeleteUserModal, setEditUserData: this.setEditUserData, setDeleteBlogModal: this.setDeleteBlogModal, setEditBlogData: this.setEditBlogData, setAddBlogModal: this.setAddBlogModal, setDeleteBlogData: this.setDeleteBlogData, setEditBlogModal: this.setEditBlogModal
+          setAddUserModal: this.setAddUserModal, setEditUserModal: this.setEditUserModal, setDeleteUserModal: this.setDeleteUserModal, setEditUserData: this.setEditUserData, setDeleteBlogModal: this.setDeleteBlogModal, setEditBlogData: this.setEditBlogData, setAddBlogModal: this.setAddBlogModal, setDeleteBlogData: this.setDeleteBlogData, setEditBlogModal: this.setEditBlogModal, setBlogMetaData: this.setBlogMetaData, setBlogArtData: this.setBlogArtData, setBlogOgData: this.setBlogOgData, setBlogTwitterData: this.setBlogTwitterData, setBlogTableData: this.setBlogTableData
         }}
       >
         {children}

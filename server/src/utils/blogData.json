@@ -1,35 +1,194 @@
 {
-  "blog": [
-    {
-      "primary": [
+    "blog": [
         {
-          "meta_title": "menu"
-        },
-        {
-          "meta_description": "menu"
-        },
-        {
-          "canonical": "menu"
-        },
-        {
-          "category": "menu"
-        },
-        {
-          "author_name": "user 1"
-        },
-        {
-          "blog_title": "VoIP Service Providers"
-        },
-        {
-          "content": "menu"
-        },
-        {
-          "image": "C:\\fakepath\\cc_tech_4.png"
+            "meta": [
+                {
+                    "type": "meta_title",
+                    "content": "meta Title",
+                    "id": 1,
+                    "primary": true
+                },
+                {
+                    "type": "meta_description",
+                    "content": "meta description ",
+                    "id": 2,
+                    "primary": true
+                },
+                {
+                    "type": "meta_keywords",
+                    "content": "meta keywords",
+                    "id": 3,
+                    "primary": true
+                },
+                {
+                    "type": "meta_robots",
+                    "content": "meta robots",
+                    "id": 4,
+                    "primary": true
+                }
+            ],
+            "article": [
+                {
+                    "type": "article_tag",
+                    "content": "Article tag",
+                    "id": 17,
+                    "primary": true
+                },
+                {
+                    "type": "article_section",
+                    "content": "Articlesection",
+                    "id": 18,
+                    "primary": true
+                }
+            ],
+            "twitter": [
+                {
+                    "type": "twitter_card",
+                    "content": "Twitter card",
+                    "id": 19,
+                    "primary": true
+                },
+                {
+                    "type": "twitter_title",
+                    "content": "Twitter title",
+                    "id": 20,
+                    "primary": true
+                },
+                {
+                    "type": "twitter_description",
+                    "content": "Twitter Description",
+                    "id": 21,
+                    "primary": true
+                },
+                {
+                    "type": "twitter_site",
+                    "content": "Twitter site",
+                    "id": 22,
+                    "primary": true
+                },
+                {
+                    "type": "twitter_creator",
+                    "content": "Twitter creator",
+                    "id": 23,
+                    "primary": true
+                },
+                {
+                    "type": "twitter_image",
+                    "content": "Twitter image",
+                    "id": 24,
+                    "primary": true
+                }
+            ],
+            "og": [
+                {
+                    "type": "og_locale",
+                    "content": "og Locale",
+                    "id": 5,
+                    "primary": true
+                },
+                {
+                    "type": "og_type",
+                    "content": "Locale type",
+                    "id": 6,
+                    "primary": true
+                },
+                {
+                    "type": "og_title",
+                    "content": "Locale title",
+                    "id": 7,
+                    "primary": true
+                },
+                {
+                    "type": "og_description",
+                    "content": "Locale description",
+                    "id": 8,
+                    "primary": true
+                },
+                {
+                    "type": "og_url",
+                    "content": "Locale utl",
+                    "id": 9,
+                    "primary": true
+                },
+                {
+                    "type": "og_site_name",
+                    "content": "Locale site name",
+                    "id": 10,
+                    "primary": true
+                },
+                {
+                    "type": "og_image",
+                    "content": "Locale image",
+                    "id": 11,
+                    "primary": true
+                },
+                {
+                    "type": "og_image_secure_url",
+                    "content": "Locale image secure url",
+                    "id": 12,
+                    "primary": true
+                },
+                {
+                    "type": "og_image_width",
+                    "content": "Locale image width",
+                    "id": 13,
+                    "primary": true
+                },
+                {
+                    "type": "og_image_height",
+                    "content": "Locale image height",
+                    "id": 14,
+                    "primary": true
+                },
+                {
+                    "type": "og_image_alt",
+                    "content": "Locale image alt",
+                    "id": 15,
+                    "primary": true
+                },
+                {
+                    "type": "og_image_type",
+                    "content": "Locale image type",
+                    "id": 16,
+                    "primary": true
+                }
+            ],
+            "url_slug": "",
+            "canonical": "",
+            "category": "",
+            "author_name": "",
+            "time_to_read": "",
+            "blog_title": "",
+            "blog_data": [
+                {
+                    "id": 1,
+                    "type": "section",
+                    "data": [
+                        {
+                            "title": "heading",
+                            "content": "heading 1",
+                            "titleTag": "h2",
+                            "id": "1708335321281_ph33u8f4vo"
+                        },
+                        {
+                            "title": "description",
+                            "content": "content 1",
+                            "id": "1708335321281_49o879xjny"
+                        }
+                    ]
+                }
+            ],
+            "additional_data": [
+                {
+                    "stick_to_top": false
+                },
+                {
+                    "schedule": 1708335140262
+                },
+                {
+                    "allow_comment": false
+                }
+            ]
         }
-      ],
-      "secondary": [],
-      "time": 1707555967313,
-      "id": "1707555967313_8p58cvkkb"
-    }
-  ]
+    ]
 }

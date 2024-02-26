@@ -8,6 +8,7 @@ const navigation = [
     { name: 'Product Updates', href: 'product-updates', icon: FolderIcon, current: false },
     { name: 'Product User Manual', href: 'product-user-manual', icon: FolderIcon, current: false },
     { name: 'Users', href: 'users', icon: UsersIcon, current: false },
+    { name: 'Category', href: 'category', icon: UsersIcon, current: false },
 ];
 
 

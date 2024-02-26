@@ -27,7 +27,7 @@ class Page extends Component {
     }
 
     addSection = (type) => {
-
+        
         if (type == 'faq') {
             const newData = { type: 'faq', content: [{ ques: '', ans: '' }], id: this.state.data.length + 1 };
             this.setState({ data: [...this.state.data, newData] });
@@ -37,8 +37,7 @@ class Page extends Component {
             this.setState({ data: [...this.state.data, newData] });
             this.setState({ fieldValidations: Array(this.state.data.length + 1).fill(true) })
         }
-
-
+        
 
     };
     updateContent = (index, content) => {
@@ -110,8 +109,7 @@ class Page extends Component {
                 }
             });
 
-
-            axios.post('https://6654-103-163-248-192.ngrok-free.app/blog_update', blogData).then((res) => {
+            axios.post('https://bf18-202-21-44-91.ngrok-free.app/blog_update', blogData).then((res) => {
 
                 if (res.data.code === 200) {
                     const { setEditBlogModal } = this.context;
@@ -158,11 +156,6 @@ class Page extends Component {
 
     };
 
-    toggleSpeedDial = () => {
-        this.setState(prevState => ({
-            isSpeedDialOpen: !prevState.isSpeedDialOpen
-        }));
-    };
 
     componentDidMount() {
         const { editBlogData } = this.context;
@@ -217,8 +210,9 @@ class Page extends Component {
                                         <div className='relative'>
                                             <textarea
                                                 onChange={(e) => this.updateContent(index, e.target.value, section.type)}
-                                                value={section.content || ''} rows={6}
-                                                className={`block w-full rounded-md bg-white outline-[#837676] px-3.5 py-2 text-gray-900 shadow-sm sm:text-sm sm:leading-6 ${!this.state.fieldValidations[index] ? 'border-red-700' : ' border-gray-300'}`}
+                                                value={section.content || ''}
+                                                rows={6}
+                                                className={`block w-full rounded-md bg-white  px-3.5 py-2 text-gray-900 ring-1 ring-inset shadow-sm sm:text-sm sm:leading-6 ${!this.state.fieldValidations[index] ? 'ring-red-700' : ' ring-gray-300'}`}
                                             />
                                             {
                                                 section.primary ?
@@ -230,13 +224,13 @@ class Page extends Component {
                                     ) : section.type.toLowerCase() == 'faq' ?
 
                                         <div className='relative'>
-                                            <div className={`border p-5  space-y-3`}>
+                                            <div className={`border border-[#c5c5c5] p-5  space-y-3`}>
                                                 <div>
                                                     <label className="block text-sm font-semibold leading-6 text-gray-900">
                                                         Question
                                                     </label>
                                                     <input onChange={(e) => this.updateContentQues(index, e.target.value, section.type)} value={section.content[0] ? section.content[0].ques : ''} rows={1}
-                                                        className={`block w-full outline-[#837676] bg-white rounded-md  px-3.5 py-2 text-gray-900 shadow-sm border-1 border-inset placeholder:text-gray-400 focus:border-1 focus:border-inset focus:border-indigo-600 sm:text-sm sm:leading-6 ${!this.state.fieldValidations[index] ? 'border-red-700' : ' border-gray-300'}`}
+                                                        className={`block w-full bg-white rounded-md  px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset sm:text-sm sm:leading-6 ${!this.state.fieldValidations[index] ? 'ring-red-700' : ' ring-gray-300'}`}
                                                     />
                                                 </div>
                                                 <div>
@@ -244,7 +238,7 @@ class Page extends Component {
                                                         Answer
                                                     </label>
                                                     <textarea onChange={(e) => this.updateContentAns(index, e.target.value, section.type)} value={section.content[0] ? section.content[0].ans : ''} rows={3}
-                                                        className={`block w-full outline-[#837676] bg-white rounded-md  px-3.5 py-2 text-gray-900 shadow-sm border-1 border-inset placeholder:text-gray-400 focus:border-1 focus:border-inset focus:border-indigo-600 sm:text-sm sm:leading-6 ${!this.state.fieldValidations[index] ? 'border-red-700' : ' border-gray-300'}`}
+                                                        className={`block w-full bg-white rounded-md  px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset sm:text-sm sm:leading-6 ${!this.state.fieldValidations[index] ? 'ring-red-700' : ' ring-gray-300'}`}
                                                     />
                                                 </div>
                                             </div>
@@ -254,18 +248,32 @@ class Page extends Component {
                                                         <XMarkIcon className='w-4 text-white' />
                                                     </div>
                                             }
-                                        </div> : (
+                                        </div> : section.type == 'image' ? (
                                             <div className='relative'>
-                                                <input type={section.type == 'image' ? 'file' : 'text'} onChange={(e) => this.updateContent(index, e.target.value)}
-                                                    value={section.type == 'image' ? '' : section.content}
-                                                    className={` ${section.type == 'image' ? 'cursor-pointer hidden' : ''} block w-full outline-[#837676] bg-white rounded-md  px-3.5 py-2 text-gray-900 shadow-sm border-1 border-inset placeholder:text-gray-400 focus:border-1 focus:border-inset focus:border-indigo-600 sm:text-sm sm:leading-6 ${!this.state.fieldValidations[index] ? ' border-red-700' : 'border-gray-300'}`}
+
+                                                {console.log(section.content)}
+
+                                                <input type='file' onChange={(e) => this.updateContent(index, e.target.value)}
+                                                    value={''}
+                                                    className={` cursor-pointer block w-full bg-white rounded-md ring-1 ring-inset px-3.5 py-2 text-gray-900 shadow-sm sm:text-sm sm:leading-6 ${!this.state.fieldValidations[index] ? ' ring-red-700' : 'ring-gray-300'}`}
                                                 />
                                                 {section.primary ?
                                                     '' : <div onClick={() => this.removeField(index)} className=' absolute -top-2 -right-2 bg-black p-1 rounded-full cursor-pointer'>
                                                         <XMarkIcon className='w-4 text-white' />
                                                     </div>}
                                             </div>
-                                        )}
+                                        ) :
+                                            <div className='relative'>
+
+                                                <input type='text' onChange={(e) => this.updateContent(index, e.target.value)}
+                                                    value={section.content}
+                                                    className={` block w-full bg-white rounded-md ring-1 ring-inset px-3.5 py-2 text-gray-900 shadow-sm sm:text-sm sm:leading-6 ${!this.state.fieldValidations[index] ? ' ring-red-700' : 'ring-gray-300'}`}
+                                                />
+                                                {section.primary ?
+                                                    '' : <div onClick={() => this.removeField(index)} className=' absolute -top-2 -right-2 bg-black p-1 rounded-full cursor-pointer'>
+                                                        <XMarkIcon className='w-4 text-white' />
+                                                    </div>}
+                                            </div>}
                                 </div>
                             </div>
                         ))}
@@ -295,7 +303,7 @@ class Page extends Component {
                         <button onClick={() => this.submit()} className="rounded-md bg-[#e84c3d] px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover-bg-[#e84c3d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
                             Submit
                         </button>
-                        <button onClick={() => this.cancel()} className="rounded-md border border-[#8b8585] px-3.5 py-2.5 text-center text-sm font-semibold shadow-sm hover-bg-[#e84c3d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
+                        <button onClick={() => this.cancel()} className="rounded-md bg-white border border-[#8b8585] px-3.5 py-2.5 text-center text-sm font-semibold shadow-sm hover-bg-[#e84c3d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
                             Cancel
                         </button>
                     </div>

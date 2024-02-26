@@ -27,7 +27,7 @@ class Example extends Component {
 
         setDeleteBlogModal(false);
 
-        axios.post('https://6654-103-163-248-192.ngrok-free.app/blog_delete', deleteBlogData).then((res) => {
+        axios.post('https://bf18-202-21-44-91.ngrok-free.app/blog_delete', deleteBlogData).then((res) => {
 
         }).catch((err) => { })
     }

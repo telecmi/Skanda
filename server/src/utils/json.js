@@ -1,0 +1,56 @@
+const blogData = [
+    {
+        "meta": [
+            { "type": "title", "content": "" },
+            { "type": "description", "content": "" },
+            { "type": "keywords", "content": "" },
+            { "type": "robots", "content": "" }
+        ],
+        "og": [
+            { "type": "locale", "content": "" },
+            { "type": "type", "content": "" },
+            { "type": "title", "content": "" },
+            { "type": "description", "content": "" },
+            { "type": "url", "content": "" },
+            { "type": "site_name", "content": "" },
+            { "type": "image", "content": "" },
+            { "type": "image_secure_url", "content": "" },
+            { "type": "image_width", "content": "" },
+            { "type": "image:height", "content": "" },
+            { "type": "image:alt", "content": "" },
+            { "type": "image:type", "content": "" },
+        ],
+        "twitter": [
+            { "type": "card", "content": "" },
+            { "type": "title", "content": "" },
+            { "type": "description", "content": "" },
+            { "type": "site", "content": "" },
+            { "type": "creator", "content": "" },
+            { "type": "image", "url": "" },
+        ],
+        "article": [
+            { "type": "tag", "content": ["", ""] },
+            { "type": "section", "content": "" },
+            { "type": "published_time", "time": 1707555967313 },
+            { "type": "modified_time", "time": 1707555967313 },
+
+        ],
+        "url_slug": "",
+        "canonical": "",
+        "category": "",
+        "author_name": "",
+        "time_to_read": "",
+        "blog_title": "",
+        "blog_data": [
+            { "type": "heading", "content": "", "tag": 'h2' },
+            { "type": "description", "content": "" },
+            { "type": "heading", "content": "", "tag": 'h3' },
+            { "type": "description", "content": "" },
+            { "type": "image", "source": "", "alt_text": "", "alt_attribute": "" },
+            { "type": "video", "source": "" },
+            { "type": "faq", "content": [{ "question": "", "answer": "" }] },
+            { "type": "table", "content": "" },
+        ],
+        "time": 1707555967313,
+    },
+]

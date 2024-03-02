@@ -18,6 +18,10 @@ export class AppStateProvider extends Component {
     blogArtData: '',
     blogTwitterData: '',
     blogTableData: '',
+    stickTop: false,
+    comment: false,
+    pubDate: new Date(),
+    preview: false,
   };
 
   setAddUserModal = (e) => { this.setState({ addUserModal: e }) };
@@ -34,17 +38,21 @@ export class AppStateProvider extends Component {
   setBlogArtData = (e) => { this.setState({ blogArtData: e }) };
   setBlogTwitterData = (e) => { this.setState({ blogTwitterData: e }) };
   setBlogTableData = (e) => { this.setState({ blogTableData: e }) };
+  setStickTop = (e) => { this.setState({ stickTop: e }) };
+  setComment = (e) => { this.setState({ comment: e }) };
+  setPubDate = (e) => { this.setState({ pubDate: e }) };
+  setPreview = (e) => { this.setState({ preview: e }) };
 
   render() {
     const { children } = this.props;
-    const { editUserModal, deleteUserModal, addUserModal, editUserData, deleteBlogModal, editBlogData, addBlogModal, deleteBlogData, editBlogModal, blogMetaData, blogArtData, blogOgData, blogTwitterData, blogTableData } = this.state;
+    const { editUserModal, deleteUserModal, addUserModal, editUserData, deleteBlogModal, editBlogData, addBlogModal, deleteBlogData, editBlogModal, blogMetaData, blogArtData, blogOgData, blogTwitterData, blogTableData, stickTop, comment, pubDate, preview, } = this.state;
 
     return (
       <AppStateContext.Provider
         value={{
-          addUserModal, editUserModal, deleteUserModal, editUserData, deleteBlogModal, editBlogData, addBlogModal, deleteBlogData, editBlogModal, blogMetaData, blogArtData, blogOgData, blogTwitterData, blogTableData,
+          addUserModal, editUserModal, deleteUserModal, editUserData, deleteBlogModal, editBlogData, addBlogModal, deleteBlogData, editBlogModal, blogMetaData, blogArtData, blogOgData, blogTwitterData, blogTableData, stickTop, comment, pubDate, preview,
 
-          setAddUserModal: this.setAddUserModal, setEditUserModal: this.setEditUserModal, setDeleteUserModal: this.setDeleteUserModal, setEditUserData: this.setEditUserData, setDeleteBlogModal: this.setDeleteBlogModal, setEditBlogData: this.setEditBlogData, setAddBlogModal: this.setAddBlogModal, setDeleteBlogData: this.setDeleteBlogData, setEditBlogModal: this.setEditBlogModal, setBlogMetaData: this.setBlogMetaData, setBlogArtData: this.setBlogArtData, setBlogOgData: this.setBlogOgData, setBlogTwitterData: this.setBlogTwitterData, setBlogTableData: this.setBlogTableData
+          setAddUserModal: this.setAddUserModal, setEditUserModal: this.setEditUserModal, setDeleteUserModal: this.setDeleteUserModal, setEditUserData: this.setEditUserData, setDeleteBlogModal: this.setDeleteBlogModal, setEditBlogData: this.setEditBlogData, setAddBlogModal: this.setAddBlogModal, setDeleteBlogData: this.setDeleteBlogData, setEditBlogModal: this.setEditBlogModal, setBlogMetaData: this.setBlogMetaData, setBlogArtData: this.setBlogArtData, setBlogOgData: this.setBlogOgData, setBlogTwitterData: this.setBlogTwitterData, setBlogTableData: this.setBlogTableData, setStickTop: this.setStickTop, setComment: this.setComment, setPubDate: this.setPubDate, setPreview: this.setPreview
         }}
       >
         {children}

@@ -9,8 +9,8 @@ function classNames(...classes) {
 }
 
 const userNavigation = [
-    { name: 'Your profile', href: 'javascript:void(0)' },
-    { name: 'Sign out', href: 'javascript:void(0)' },
+    { name: 'Your profile' },
+    { name: 'Sign out' },
 ];
 
 export default class header extends Component {
@@ -83,15 +83,14 @@ export default class header extends Component {
                                     {userNavigation.map((item) => (
                                         <Menu.Item key={item.name}>
                                             {({ active }) => (
-                                                <a
-                                                    href={item.href}
+                                                <p
                                                     className={classNames(
                                                         active ? 'bg-gray-50' : '',
                                                         'block px-3 py-1 text-sm leading-6 text-gray-900'
                                                     )}
                                                 >
                                                     {item.name}
-                                                </a>
+                                                </p>
                                             )}
                                         </Menu.Item>
                                     ))}

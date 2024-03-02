@@ -8,10 +8,12 @@ import AddUserModal from './user/addUser';
 import UserEditConfirm from './user/userEditConfirm'
 import UserDeleteConfirm from './user/userDeleteConfirm'
 import BlogDeleteConfirm from './blog/blogDeleteConfirm'
-import AddBlog from './blog/addBlog'
-
+// import AddBlog from './blog/addBlog'
+import AppStateContext from '../../utils/AppStateContext';
 
 class Example extends Component {
+
+    static contextType = AppStateContext
     constructor(props) {
         super(props);
         this.state = {
@@ -52,7 +54,7 @@ class Example extends Component {
         this.setState({ deleteUserModal: true })
     }
 
-    
+
 
 
     render() {
@@ -76,7 +78,7 @@ class Example extends Component {
 
                 <div className="lg:pl-72">
 
-                    <Header />
+                    {this.context.addBlogModal ? '' : <Header />}
 
                     <div className="px-2 sm:px-6 lg:px-8">
                         {

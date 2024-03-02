@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { PlusIcon } from '@heroicons/react/24/solid';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { blog } from '../../../services/blogData';
+// import { blog } from '../../../services/blogData';
 import AppStateContext from '../../../utils/AppStateContext';
 import AddBlog from './addBlog'
 import EditBlog from './editBlog'
@@ -16,13 +16,15 @@ export default class blogComponent extends Component {
         super(props)
 
         this.state = {
-            data: []
+            data: [],
+            nav: false
         }
     }
 
     addBlog = () => {
         const { setAddBlogModal } = this.context
         setAddBlogModal(true)
+        this.setState({ nav: true })
     }
 
     editBlog = (e) => {
@@ -44,8 +46,12 @@ export default class blogComponent extends Component {
     }
 
     render() {
+
         return (
             <div className="bg-white">
+                {/* {
+                    this.state.nav && <Navigate to="/edit" />
+                } */}
                 {
                     this.context.addBlogModal ?
                         <AddBlog /> : this.context.editBlogModal ? <EditBlog /> :
@@ -66,9 +72,9 @@ export default class blogComponent extends Component {
                                         <div key={index}>
                                             <div>
                                                 {/* <img className="aspect-[3/2] w-full rounded-2xl object-cover" src={blog.primary.find(item => item.image)?.image} alt="" /> */}
-                                                <img className="aspect-[3/2] w-full rounded-2xl object-cover" src={'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80'} alt="Blog Image" />
+                                                <img className="aspect-[3/2] w-full rounded-2xl object-cover" src={'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80'} alt="Blog Images" />
                                                 <h3 className="mt-5 text-lg font-semibold leading-8 tracking-tight text-gray-900 overflow-hidden text-ellipsis whitespace-nowrap">{blog.blog_title ? blog.blog_title : ""}</h3>
-                                                <p className="text-base leading-7 text-gray-600">{moment(blog.time).format('MMMM DD, YYYY')}</p>
+                                                <p className="text-base leading-7 text-gray-600">{moment(blog.additional_data.schedule).format('MMMM DD, YYYY')}</p>
                                                 <div className='flex justify-between items-end'>
                                                     <div className=' overflow-hidden'>
                                                         <p className=' overflow-hidden whitespace-nowrap text-ellipsis'>{blog.author_name}</p>

@@ -4,7 +4,12 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'dmsans': ['DM Serif Text', 'serif'],
+        'heebo': ['Heebo', 'sans-serif'],
+      }
+    },
   },
   plugins: [require("@tailwindcss/forms")]
 }

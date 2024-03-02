@@ -69,19 +69,12 @@ class TableInputForm extends Component {
     };
 
     render() {
-        const { numRows, numCols, tableData } = this.state;
+        const { numCols, tableData } = this.state;
 
         return (
             <div className="container mx-auto">
                 <div className="flex space-x-4 mb-4 items-center mt-4">
-                    <input
-                        type="number"
-                        value={numCols}
-                        onChange={this.handleNumColsChange}
-                        min="1"
-                        placeholder='col'
-                        className="w-16 h-8 border border-gray-300 rounded"
-                    />
+                    <input type="number" value={numCols} onChange={this.handleNumColsChange} min="1" placeholder='col' className="w-16 h-8 border border-gray-300 rounded" />
                 </div>
                 <table className="table-auto w-full">
                     <tbody>
@@ -89,16 +82,11 @@ class TableInputForm extends Component {
                             <tr key={rowIndex} className=''>
                                 {row.map((cell, colIndex) => (
                                     <td key={colIndex} className=' p-2'>
-                                        <textarea
-                                            rows={3}
-                                            value={cell}
-                                            onChange={(e) => this.handleCellChange(rowIndex, colIndex, e.target.value)}
-                                            className="w-full px-2 py-1 border border-gray-300 rounded-md"
-                                        />
+                                        <textarea rows={3} value={cell} onChange={(e) => this.handleCellChange(rowIndex, colIndex, e.target.value)} className="w-full px-2 py-1 border border-gray-300 rounded-md" />
                                     </td>
                                 ))}
                                 <td className='flex items-center p-2'>
-                                    <button onClick={() => this.handleRemoveRow(rowIndex)} className="w-5 h-5 text-xs bg-black text-white rounded-full">
+                                    <button onClick={() => this.handleRemoveRow(rowIndex)} className="w-5 h-5 text-xs bg-gray-500 text-white rounded-full">
                                         X
                                     </button>
                                 </td>
@@ -111,10 +99,6 @@ class TableInputForm extends Component {
                     <button onClick={this.handleAddRow} className="mt-5 bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-3 rounded">
                         +
                     </button>
-
-                    {/* <button onClick={this.submit} className="mt-5 bg-gray-800 hover:bg-gray-900 text-white font-bold py-1 px-3 rounded">
-                        submit
-                    </button> */}
                 </div>
             </div>
         );

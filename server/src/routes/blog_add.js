@@ -6,6 +6,8 @@ exports.add = (req, res) => {
     // Assuming req.body is the object you want to store
     const newData = req.body;
 
+    console.log(newData)
+
     // Define the file path where you want to store the data
     const filePath = path.join(__dirname, '../utils/blogData.json')
 

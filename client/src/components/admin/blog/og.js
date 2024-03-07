@@ -36,8 +36,8 @@ export default class Og extends Component {
                                 </label>
                                 <div className='relative'>
                                     <input
-                                        onChange={(e) => this.updateOgContent(index, e.target.value, section.type)}
-                                        className={`block w-full rounded-md  px-3.5 py-2 text-gray-900 shadow-sm ring-1 border-none bg-white `}
+                                        onChange={(e) => this.updateOgContent(index, e.target.value, section.type)} pattern="[0-9]{10}" type={section.type === 'og_image_width' || section.type === 'og_image_height' ? 'number' : section.type === 'og_image' || section.type === 'og_image_secure_url' ? 'file' : 'text'}
+                                    className={`block w-full rounded-md ${section.type === 'og_image' || section.type === 'og_image_secure_url' ? 'text-xs py-[9px]' : 'py-2'} px-3.5 text-gray-900 shadow-sm ring-1 border-none bg-white `}
                                     />
                                 </div>
                             </div>

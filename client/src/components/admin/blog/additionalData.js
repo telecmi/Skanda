@@ -21,7 +21,8 @@ export default class additionalData extends Component {
     onChangeDate = (e) => {
         this.setState({ selectDate: false });
         const { setPubDate } = this.context
-        let date = moment(e).valueOf()
+        let date = parseInt(moment(e).format('x'))
+
         setPubDate(date)
     };
     calenderOpen = (e) => {
@@ -93,12 +94,12 @@ export default class additionalData extends Component {
                                     {
                                         this.state.selectDate ?
                                             <div className=' max-w-[80%]'>
-                                                <Calendar onChange={this.onChangeDate} minDate={new Date()} value={this.context.pubDate} />
+                                                <Calendar onChange={this.onChangeDate} value={this.context.pubDate ? moment(this.context.pubDate).format('MMMM DD,YYYY') : new Date()} />
                                             </div>
                                             :
                                             <div className="mt-0 flex items-center space-x-5">
                                                 <CalendarIcon onClick={this.calenderOpen} className='w-6 h-6 text-slate-600 cursor-pointer' />
-                                                <input className=' w-4/5 text-sm rounded-md' type="text" readOnly value={this.context.pubDate ? moment(this.context.pubDate).format('MMMM,DD,YYYY') : ''} />
+                                                <input className=' w-4/5 text-sm rounded-md' type="text" readOnly value={this.context.pubDate ? moment(this.context.pubDate).format('MMMM DD,YYYY') : ''} />
                                             </div>
                                     }
                                 </div>

@@ -1,54 +1,52 @@
 const blog_meta_structure = [
-    { type: 'meta_title', content: '' },
-    { type: 'meta_description', content: '' },
-    { type: 'meta_keywords', content: '' },
-    { type: 'meta_robots', content: '' },
+    { type: 'meta_title', content: null },
+    { type: 'meta_description', content: null },
+    { type: 'meta_keywords', content: null },
+    { type: 'meta_robots', content: null },
 ]
 
 const blog_og_structure = [
-    { type: 'og_locale', content: '' },
-    { type: 'og_type', content: '' },
-    { type: 'og_title', content: '' },
-    { type: 'og_description', content: '' },
-    { type: 'og_url', content: '' },
-    { type: 'og_site_name', content: '' },
-    { type: 'og_image', content: '' },
-    { type: 'og_image_secure_url', content: '' },
-    { type: 'og_image_width', content: '' },
-    { type: 'og_image_height', content: '' },
-    { type: 'og_image_alt', content: '' },
-    { type: 'og_image_type', content: '' },
+    { type: 'og_locale', content: null },
+    { type: 'og_type', content: null },
+    { type: 'og_title', content: null },
+    { type: 'og_description', content: null },
+    { type: 'og_url', content: null },
+    { type: 'og_site_name', content: null },
+    { type: 'og_image', content: null },
+    { type: 'og_image_secure_url', content: null },
+    { type: 'og_image_width', content: null },
+    { type: 'og_image_height', content: null },
+    { type: 'og_image_alt', content: null },
+    { type: 'og_image_type', content: null },
 ]
 
 const blog_twitter_structure = [
-    { type: 'twitter_card', content: '' },
-    { type: 'twitter_title', content: '' },
-    { type: 'twitter_description', content: '' },
-    { type: 'twitter_site', content: '' },
-    { type: 'twitter_creator', content: '' },
-    { type: 'twitter_image', content: '' },
+    { type: 'twitter_card', content: null },
+    { type: 'twitter_title', content: null },
+    { type: 'twitter_description', content: null },
+    { type: 'twitter_site', content: null },
+    { type: 'twitter_creator', content: null },
+    { type: 'twitter_image', content: null },
 ]
 
 const blog_art_structure = [
-    { type: 'article_tag', content: '' },
-    { type: 'article_section', content: '' },
+    { type: 'article_tag', content: null },
+    { type: 'article_section', content: null },
 ]
 
 const blog_structure = [
-    { type: 'url_slug', content: '' },
-    { type: 'canonical', content: '' },
-    { type: 'category', content: '' },
-    { type: 'author_name', content: '' },
-    { type: 'time_to_read', content: '' },
-    { type: 'blog_title', content: '' },
+    { type: 'url_slug', content: null },
+    { type: 'canonical', content: null },
+    { type: 'category', content: null },
+    { type: 'author_name', content: null },
+    { type: 'blog_title', content: null },
 ]
 
-const blog_export = [
-    {
-        meta_title: '', meta_description: '', canonical: '', category: '', author_name: '', blog_title: '', blog_content: '',
-    }
+const blog_intro = [
+    { type: 'blog_intro', content: '' },
 ]
+
 
 export {
-    blog_structure, blog_meta_structure, blog_og_structure, blog_twitter_structure, blog_art_structure, blog_export
+    blog_structure, blog_intro, blog_meta_structure, blog_og_structure, blog_twitter_structure, blog_art_structure
 }

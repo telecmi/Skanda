@@ -41,6 +41,21 @@ class TableInputForm extends Component {
     };
 
     handleCellChange = (rowIndex, colIndex, value) => {
+
+        // Check if value contains both anchor and bold structures
+        const hasAnchor = value.includes("[") && value.includes("]");
+        const hasBold = value.includes("*");
+
+        // Convert anchor structure
+        if (hasAnchor) {
+            value = value.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+            value = value.replace(/\\+([^"]+)\\"/g, '$1');
+        }
+
+        // Convert bold structure
+        if (hasBold) {
+            value = value.replace(/\*(.*?)\*/g, '<b>$1</b>');
+        }
         const { tableData } = this.state;
         const updatedTableData = tableData.map((row, i) => {
             if (i === rowIndex) {
@@ -63,9 +78,8 @@ class TableInputForm extends Component {
         }, []);
 
         const { setBlogTableData } = this.context
-        setBlogTableData({ data: allCellData, id: this.props.tableId.id })
+        setBlogTableData({ data: allCellData, id: this.props.tableId.id, colm: this.state.numCols })
 
-        console.log(this.props.tableId.id)
     };
 
     render() {
@@ -106,3 +120,4 @@ class TableInputForm extends Component {
 }
 
 export default TableInputForm;
+

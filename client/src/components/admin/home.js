@@ -8,6 +8,7 @@ import AddUserModal from './user/addUser';
 import UserEditConfirm from './user/userEditConfirm'
 import UserDeleteConfirm from './user/userDeleteConfirm'
 import BlogDeleteConfirm from './blog/blogDeleteConfirm'
+// import ValidationPop from './blog/validationPop';
 // import AddBlog from './blog/addBlog'
 import AppStateContext from '../../utils/AppStateContext';
 
@@ -63,6 +64,8 @@ class Example extends Component {
             <>
 
                 <AddUserModal addUserModal={this.state.addUserModal} addUser={this.addUser} />
+
+
 
                 {/* <AddBlog /> */}
 

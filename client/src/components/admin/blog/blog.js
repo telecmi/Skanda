@@ -74,7 +74,7 @@ export default class blogComponent extends Component {
                                                 {/* <img className="aspect-[3/2] w-full rounded-2xl object-cover" src={blog.primary.find(item => item.image)?.image} alt="" /> */}
                                                 <img className="aspect-[3/2] w-full rounded-2xl object-cover" src={'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80'} alt="Blog Images" />
                                                 <h3 className="mt-5 text-lg font-semibold leading-8 tracking-tight text-gray-900 overflow-hidden text-ellipsis whitespace-nowrap">{blog.blog_title ? blog.blog_title : ""}</h3>
-                                                <p className="text-base leading-7 text-gray-600">{moment(blog.additional_data.schedule).format('MMMM DD, YYYY')}</p>
+                                                <p className="text-base leading-7 text-gray-600">{moment(blog.additional_data ? blog.additional_data.schedule : new Date()).format('MMMM DD, YYYY')}</p>
                                                 <div className='flex justify-between items-end'>
                                                     <div className=' overflow-hidden'>
                                                         <p className=' overflow-hidden whitespace-nowrap text-ellipsis'>{blog.author_name}</p>

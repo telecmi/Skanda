@@ -39,7 +39,6 @@ const blog_structure = [
     { type: 'canonical', content: null },
     { type: 'category', content: null },
     { type: 'author_name', content: null },
-    { type: 'blog_title', content: null },
 ]
 
 const blog_intro = [

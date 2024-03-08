@@ -8,6 +8,7 @@ import AddUserModal from './user/addUser';
 import UserEditConfirm from './user/userEditConfirm'
 import UserDeleteConfirm from './user/userDeleteConfirm'
 import BlogDeleteConfirm from './blog/blogDeleteConfirm'
+import Category from './category/category';
 // import ValidationPop from './blog/validationPop';
 // import AddBlog from './blog/addBlog'
 import AppStateContext from '../../utils/AppStateContext';
@@ -87,6 +88,10 @@ class Example extends Component {
                         {
                             this.state.currentNavigation === 'blog' &&
                             <BlogData />
+                        }
+                        {
+                            this.state.currentNavigation === 'category' &&
+                            <Category />
                         }
                         {
                             this.state.currentNavigation === 'users' && <UsersList addUser={this.addUserModalBool} editUser={this.editUser} deleteUser={this.deleteUser} />

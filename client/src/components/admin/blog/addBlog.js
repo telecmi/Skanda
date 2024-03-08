@@ -10,6 +10,7 @@ import BlogArtData from './art';
 import AditionalData from './additionalData';
 import UserList from '../../../services/userData';
 import AuthorListMenu from './authorMenu';
+import Category from './categoryMenu'
 import { wordCount } from './wordCount'
 import { Fragment } from 'react';
 import { Popover, Transition } from '@headlessui/react';
@@ -18,7 +19,7 @@ import Tab from './table'
 import 'react-calendar/dist/Calendar.css';
 import ValidationPop from './validationPop';
 import Preview from './preview';
-import { blogIntroSchema, metaSchema, ogSchema, twitterSchema, articleSchema, blogUrlSchema, sectionSchema, faqSchema, rcSchema, testiSchema } from './validationSchema';
+import { blogIntroSchema, metaSchema, ogSchema, twitterSchema, articleSchema, blogUrlSchema, categorySchema, authorSchema, sectionSchema, faqSchema, rcSchema, testiSchema } from './validationSchema';
 import Ajv from "ajv"
 
 const ajv = new Ajv()
@@ -34,16 +35,17 @@ class Page extends Component {
         this.state = {
             data: blog_structure,
             blog_intro: blog_intro,
+            blog_intro_title: '',
             blog_intro_img: '',
             blog_intro_img_alt: '',
-            blog_intro_desc: '',
+            blog_intro_desc: [{ description: '', id: this.generateUniqueId() }],
             value: new Date(),
             sectionData: [],
             blogData: [],
             additional_data: [{ "stick_to_top": false }, { "schedule": Date.now() }, { "allow_comment": false }],
             openIndex: false,
             addData: false,
-            jsondata: { "url_slug": '', "canonical": '', "category": '', "blog_title": '' },
+            jsondata: { "url_slug": '', "canonical": '', "category": '' },
             tag: ['h2', 'h3', 'h4', 'h5', 'h6'],
             validation: {
                 metaValid: '',
@@ -136,7 +138,7 @@ class Page extends Component {
     };
     formatContent = (e) => {
         const regex = /\[(.*?)\]\((.*?)\)/g;
-        e = e.replace(regex, '<a href="$2">$1</a>');
+        e = e.replace(regex, '<a target="_blank" href="$2">$1</a>');
         e = e.replace(/\*(.*?)\*/g, '<b>$1</b>');
         return e;
     };
@@ -209,7 +211,7 @@ class Page extends Component {
     };
     updateSecData = (e, secData) => {
         const regex = /\[(.*?)\]\((.*?)\)/g;
-        e = e.replace(regex, '<a href="$2">$1</a>');
+        e = e.replace(regex, '<a target="_blank" href="$2">$1</a>');
         e = e.replace(/\*(.*?)\*/g, '<b>$1</b>');
 
         const updatedSectionData = this.state.sectionData.map(blog => ({
@@ -387,8 +389,6 @@ class Page extends Component {
 
         const { blogMetaData, blogArtData, blogOgData, blogTwitterData, blogTableData, stickTop, comment, pubDate } = this.context
 
-
-
         this.state.sectionData.forEach((e) => {
             e.data.forEach((lk) => {
                 if (lk.id === blogTableData.id) {
@@ -402,6 +402,7 @@ class Page extends Component {
             "img": this.state.blog_intro_img,
             "img_alt": this.state.blog_intro_img_alt,
             "description": this.state.blog_intro_desc,
+            "blog_title": this.state.blog_intro_title
         }
 
         let additionalData = {
@@ -418,7 +419,7 @@ class Page extends Component {
             "url_slug": this.state.jsondata.url_slug,
             "canonical": this.state.jsondata.canonical,
             "category": this.state.jsondata.category,
-            "author": this.context.authorName,
+            "author": this.context.author,
             "time_to_read": wordCount(this.state),
             "blog_title": this.state.jsondata.blog_title,
             "blog_data": this.state.sectionData,
@@ -439,6 +440,10 @@ class Page extends Component {
         const blogIntroValid = blogIntroValidate(blogIntro)
         const blogUrlValidate = ajv.compile(blogUrlSchema)
         const blogUrlValid = blogUrlValidate(this.state.jsondata)
+        const authorValidate = ajv.compile(authorSchema)
+        const authorValid = authorValidate(this.context.author)
+        const categoryValidate = ajv.compile(categorySchema)
+        const categoryValid = categoryValidate(this.context.category)
 
         let sectionValidCheck = true;
         let faqValidCheck = true;
@@ -469,10 +474,10 @@ class Page extends Component {
         })
 
         let validationSub = {
-            Meta: metaValid, OG: ogValid, Twitter: twitterValid, Article: articleValid, URL: blogUrlValid, introduction_section: blogIntroValid, Section: sectionValidCheck, FAQ: faqValidCheck, recommended_reading: rcValidCheck, Testimonial: testiValidCheck
+            Meta: metaValid, OG: ogValid, Twitter: twitterValid, Article: articleValid, URL: blogUrlValid, category: categoryValid, author: authorValid, introduction_section: blogIntroValid, Section: sectionValidCheck, FAQ: faqValidCheck, recommended_reading: rcValidCheck, Testimonial: testiValidCheck
         }
 
-        if (validationSub.Meta && validationSub.OG && validationSub.Twitter && validationSub.Article && validationSub.URL && validationSub.introduction_section) {
+        if (validationSub.Meta && validationSub.OG && validationSub.Twitter && validationSub.Article && validationSub.URL && validationSub.category && validationSub.author && validationSub.introduction_section) {
             console.log('json validation successful')
             console.log(validationSub)
         }
@@ -509,27 +514,29 @@ class Page extends Component {
 
         const { blogMetaData, blogArtData, blogOgData, blogTwitterData, blogTableData, stickTop, comment, pubDate, setPreview } = this.context
 
-        setPreview(true)
 
-        let additional_data = {
-            "stick_to_top": stickTop,
-            "schedule": pubDate,
-            "allow_comment": comment,
-        }
-
-        let blog_intro = {
-            "img": this.state.blog_intro_img,
-            "img_alt": this.state.blog_intro_img_alt,
-            "description": this.state.blog_intro_desc,
-        }
 
         this.state.sectionData.forEach((e) => {
             e.data.forEach((lk) => {
                 if (lk.id === blogTableData.id) {
                     lk.content = blogTableData.data
+                    lk.colm = blogTableData.colm
                 }
             })
         })
+
+        let blogIntro = {
+            "img": this.state.blog_intro_img,
+            "img_alt": this.state.blog_intro_img_alt,
+            "description": this.state.blog_intro_desc,
+            "blog_title": this.state.blog_intro_title
+        }
+
+        let additionalData = {
+            "stick_to_top": stickTop,
+            "schedule": pubDate,
+            "allow_comment": comment,
+        }
 
         let data = {
             "meta": blogMetaData,
@@ -539,18 +546,21 @@ class Page extends Component {
             "url_slug": this.state.jsondata.url_slug,
             "canonical": this.state.jsondata.canonical,
             "category": this.state.jsondata.category,
-            "author_name": this.state.jsondata.author_name,
-            "time_to_read": this.state.jsondata.time_to_read,
+            "author": this.context.author,
+            "time_to_read": wordCount(this.state),
             "blog_title": this.state.jsondata.blog_title,
             "blog_data": this.state.sectionData,
-            "additional_data": additional_data,
-            "blog_intro": blog_intro
+            "additional_data": additionalData,
+            "blog_intro": blogIntro
         }
-        console.log(data)
+        this.setState({ previewData: data })
+
+        setPreview(true)
         this.setState({ preview: true })
 
-        // this.setState({ previewData: dummy })
-        // this.setState({ previewData: data })
+    }
+    blog_intro_title = (e) => {
+        this.setState({ blog_intro_title: e })
     }
     blog_intro_img = (e) => {
         const file = e.target.files[0];
@@ -566,14 +576,44 @@ class Page extends Component {
     blog_intro_img_alt = (e) => {
         this.setState({ blog_intro_img_alt: e });
     }
-    blog_intro_desc = (e) => {
+    moveDesc = (e, dir) => {
+        this.setState(prevState => {
+            const index = prevState.blog_intro_desc.findIndex(section => section.id === e);
+            if (dir === 'up' && index > 0) {
+                const newData = Array.from(prevState.blog_intro_desc);
+                [newData[index], newData[index - 1]] = [newData[index - 1], newData[index]];
+                return { blog_intro_desc: newData };
+            }
+            if (dir === 'down' && index < prevState.blog_intro_desc.length - 1) {
+                const newData = Array.from(prevState.blog_intro_desc);
+                [newData[index], newData[index + 1]] = [newData[index + 1], newData[index]];
+                return { blog_intro_desc: newData };
+            }
+            return null; // No change if index is at the boundaries
+        });
+    }
+    removeBlogIntroDesc = (descData) => {
+        const updatedDescData = this.state.blog_intro_desc.filter(desc => desc.id !== descData.id);
+        this.setState({ blog_intro_desc: updatedDescData });
+    }
+    updateBlogIntroDesc = (e, descData) => {
 
         const regex = /\[(.*?)\]\((.*?)\)/g;
-        e = e.replace(regex, '<a href="$2">$1</a>');
+        e = e.replace(regex, '<a target="_blank" href="$2">$1</a>');
         e = e.replace(/\*(.*?)\*/g, '<b>$1</b>');
 
-        this.setState({ blog_intro_desc: e.split('\n\n').map(paragraph => paragraph.trim()) })
-
+        const updatedDescData = this.state.blog_intro_desc.map(desc => {
+            if (desc.id === descData.id) {
+                desc.description = e
+            }
+            return desc;
+        });
+        this.setState({ blogIntroDesc: updatedDescData });
+    }
+    addBlogIntroDesc = () => {
+        this.setState(prevState => ({
+            blog_intro_desc: [...prevState.blog_intro_desc, { description: '', id: this.generateUniqueId() }]
+        }));
     }
 
     componentDidMount() {
@@ -878,7 +918,7 @@ class Page extends Component {
             }
         }
 
-        this.setState({ previewData: dummy })
+        // this.setState({ previewData: dummy })
 
         this.setState({ userList: UserList.user })
     }
@@ -927,16 +967,30 @@ class Page extends Component {
                                         <div className="">
                                             {section.type === 'author_name' ?
                                                 <AuthorListMenu />
-                                                :
-                                                <div className='relative'>
-                                                    <input value={this.state.jsondata[section.type]} type='text' onChange={(e) => this.updateContent(section.type, e.target.value)}
-                                                        className={`block w-full rounded-md  px-3.5 py-2 text-gray-900 bg-white ring-1 border-none`}
-                                                    />
-                                                </div>
+                                                : section.type === 'category' ?
+                                                    <Category /> :
+                                                    <div className='relative'>
+                                                        <input value={this.state.jsondata[section.type]} type='text' onChange={(e) => this.updateContent(section.type, e.target.value)}
+                                                            className={`block w-full rounded-md  px-3.5 py-2 text-gray-900 bg-white ring-1 border-none`}
+                                                        />
+                                                    </div>
                                             }
                                         </div>
                                     </div>
                                 ))}
+
+                                <div>
+                                    <label className="mt-2 block text-sm font-semibold capitalize leading-6 text-gray-900">
+                                        Blog Into Title
+                                    </label>
+                                    <div className="">
+                                        <div className='relative'>
+                                            <input value={this.state.blog_intro_title} type='text' onChange={(e) => this.blog_intro_title(e.target.value)}
+                                                className={`block w-full rounded-md  px-3.5 py-2 text-gray-900 bg-white ring-1 border-none`}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <div>
                                     <label className='mt-2 block text-sm font-semibold capitalize leading-6 text-gray-900'>
@@ -953,8 +1007,32 @@ class Page extends Component {
                                         Blog Intro Description
                                     </label>
 
-                                    <div className='flex flex-col ring-1 gap-y-4 p-3 rounded-lg'>
-                                        <textarea onChange={(e) => this.blog_intro_desc(e.target.value)} rows={5} type="text" className='block w-full rounded-md  px-3.5 py-2 text-gray-900 bg-white ring-1 border-none' />
+                                    <div className='ring-1 flex flex-col gap-y-4 p-5 rounded-lg'>
+                                        {
+                                            this.state.blog_intro_desc.map((descData, index) => (
+                                                <div key={index} className='ring-1 ring-slate-400 rounded-md relative p-5 mb-3'>
+                                                    <textarea value={descData.description} onChange={(e) => this.updateBlogIntroDesc(e.target.value, descData)} rows={5} type="text" className='block w-full rounded-md  px-3.5 py-2 text-gray-900 bg-white ring-1 border-none' />
+                                                    {this.state.blog_intro_desc.length > 1 &&
+                                                        <div>
+                                                            <div onClick={() => this.removeBlogIntroDesc(descData)} className=' absolute -right-[6px] -top-2 bg-gray-500 p-[1px] rounded-full cursor-pointer'>
+                                                                <XMarkIcon className='w-3 text-white' />
+                                                            </div>
+                                                            <div className='absolute right-[32px] -top-2 flex gap-x-3'>
+                                                                <div onClick={() => this.moveDesc(descData.id, 'up')} title='Move Up' className=' bg-slate-600 p-[2px] rounded-full cursor-pointer'>
+                                                                    <ChevronUpIcon className='w-3 text-white font-bold' />
+                                                                </div>
+                                                                <div onClick={() => this.moveDesc(descData.id, 'down')} title='Move Down' className=' bg-slate-600 p-[2px] rounded-full cursor-pointer'>
+                                                                    <ChevronDownIcon className='w-3 text-white font-bold' />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            ))
+                                        }
+                                        <button onClick={this.addBlogIntroDesc} className=" w-8 bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-3 rounded">
+                                            +
+                                        </button>
                                     </div>
                                 </div>
 

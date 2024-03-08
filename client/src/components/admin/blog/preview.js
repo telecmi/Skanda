@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Dialog, Transition, Disclosure } from '@headlessui/react';
-import { CalendarIcon, ClockIcon, XMarkIcon, MinusSmallIcon, PlusSmallIcon } from '@heroicons/react/24/outline';
+import { CalendarIcon, ClockIcon, XMarkIcon, MinusSmallIcon, PlusSmallIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import AppStateContext from '../../../utils/AppStateContext';
 import '../../../assets/scroll.css'
 import moment from 'moment';
@@ -52,7 +52,7 @@ class Example extends Component {
             }
         })
 
-        // console.log(this.props.previewData)
+        console.log(this.props.previewData)
     }
 
     render() {
@@ -79,7 +79,7 @@ class Example extends Component {
                                         <div className='w-3/4 flex'>
                                             <div className='w-11/12 pr-10'>
                                                 <h1 className=' text-left text-[#2b2e33] text-[40px] font-medium leading-[1.25]'>
-                                                    {this.props.previewData ? this.props.previewData.blog_title : ''}
+                                                    {this.props.previewData ? this.props.previewData.blog_intro.blog_title : ''}
                                                 </h1>
                                             </div>
                                         </div>
@@ -112,15 +112,23 @@ class Example extends Component {
                                                     <img className='w-4' src="/soc_lin.webp" alt="linkedin" />
                                                     <img className='w-4' src="/soc_fac.webp" alt="facebook" />
                                                 </div>
-                                                <div className='flex flex-col items-center justify-center gap-y-3 bg-white w-32 h-32 rounded-xl shadow-md'>
-                                                    <div className='w-12 h-12 rounded-full overflow-hidden'>
-                                                        <img style={{ width: '100%', height: '100%', objectFit: 'cover' }} src={this.props.previewData ? this.props.previewData.author.img : ''} alt="Author" />
+                                                {this.props.previewData.author &&
+                                                    <div className='flex flex-col items-center justify-center gap-y-3 bg-white w-32 h-32 rounded-xl shadow-md'>
+                                                        <div className='w-12 h-12 rounded-full overflow-hidden'>
+                                                            {
+                                                                this.props.previewData.author.photo ?
+
+                                                                    <img style={{ width: '100%', height: '100%', objectFit: 'cover' }} src={this.props.previewData.author.photo} alt="Author" />
+
+                                                                    : <UserCircleIcon className='w-full h-full text-[#e1e3e5]' />
+                                                            }
+                                                        </div>
+                                                        <div className='text-center w-24 flex flex-col gap-y-1'>
+                                                            <p className='text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis'>{this.props.previewData.author.firstname + ' ' + this.props.previewData.author.lastname}</p>
+                                                            <p className='text-[11px] whitespace-nowrap overflow-hidden overflow-ellipsis'>{this.props.previewData.author.role}</p>
+                                                        </div>
                                                     </div>
-                                                    <div className='text-center w-24 flex flex-col gap-y-1'>
-                                                        <p className='text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis'>{this.props.previewData ? this.props.previewData.author.name : ''}</p>
-                                                        <p className='text-[11px] whitespace-nowrap overflow-hidden overflow-ellipsis'>{this.props.previewData ? this.props.previewData.author.role : ''}</p>
-                                                    </div>
-                                                </div>
+                                                }
                                             </div>
                                         </div>
                                     </div>
@@ -130,13 +138,15 @@ class Example extends Component {
 
                                     {/* Left table of contents & CTA */}
                                     <div className='w-1/4 flex flex-col gap-y-6'>
-                                        <div className='py-10 px-8 flex flex-col gap-y-4 bg-white shadow-md rounded-2xl text-left'>
-                                            <p className='text-[#898e99] text-base font-medium'>Introduction</p>
-                                            {this.state.toc.map((e, index) => (
-                                                <p key={index} className='text-[#898e99] text-base font-medium'>{e}</p>
-                                            ))
-                                            }
-                                        </div>
+                                        {this.state.toc > 0 &&
+                                            <div className='py-10 px-8 flex flex-col gap-y-4 bg-white shadow-md rounded-2xl text-left'>
+                                                <p className='text-[#898e99] text-base font-medium'>Introduction</p>
+                                                {this.state.toc.map((e, index) => (
+                                                    <p key={index} className='text-[#898e99] text-base font-medium'>{e}</p>
+                                                ))
+                                                }
+                                            </div>
+                                        }
                                         <div className='bg-gradient-to-br from-[#15aa51] to-[#2489f3] h-64 w-full flex flex-col p-8 justify-between rounded-lg'>
                                             <p className='text-white text-base text-left'>Make your <br /> business call now</p>
                                             <p className='text-white text-2xl font-bold text-left'>
@@ -153,15 +163,19 @@ class Example extends Component {
                                     <div className='w-3/4 gap-y-8 flex flex-col items-start'>
 
                                         {/* blog intro section */}
-                                        {this.props.previewData.blog_intro ? this.props.previewData.blog_intro.description &&
-                                            this.props.previewData.blog_intro.description.map((e, index) => (
-                                                <div key={index} className='flex flex-col justify-start gap-y-3'>
+                                        <div className='flex flex-col justify-start gap-y-4'>
+                                            {this.props.previewData.blog_intro ? this.props.previewData.blog_intro.description &&
+                                                this.props.previewData.blog_intro.description.map((e, index) => (
                                                     <p key={index} className='text-left text-[#2b2e33] text-base'>
-                                                        {e}
+                                                        <span dangerouslySetInnerHTML={{
+                                                            __html: e.description
+                                                                .replace(/\*(.*?)\*/g, '<strong>$1</strong>') 
+                                                                .replace(/(-\- )(.*)[^:]/g, '<li style="padding-left: 10px; list-style-type: disc;">$2</li>') 
+                                                        }} />
                                                     </p>
-                                                </div>
-                                            ))
-                                            : ''}
+                                                ))
+                                                : ''}
+                                        </div>
 
                                         {/* section */}
                                         {this.props.previewData.blog_data ?
@@ -184,7 +198,7 @@ class Example extends Component {
                                                                     e.data.map((e, index) => (
                                                                         <ul key={index} className='flex flex-col list-disc pl-8 gap-y-3'>
                                                                             <li className='text-[#f0f1f2] text-base text-left'>
-                                                                                <a href={e.link}>{e.description}</a>
+                                                                                <a target='_blank' href={e.link}>{e.description}</a>
                                                                             </li>
                                                                         </ul>
                                                                     ))
@@ -254,7 +268,7 @@ class Example extends Component {
                                                                                         <span dangerouslySetInnerHTML={{
                                                                                             __html: secData.content
                                                                                                 .replace(/\*(.*?)\*/g, '<strong>$1</strong>') // Bold text enclosed in '*'
-                                                                                                .replace(/(-\. )(.*)[^:]/g, '<li style="padding-left: 10px; list-style-type: disc;">$2</li>') // '-. ' followed by content
+                                                                                                .replace(/(-\- )(.*)[^:]/g, '<li style="padding-left: 10px; list-style-type: disc;">$2</li>') // '-. ' followed by content
                                                                                                 .replace(/(\.\s)(\w)/g, '.$2') // Reduce space between '.' and content starting letter
                                                                                         }} />
                                                                                     </p>
@@ -266,25 +280,53 @@ class Example extends Component {
                                                                                         </div>
                                                                                         :
                                                                                         secData.title === 'table' ?
-                                                                                            <div className=" flow-root">
-                                                                                                <div className=" overflow-x-auto">
+                                                                                            // <div className=" flow-root">
+                                                                                            //     <div className=" overflow-x-auto">
+                                                                                            //         <div className="inline-block min-w-full py-2">
+                                                                                            //             <div className="overflow-hidden shadow  rounded-lg">
+                                                                                            //                 <table className="min-w-full">
+                                                                                            //                     <thead className="bg-[#2b2e33]">
+                                                                                            //                         <tr className='divide-x'>
+                                                                                            //                             {this.state.headers.map((header, index) => (
+                                                                                            //                                 <th key={index} scope="col" style={{ width: `100/${secData.colm}` }} className={`w-1/${secData.colm} p-4 text-center text-base font-bold text-white`}>{header}</th>
+                                                                                            //                             ))}
+                                                                                            //                         </tr>
+                                                                                            //                     </thead>
+                                                                                            //                     <tbody className=" divide-x divide-y border-green-600 bg-white">
+                                                                                            //                         {[...Array(this.state.tableBodyCount)].map((_, rowIndex) => (
+                                                                                            //                             <tr key={rowIndex} className='divide-x'>
+                                                                                            //                                 {this.state.bodyContent
+                                                                                            //                                     .slice(rowIndex * parseInt(secData.colm), rowIndex * parseInt(secData.colm) + parseInt(secData.colm))
+                                                                                            //                                     .map((item, colIndex) => (
+                                                                                            //                                         <td key={colIndex} style={{ width: `100/${secData.colm}` }} className={`w-1/${secData.colm} text-sm text-gray-900 p-4`}>{item}</td>
+                                                                                            //                                     ))}
+                                                                                            //                             </tr>
+                                                                                            //                         ))}
+                                                                                            //                     </tbody>
+                                                                                            //                 </table>
+                                                                                            //             </div>
+                                                                                            //         </div>
+                                                                                            //     </div>
+                                                                                            // </div>
+                                                                                            <div className="flow-root">
+                                                                                                <div className="overflow-x-auto">
                                                                                                     <div className="inline-block min-w-full py-2">
-                                                                                                        <div className="overflow-hidden shadow  rounded-lg">
+                                                                                                        <div className="overflow-hidden shadow rounded-lg">
                                                                                                             <table className="min-w-full">
                                                                                                                 <thead className="bg-[#2b2e33]">
                                                                                                                     <tr className='divide-x'>
                                                                                                                         {this.state.headers.map((header, index) => (
-                                                                                                                            <th key={index} scope="col" className={`w-1/${secData.colm} p-4 text-center text-base font-bold text-white`}>{header}</th>
+                                                                                                                            <th key={index} scope="col" className={`w-[${100 / secData.colm}%] p-4 text-center text-base font-bold text-white`}>{header}</th>
                                                                                                                         ))}
                                                                                                                     </tr>
                                                                                                                 </thead>
-                                                                                                                <tbody className=" divide-x divide-y border-green-600 bg-white">
+                                                                                                                <tbody className="divide-x divide-y border-green-600 bg-white">
                                                                                                                     {[...Array(this.state.tableBodyCount)].map((_, rowIndex) => (
                                                                                                                         <tr key={rowIndex} className='divide-x'>
                                                                                                                             {this.state.bodyContent
                                                                                                                                 .slice(rowIndex * parseInt(secData.colm), rowIndex * parseInt(secData.colm) + parseInt(secData.colm))
                                                                                                                                 .map((item, colIndex) => (
-                                                                                                                                    <td key={colIndex} className="text-sm text-gray-900 p-4">{item}</td>
+                                                                                                                                    <td key={colIndex} className={`w-${100 / secData.colm} text-sm text-gray-900 p-4`}>{item}</td>
                                                                                                                                 ))}
                                                                                                                         </tr>
                                                                                                                     ))}
@@ -294,6 +336,7 @@ class Example extends Component {
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
+
                                                                                             :
                                                                                             secData.title === 'button' &&
                                                                                             <div className='flex justify-start mt-3'>
@@ -310,34 +353,37 @@ class Example extends Component {
                                         }
 
                                         {/* FAQ */}
-                                        <div className="w-full divide-y divide-gray-900/10 my-6">
-                                            <h2 className="text-2xl text-left font-bold leading-10 tracking-tight text-gray-900">Frequently asked questions (FAQ)</h2>
-                                            <dl className="mt-10 space-y-6 divide-y divide-gray-900/10">
-                                                {this.state.blog_faq.map((faq, index) => (
-                                                    <Disclosure as="div" key={index} className="pt-6">
-                                                        {({ open }) => (
-                                                            <>
-                                                                <dt>
-                                                                    <Disclosure.Button className="flex w-full items-start justify-between text-left text-[#2b2e33]">
-                                                                        <span className="text-xl font-medium leading-7">{faq.question}</span>
-                                                                        <span className="ml-6 flex h-7 items-center">
-                                                                            {open ? (
-                                                                                <MinusSmallIcon className="h-6 w-6 text-[#77bf49]" aria-hidden="true" />
-                                                                            ) : (
-                                                                                <PlusSmallIcon className="h-6 w-6 text-[#77bf49]" aria-hidden="true" />
-                                                                            )}
-                                                                        </span>
-                                                                    </Disclosure.Button>
-                                                                </dt>
-                                                                <Disclosure.Panel as="dd" className="mt-2 pr-12 text-left">
-                                                                    <p className="text-base leading-7 text-[#2b2e33]">{faq.answer}</p>
-                                                                </Disclosure.Panel>
-                                                            </>
-                                                        )}
-                                                    </Disclosure>
-                                                ))}
-                                            </dl>
-                                        </div>
+                                        {
+                                            this.state.blog_faq.length > 0 &&
+                                            <div className="w-full divide-y divide-gray-900/10 my-6">
+                                                <h2 className="text-2xl text-left font-bold leading-10 tracking-tight text-gray-900">Frequently asked questions (FAQ)</h2>
+                                                <dl className="mt-10 space-y-6 divide-y divide-gray-900/10">
+                                                    {this.state.blog_faq.map((faq, index) => (
+                                                        <Disclosure as="div" key={index} className="pt-6">
+                                                            {({ open }) => (
+                                                                <>
+                                                                    <dt>
+                                                                        <Disclosure.Button className="flex w-full items-start justify-between text-left text-[#2b2e33]">
+                                                                            <span className="text-xl font-medium leading-7">{faq.question}</span>
+                                                                            <span className="ml-6 flex h-7 items-center">
+                                                                                {open ? (
+                                                                                    <MinusSmallIcon className="h-6 w-6 text-[#77bf49]" aria-hidden="true" />
+                                                                                ) : (
+                                                                                    <PlusSmallIcon className="h-6 w-6 text-[#77bf49]" aria-hidden="true" />
+                                                                                )}
+                                                                            </span>
+                                                                        </Disclosure.Button>
+                                                                    </dt>
+                                                                    <Disclosure.Panel as="dd" className="mt-2 pr-12 text-left">
+                                                                        <p className="text-base leading-7 text-[#2b2e33]">{faq.answer}</p>
+                                                                    </Disclosure.Panel>
+                                                                </>
+                                                            )}
+                                                        </Disclosure>
+                                                    ))}
+                                                </dl>
+                                            </div>
+                                        }
                                     </div>
                                 </div>
 

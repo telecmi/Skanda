@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
-import UserList from '../../../services/userData';
+import CategoryList from '../../../services/categoryData';
 import AppStateContext from '../../../utils/AppStateContext';
 
 function classNames(...classes) {
@@ -15,19 +15,19 @@ class Example extends React.Component {
         super(props);
         this.state = {
             selected: '',
-            authorList: [],
+            categoryList: [],
             open: false,
         };
     }
 
     selectAuthor = (e) => {
-        this.setState({ selected: e.firstname + ' ' + e.lastname })
-        const { setAuthor } = this.context
-        setAuthor(e)
+        this.setState({ selected: e })
+        const { setCategory } = this.context
+        setCategory(e)
     }
 
     componentDidMount() {
-        this.setState({ authorList: UserList.user })
+        this.setState({ categoryList: CategoryList.category })
     }
 
     render() {
@@ -53,9 +53,9 @@ class Example extends React.Component {
                                 leaveTo="opacity-0"
                             >
                                 <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                                    {this.state.authorList.map((person) => (
+                                    {this.state.categoryList.map((person, index) => (
                                         <Listbox.Option
-                                            key={person.id}
+                                            key={index}
                                             className={({ active }) =>
                                                 classNames(
                                                     active ? 'bg-slate-400 text-white' : 'text-gray-900',
@@ -64,27 +64,11 @@ class Example extends React.Component {
                                             }
                                             value={person}
                                         >
-                                            {({ selected, active }) => (
-                                                <div onClick={() => this.selectAuthor(person)}>
-                                                    <div className="flex items-center">
-                                                        <span
-                                                            className={classNames(selected ? 'font-semibold' : 'font-normal', 'ml-3 block truncate')}
-                                                        >
-                                                            {person.firstname + ' ' + person.lastname}
-                                                        </span>
-                                                    </div>
-                                                    {selected ? (
-                                                        <span
-                                                            className={classNames(
-                                                                active ? 'text-white' : 'text-indigo-600',
-                                                                'absolute inset-y-0 right-0 flex items-center pr-4'
-                                                            )}
-                                                        >
-                                                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                                                        </span>
-                                                    ) : null}
+                                            <div onClick={() => this.selectAuthor(person)}>
+                                                <div className="flex items-center">
+                                                    {person}
                                                 </div>
-                                            )}
+                                            </div>
                                         </Listbox.Option>
                                     ))}
                                 </Listbox.Options>

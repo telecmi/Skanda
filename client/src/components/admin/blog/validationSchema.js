@@ -1,6 +1,7 @@
 const blogIntroSchema = {
     type: "object",
     properties: {
+        blog_title: { type: "string", pattern: "^\\S", minLength: 1 },
         img: { type: "string", pattern: "^\\S", minLength: 1 },
         img_alt: { type: "string", pattern: "^\\S", minLength: 1 },
         description: {
@@ -8,8 +9,24 @@ const blogIntroSchema = {
             items: { type: "string", pattern: "^\\S", minLength: 1 }
         },
     },
-    required: ["img", "img_alt", "description"],
+    required: ["img", "img_alt", "description", 'blog_title'],
     additionalProperties: false,
+}
+
+const categorySchema = {
+    type: "string", pattern: "^\\S", minLength: 1
+}
+
+const authorSchema = {
+    type: "object",
+    properties: {
+        id: { type: "string", pattern: "^\\S", minLength: 1 },
+        // photo: { type: "string", pattern: "^\\S", minLength: 1 },
+        email: { type: "string", pattern: "^\\S", minLength: 1 },
+        firstname: { type: "string", pattern: "^\\S", minLength: 1 },
+        lastname: { type: "string", pattern: "^\\S", minLength: 1 },
+        // bio: { type: "string", pattern: "^\\S", minLength: 1 },
+    },
 }
 
 const metaSchema = {
@@ -80,10 +97,8 @@ const blogUrlSchema = {
         url_slug: { type: "string", pattern: "^\\S", minLength: 1 },
         canonical: { type: "string", pattern: "^\\S", minLength: 1 },
         category: { type: "string", pattern: "^\\S", minLength: 1 },
-        time_to_read: { type: "string", pattern: "^\\S", minLength: 1 },
-        blog_title: { type: "string", pattern: "^\\S", minLength: 1 },
     },
-    required: ["url_slug", "canonical", "category", "blog_title"],
+    required: ["url_slug", "canonical", "category"],
     additionalProperties: false,
 };
 
@@ -160,4 +175,4 @@ const testiSchema = {
 
 
 
-export { blogIntroSchema, metaSchema, ogSchema, twitterSchema, articleSchema, blogUrlSchema, blogAdditionalSchema, sectionSchema, faqSchema, rcSchema, testiSchema }
+export { blogIntroSchema, metaSchema, ogSchema, twitterSchema, articleSchema, categorySchema, authorSchema, blogUrlSchema, blogAdditionalSchema, sectionSchema, faqSchema, rcSchema, testiSchema }

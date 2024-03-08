@@ -5,12 +5,12 @@ const wordCount = (data) => {
 
     if (data.blog_intro_desc) {
         data.blog_intro_desc.forEach((e) => {
-            wordcount.push(e)
+            console.log(e)
+            wordcount.push(e.description)
         })
     }
 
     data.sectionData.forEach((section) => {
-        console.log(section);
 
         if (section.type === 'section') {
             section.data.forEach((secData) => {

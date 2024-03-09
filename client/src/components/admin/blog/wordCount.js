@@ -5,7 +5,6 @@ const wordCount = (data) => {
 
     if (data.blog_intro_desc) {
         data.blog_intro_desc.forEach((e) => {
-            console.log(e)
             wordcount.push(e.description)
         })
     }

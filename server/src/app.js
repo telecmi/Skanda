@@ -22,4 +22,10 @@ app.post('/blog_get', blog_get.get)
 app.post('/blog_update', blog_update.update)
 app.post('/blog_delete', blog_delete.delete)
 
+app.post('blogData' ,(req,res)=>{
+
+    console.log(req.body)
+    res.send({code: 200})
+})
+
 app.listen(6000)

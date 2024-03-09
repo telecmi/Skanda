@@ -52,7 +52,12 @@ class Example extends Component {
             }
         })
 
-        console.log(this.props.previewData)
+        // console.log(this.props.previewData)
+
+        // axios.post('https://eabd-103-98-209-186.ngrok-free.app/blog_add', this.props.previewData).then((res) => {
+
+        // }).catch((err) => console.error(err))
+
     }
 
     render() {
@@ -169,8 +174,8 @@ class Example extends Component {
                                                     <p key={index} className='text-left text-[#2b2e33] text-base'>
                                                         <span dangerouslySetInnerHTML={{
                                                             __html: e.description
-                                                                .replace(/\*(.*?)\*/g, '<strong>$1</strong>') 
-                                                                .replace(/(-\- )(.*)[^:]/g, '<li style="padding-left: 10px; list-style-type: disc;">$2</li>') 
+                                                                .replace(/\*(.*?)\*/g, '<strong>$1</strong>')
+                                                                .replace(/(-\- )(.*)[^:]/g, '<li style="padding-left: 10px; list-style-type: disc;">$2</li>')
                                                         }} />
                                                     </p>
                                                 ))
@@ -237,6 +242,7 @@ class Example extends Component {
                                                                         {e.data[0].description}
                                                                     </p>
                                                                 </div>
+                                                                
                                                                 <div className='flex gap-x-5'>
                                                                     <div className='w-12 h-12 rounded-full overflow-hidden'>
                                                                         <img className='w-full h-full' src={e.data[0].img} alt="" />
@@ -279,71 +285,49 @@ class Example extends Component {
                                                                                             <img className='' src={secData.content} alt="" />
                                                                                         </div>
                                                                                         :
-                                                                                        secData.title === 'table' ?
-                                                                                            // <div className=" flow-root">
-                                                                                            //     <div className=" overflow-x-auto">
-                                                                                            //         <div className="inline-block min-w-full py-2">
-                                                                                            //             <div className="overflow-hidden shadow  rounded-lg">
-                                                                                            //                 <table className="min-w-full">
-                                                                                            //                     <thead className="bg-[#2b2e33]">
-                                                                                            //                         <tr className='divide-x'>
-                                                                                            //                             {this.state.headers.map((header, index) => (
-                                                                                            //                                 <th key={index} scope="col" style={{ width: `100/${secData.colm}` }} className={`w-1/${secData.colm} p-4 text-center text-base font-bold text-white`}>{header}</th>
-                                                                                            //                             ))}
-                                                                                            //                         </tr>
-                                                                                            //                     </thead>
-                                                                                            //                     <tbody className=" divide-x divide-y border-green-600 bg-white">
-                                                                                            //                         {[...Array(this.state.tableBodyCount)].map((_, rowIndex) => (
-                                                                                            //                             <tr key={rowIndex} className='divide-x'>
-                                                                                            //                                 {this.state.bodyContent
-                                                                                            //                                     .slice(rowIndex * parseInt(secData.colm), rowIndex * parseInt(secData.colm) + parseInt(secData.colm))
-                                                                                            //                                     .map((item, colIndex) => (
-                                                                                            //                                         <td key={colIndex} style={{ width: `100/${secData.colm}` }} className={`w-1/${secData.colm} text-sm text-gray-900 p-4`}>{item}</td>
-                                                                                            //                                     ))}
-                                                                                            //                             </tr>
-                                                                                            //                         ))}
-                                                                                            //                     </tbody>
-                                                                                            //                 </table>
-                                                                                            //             </div>
-                                                                                            //         </div>
-                                                                                            //     </div>
-                                                                                            // </div>
-                                                                                            <div className="flow-root">
-                                                                                                <div className="overflow-x-auto">
-                                                                                                    <div className="inline-block min-w-full py-2">
-                                                                                                        <div className="overflow-hidden shadow rounded-lg">
-                                                                                                            <table className="min-w-full">
-                                                                                                                <thead className="bg-[#2b2e33]">
-                                                                                                                    <tr className='divide-x'>
-                                                                                                                        {this.state.headers.map((header, index) => (
-                                                                                                                            <th key={index} scope="col" className={`w-[${100 / secData.colm}%] p-4 text-center text-base font-bold text-white`}>{header}</th>
-                                                                                                                        ))}
-                                                                                                                    </tr>
-                                                                                                                </thead>
-                                                                                                                <tbody className="divide-x divide-y border-green-600 bg-white">
-                                                                                                                    {[...Array(this.state.tableBodyCount)].map((_, rowIndex) => (
-                                                                                                                        <tr key={rowIndex} className='divide-x'>
-                                                                                                                            {this.state.bodyContent
-                                                                                                                                .slice(rowIndex * parseInt(secData.colm), rowIndex * parseInt(secData.colm) + parseInt(secData.colm))
-                                                                                                                                .map((item, colIndex) => (
-                                                                                                                                    <td key={colIndex} className={`w-${100 / secData.colm} text-sm text-gray-900 p-4`}>{item}</td>
-                                                                                                                                ))}
+                                                                                        secData.title === 'video' ?
+                                                                                            <div className='w-11/12 overflow-hidden rounded-2xl my-2'>
+                                                                                                <video controls className='' src={secData.content} alt="" />
+                                                                                            </div>
+                                                                                            :
+                                                                                            secData.title === 'table' ?
+
+                                                                                                <div className="flow-root">
+                                                                                                    <div className="overflow-x-auto">
+                                                                                                        <div className="inline-block min-w-full py-2">
+                                                                                                            <div className="overflow-hidden shadow rounded-lg">
+                                                                                                                <table className="min-w-full">
+                                                                                                                    <thead className="bg-[#2b2e33]">
+                                                                                                                        <tr className='divide-x'>
+                                                                                                                            {this.state.headers.map((header, index) => (
+                                                                                                                                <th key={index} scope="col" className={`w-[${100 / secData.colm}%] p-4 text-center text-base font-bold text-white`}>{header}</th>
+                                                                                                                            ))}
                                                                                                                         </tr>
-                                                                                                                    ))}
-                                                                                                                </tbody>
-                                                                                                            </table>
+                                                                                                                    </thead>
+                                                                                                                    <tbody className="divide-x divide-y border-green-600 bg-white">
+                                                                                                                        {[...Array(this.state.tableBodyCount)].map((_, rowIndex) => (
+                                                                                                                            <tr key={rowIndex} className='divide-x'>
+                                                                                                                                {this.state.bodyContent
+                                                                                                                                    .slice(rowIndex * parseInt(secData.colm), rowIndex * parseInt(secData.colm) + parseInt(secData.colm))
+                                                                                                                                    .map((item, colIndex) => (
+                                                                                                                                        <td key={colIndex} className={`w-${100 / secData.colm} text-sm text-gray-900 p-4`}>{item}</td>
+                                                                                                                                    ))}
+                                                                                                                            </tr>
+                                                                                                                        ))}
+                                                                                                                    </tbody>
+                                                                                                                </table>
+                                                                                                            </div>
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 </div>
-                                                                                            </div>
 
-                                                                                            :
-                                                                                            secData.title === 'button' &&
-                                                                                            <div className='flex justify-start mt-3'>
-                                                                                                <button className=' uppercase text-white text-sm font-bold rounded-[4px] py-3 px-4 font-heebo bg-gradient-to-r from-[#18b04c] to-[#288df9]'>
-                                                                                                    try your free trial
-                                                                                                </button>
-                                                                                            </div>
+                                                                                                :
+                                                                                                secData.title === 'button' &&
+                                                                                                <div className='flex justify-start mt-3'>
+                                                                                                    <button className=' uppercase text-white text-sm font-bold rounded-[4px] py-3 px-4 font-heebo bg-gradient-to-r from-[#18b04c] to-[#288df9]'>
+                                                                                                        try your free trial
+                                                                                                    </button>
+                                                                                                </div>
 
                                                                         } </div>
                                                                 ))}

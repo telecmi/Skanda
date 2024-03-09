@@ -3,8 +3,8 @@ import { PlusIcon } from '@heroicons/react/24/solid';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 // import { blog } from '../../../services/blogData';
 import AppStateContext from '../../../utils/AppStateContext';
-import AddBlog from './addBlog'
-import EditBlog from './editBlog'
+import AddBlog from './add/addBlog'
+import EditBlog from './edit/editBlog'
 import axios from 'axios';
 import moment from 'moment';
 
@@ -40,8 +40,9 @@ export default class blogComponent extends Component {
     }
 
     componentDidMount() {
-        axios.post('https://bf18-202-21-44-91.ngrok-free.app/blog_get').then((e) => {
+        axios.post('https://eabd-103-98-209-186.ngrok-free.app/blog_get').then((e) => {
             this.setState({ data: e.data.blog })
+            console.log(e.data)
         }).catch((e) => { })
     }
 
@@ -71,13 +72,12 @@ export default class blogComponent extends Component {
                                     {this.state.data.map((blog, index) => (
                                         <div key={index}>
                                             <div>
-                                                {/* <img className="aspect-[3/2] w-full rounded-2xl object-cover" src={blog.primary.find(item => item.image)?.image} alt="" /> */}
-                                                <img className="aspect-[3/2] w-full rounded-2xl object-cover" src={'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80'} alt="Blog Images" />
-                                                <h3 className="mt-5 text-lg font-semibold leading-8 tracking-tight text-gray-900 overflow-hidden text-ellipsis whitespace-nowrap">{blog.blog_title ? blog.blog_title : ""}</h3>
+                                                <img className=" w-full rounded-2xl object-cover" src={blog.blog_intro.img} alt="Blog Images" />
+                                                <h3 className="mt-5 text-lg font-semibold leading-8 tracking-tight text-gray-900 overflow-hidden text-ellipsis whitespace-nowrap">{blog.blog_intro.blog_title ? blog.blog_intro.blog_title : ""}</h3>
                                                 <p className="text-base leading-7 text-gray-600">{moment(blog.additional_data ? blog.additional_data.schedule : new Date()).format('MMMM DD, YYYY')}</p>
                                                 <div className='flex justify-between items-end'>
                                                     <div className=' overflow-hidden'>
-                                                        <p className=' overflow-hidden whitespace-nowrap text-ellipsis'>{blog.author_name}</p>
+                                                        <p className=' overflow-hidden whitespace-nowrap text-ellipsis'>{blog.author.firstname + ' ' + blog.author.lastname}</p>
                                                     </div>
                                                     <div className=' space-x-6 mt-2 pl-3 flex justify-end'>
                                                         <button onClick={() => this.editBlog(blog)} type="button" className="" >

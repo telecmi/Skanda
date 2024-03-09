@@ -82,7 +82,7 @@ class Example extends Component {
 
                 <div className="lg:pl-72">
 
-                    {this.context.addBlogModal ? '' : <Header />}
+                    {this.context.addBlogModal || this.context.editBlogModal ? '' : <Header />}
 
                     <div className="px-2 sm:px-6 lg:px-8">
                         {

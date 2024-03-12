@@ -21,8 +21,9 @@ export default class Art extends Component {
         }
     }
     componentDidMount() {
-        const { editBlogData } = this.context
+        const { editBlogData, setBlogArtData } = this.context
         this.setState({ art: editBlogData.article })
+        setBlogArtData(editBlogData.article)
     }
     render() {
         return (

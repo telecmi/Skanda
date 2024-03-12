@@ -22,25 +22,11 @@ class Example extends Component {
 
     blogDelete = () => {
         const { setDeleteBlogModal, deleteBlogData } = this.context;
-
-        this.deleteBlogById(deleteBlogData.id);
-
         setDeleteBlogModal(false);
-
-        axios.post('https://eabd-103-98-209-186.ngrok-free.app/blog_delete', deleteBlogData).then((res) => {
-
+        axios.post('https://fca0-103-98-209-186.ngrok-free.app/blog_delete', deleteBlogData).then((res) => {
         }).catch((err) => { })
     }
-    deleteBlogById = (id) => {
-        const indexToDelete = blog.findIndex((blog) => blog.id === id);
 
-        if (indexToDelete !== -1) {
-            let updateBlog = blog.splice(indexToDelete, 1);
-            return updateBlog;
-        } else {
-            return blog;
-        }
-    };
 
     blogCancel = () => {
         const { setDeleteBlogModal } = this.context;

@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { XMarkIcon, ChevronUpIcon, ChevronDownIcon, EyeIcon } from '@heroicons/react/24/solid'
 import { blog_structure, blog_intro } from '../jsondata'
 import AppStateContext from '../../../../utils/AppStateContext';
-// import axios from 'axios';
+import axios from 'axios';
 import BlogMetaData from '../edit/meta';
 import BlogOgData from '../edit/og';
 import BlogTwitterData from '../edit/twitter';
 import BlogArtData from '../edit/art';
-import AditionalData from '../add/additionalData';
+import AditionalData from '../edit/additionalData';
 import UserList from '../../../../services/userData';
 import AuthorListMenu from '../edit/authorMenu';
 import Category from '../edit/categoryMenu'
@@ -46,7 +46,7 @@ class Page extends Component {
             additional_data: [],
             openIndex: false,
             addData: false,
-            jsondata: {},
+            jsondata: { "url_slug": '', "canonical": '' },
             tag: ['h2', 'h3', 'h4', 'h5', 'h6'],
             validation: {
                 metaValid: '',
@@ -115,6 +115,14 @@ class Page extends Component {
                 ...prevState.jsondata,
                 [key]: value
             }
+        }));
+        this.setState(prevState => ({
+            data: prevState.data.map(item => {
+                if (item.type === key) {
+                    return { ...item, content: value };
+                }
+                return item;
+            })
         }));
     };
     updateFaqQuestion = (content, sectionId) => {
@@ -398,7 +406,7 @@ class Page extends Component {
     }
     submit = () => {
 
-        const { blogMetaData, blogArtData, blogOgData, blogTwitterData, blogTableData, stickTop, comment, pubDate } = this.context
+        const { blogMetaData, setEditBlogModal, blogArtData, blogOgData, blogTwitterData, blogTableData, stickTop, comment, pubDate, editBlogData } = this.context
 
         this.state.sectionData.forEach((e) => {
             e.data.forEach((lk) => {
@@ -432,12 +440,11 @@ class Page extends Component {
             "category": this.context.category,
             "author": this.context.author,
             "time_to_read": wordCount(this.state),
-            "blog_title": this.state.jsondata.blog_title,
             "blog_data": this.state.sectionData,
             "additional_data": additionalData,
-            "blog_intro": blogIntro
+            "blog_intro": blogIntro,
+            "id": editBlogData.id
         }
-        console.log(data)
 
         const metaValidate = ajv.compile(metaSchema)
         const metaValid = metaValidate(blogMetaData)
@@ -488,21 +495,22 @@ class Page extends Component {
             Meta: metaValid, OG: ogValid, Twitter: twitterValid, Article: articleValid, URL: blogUrlValid, category: categoryValid, author: authorValid, introduction_section: blogIntroValid, Section: sectionValidCheck, FAQ: faqValidCheck, recommended_reading: rcValidCheck, Testimonial: testiValidCheck
         }
 
-        if (validationSub.Meta && validationSub.OG && validationSub.Twitter && validationSub.Article && validationSub.URL && validationSub.category && validationSub.author && validationSub.introduction_section) {
-            console.log('json validation successful')
-            console.log(validationSub)
+        console.log(validationSub)
+        console.log(data)
+        
+
+        if (validationSub.Meta && validationSub.OG && validationSub.Twitter && validationSub.Article && validationSub.URL && validationSub.category && validationSub.author && validationSub.introduction_section && validationSub.Section && validationSub.FAQ && validationSub.recommended_reading && validationSub.Testimonial) {
+            axios.post('https://fca0-103-98-209-186.ngrok-free.app/blog_edit', data).then((res) => {
+                if (res.data.code === 200) {
+                    setEditBlogModal(false)
+                }
+            }).catch((err) => console.error(err))
         }
         else {
-            console.log('json validation not successful')
             const { setValidationPop } = this.context
             setValidationPop(true)
             this.setState({ validationErr: validationSub })
-            console.log(validationSub)
         }
-
-        // axios.post('https://eabd-103-98-209-186.ngrok-free.app/blog_add', data).then((res) => {
-
-        // }).catch((err) => console.error(err))
 
     }
     cancel = () => {
@@ -575,7 +583,6 @@ class Page extends Component {
     }
     blog_intro_img = (e) => {
         const file = e.target.files[0];
-        console.log(file)
         const reader = new FileReader();
         reader.onloadend = () => {
             this.setState({ blog_intro_img: reader.result });
@@ -632,7 +639,7 @@ class Page extends Component {
 
         this.setState({ userList: UserList.user })
 
-        const { editBlogData } = this.context
+        const { editBlogData, setCategory, setAuthor, setStickTop, setComment, setPubDate } = this.context
 
         if (editBlogData) {
             let introData = editBlogData.blog_intro
@@ -646,12 +653,18 @@ class Page extends Component {
                 blog_intro_desc: introData.description,
                 sectionData: sectionData,
                 data: url,
-                category: editBlogData.category
+                jsondata: { 'url_slug': editBlogData.url_slug, 'canonical': editBlogData.canonical },
+                category: editBlogData.category,
+                additionalData: editBlogData.additionalData
             })
 
         }
 
-        console.log(editBlogData)
+        setCategory(editBlogData.category)
+        setAuthor(editBlogData.author)
+        setStickTop(editBlogData.additional_data.stick_to_top)
+        setComment(editBlogData.additional_data.allow_comment)
+        setPubDate(editBlogData.additional_data.schedule)
     }
 
     render() {
@@ -664,14 +677,18 @@ class Page extends Component {
                 {this.context.validationPop && <ValidationPop err={this.state.validationErr} />}
 
                 <div className='h-10 fixed right-0 justify-end z-10 '>
-                    <AditionalData popupOpen={this.state.addData} />
+                    <AditionalData additionalData={this.state.additionalData} popupOpen={this.state.addData} />
                 </div>
                 <div className='h-10 fixed right-3 top-16 justify-end '>
-                    <button type="button" className="rounded-full bg-gray-400 p-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400" >
-                        <EyeIcon onClick={this.preview} className='w4- h-4 cursor-pointer' />
+                    <button onClick={this.preview} type="button" className="rounded-full bg-gray-400 p-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400" >
+                        <EyeIcon className='w4- h-4 cursor-pointer' />
                     </button>
                 </div>
-
+                <div className='h-10 fixed right-3 top-28 justify-end '>
+                    <button onClick={this.cancel} type="button" className="rounded-full bg-gray-400 w-8 h-8 text-sm font-semibold text-white shadow-sm hover:bg-gray-600 flex justify-center items-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400" >
+                        <XMarkIcon className='w-6 h-6 cursor-pointer font-bold' />
+                    </button>
+                </div>
                 <div className="flex">
 
                     <div className="flex w-full overflow-y-auto">

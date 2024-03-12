@@ -40,9 +40,8 @@ export default class blogComponent extends Component {
     }
 
     componentDidMount() {
-        axios.post('https://eabd-103-98-209-186.ngrok-free.app/blog_get').then((e) => {
+        axios.post('https://fca0-103-98-209-186.ngrok-free.app/blog_get').then((e) => {
             this.setState({ data: e.data.blog })
-            console.log(e.data)
         }).catch((e) => { })
     }
 

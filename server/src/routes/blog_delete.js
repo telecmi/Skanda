@@ -5,15 +5,7 @@ const path = require('path');
 exports.delete = (req, res) => {
     const id = req.body.id;
 
-    // jsonData.blog.forEach(blog => {
-    //     if (blog.id === id) {
-    //         console.log(req.body);
-    //     }
-    // });
-
     let jsonpath = path.join(__dirname, '../utils/blogData.json');
-
-    // // fs.writeFileSync(jsonpath, JSON.stringify(jsonData, null, 2));
 
     // // Send response
 

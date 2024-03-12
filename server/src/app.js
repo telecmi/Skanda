@@ -4,7 +4,7 @@ const cors = require('cors');
 const path = require('path');
 const blog_add = require('./routes/blog_add')
 const blog_get = require('./routes/blog_get')
-const blog_update = require('./routes/blog_update')
+const blog_edit = require('./routes/blog_edit')
 const blog_delete = require('./routes/blog_delete')
 
 const app = express();
@@ -19,13 +19,13 @@ app.get('/', (req, res) => {
 
 app.post('/blog_add', blog_add.add)
 app.post('/blog_get', blog_get.get)
-app.post('/blog_update', blog_update.update)
+app.post('/blog_edit', blog_edit.edit)
 app.post('/blog_delete', blog_delete.delete)
 
-app.post('blogData' ,(req,res)=>{
+app.post('blogData', (req, res) => {
 
     console.log(req.body)
-    res.send({code: 200})
+    res.send({ code: 200 })
 })
 
 app.listen(6000)

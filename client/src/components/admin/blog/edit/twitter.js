@@ -22,8 +22,9 @@ export default class meta extends Component {
         }
     }
     componentDidMount() {
-        const { editBlogData } = this.context
+        const { editBlogData, setBlogTwitterData } = this.context
         this.setState({ twitter: editBlogData.twitter })
+        setBlogTwitterData(editBlogData.twitter)
     }
     render() {
         return (

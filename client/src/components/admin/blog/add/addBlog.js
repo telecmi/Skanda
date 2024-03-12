@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { XMarkIcon, ChevronUpIcon, ChevronDownIcon, EyeIcon } from '@heroicons/react/24/solid'
 import { blog_structure, blog_intro } from '../jsondata'
 import AppStateContext from '../../../../utils/AppStateContext';
-// import axios from 'axios';
+import axios from 'axios';
 import BlogMetaData from './meta';
 import BlogOgData from './og';
 import BlogTwitterData from './twitter';
@@ -45,7 +45,7 @@ class Page extends Component {
             additional_data: [{ "stick_to_top": false }, { "schedule": Date.now() }, { "allow_comment": false }],
             openIndex: false,
             addData: false,
-            jsondata: { "url_slug": '', "canonical": '', "category": '' },
+            jsondata: { "url_slug": '', "canonical": '' },
             tag: ['h2', 'h3', 'h4', 'h5', 'h6'],
             validation: {
                 metaValid: '',
@@ -397,7 +397,7 @@ class Page extends Component {
     }
     submit = () => {
 
-        const { blogMetaData, blogArtData, blogOgData, blogTwitterData, blogTableData, stickTop, comment, pubDate } = this.context
+        const { blogMetaData, blogArtData, setAddBlogModal, blogOgData, blogTwitterData, blogTableData, stickTop, comment, pubDate } = this.context
 
         this.state.sectionData.forEach((e) => {
             e.data.forEach((lk) => {
@@ -433,9 +433,9 @@ class Page extends Component {
             "time_to_read": wordCount(this.state),
             "blog_data": this.state.sectionData,
             "additional_data": additionalData,
-            "blog_intro": blogIntro
+            "blog_intro": blogIntro,
+            "id": this.generateUniqueId()
         }
-        console.log(data)
 
         const metaValidate = ajv.compile(metaSchema)
         const metaValid = metaValidate(blogMetaData)
@@ -486,21 +486,21 @@ class Page extends Component {
             Meta: metaValid, OG: ogValid, Twitter: twitterValid, Article: articleValid, URL: blogUrlValid, category: categoryValid, author: authorValid, introduction_section: blogIntroValid, Section: sectionValidCheck, FAQ: faqValidCheck, recommended_reading: rcValidCheck, Testimonial: testiValidCheck
         }
 
-        if (validationSub.Meta && validationSub.OG && validationSub.Twitter && validationSub.Article && validationSub.URL && validationSub.category && validationSub.author && validationSub.introduction_section) {
-            // console.log('json validation successful')
-            // console.log(validationSub)
+        if (validationSub.Meta && validationSub.OG && validationSub.Twitter && validationSub.Article && validationSub.URL && validationSub.category && validationSub.author && validationSub.introduction_section && validationSub.Section && validationSub.FAQ && validationSub.recommended_reading && validationSub.Testimonial) {
+
+            axios.post('https://fca0-103-98-209-186.ngrok-free.app/blog_add', data).then((res) => {
+                if (res.data.code === 200) {
+                    setAddBlogModal(false)
+                }
+            }).catch((err) => console.error(err))
         }
         else {
             const { setValidationPop } = this.context
             setValidationPop(true)
             this.setState({ validationErr: validationSub })
-            // console.log('json validation not successful')
-            // console.log(validationSub)
         }
 
-        // axios.post('https://eabd-103-98-209-186.ngrok-free.app/blog_add', data).then((res) => {
 
-        // }).catch((err) => console.error(err))
 
     }
     cancel = () => {
@@ -645,8 +645,13 @@ class Page extends Component {
                     <AditionalData popupOpen={this.state.addData} />
                 </div>
                 <div className='h-10 fixed right-3 top-16 justify-end '>
-                    <button type="button" className="rounded-full bg-gray-400 p-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400" >
-                        <EyeIcon onClick={this.preview} className='w4- h-4 cursor-pointer' />
+                    <button onClick={this.preview} type="button" className="rounded-full bg-gray-400 p-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400" >
+                        <EyeIcon className='w4- h-4 cursor-pointer' />
+                    </button>
+                </div>
+                <div className='h-10 fixed right-3 top-28 justify-end '>
+                    <button onClick={this.cancel} type="button" className="rounded-full bg-gray-400 w-8 h-8 text-sm font-semibold text-white shadow-sm hover:bg-gray-600 flex justify-center items-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400" >
+                        <XMarkIcon className='w-6 h-6 cursor-pointer font-bold' />
                     </button>
                 </div>
 

@@ -62,8 +62,9 @@ export default class Og extends Component {
     }
 
     componentDidMount() {
-        const { editBlogData } = this.context
+        const { editBlogData, setBlogOgData } = this.context
         this.setState({ ogData: editBlogData.og })
+        setBlogOgData(editBlogData.og)
     }
     render() {
         return (

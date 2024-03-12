@@ -6,7 +6,12 @@ const blogIntroSchema = {
         img_alt: { type: "string", pattern: "^\\S", minLength: 1 },
         description: {
             type: "array",
-            items: { type: "string", pattern: "^\\S", minLength: 1 }
+            items: {
+                type: "object",
+                properties: {
+                    description: { type: 'string', pattern: "^\\S", minLength: 1 }
+                }
+            }
         },
     },
     required: ["img", "img_alt", "description", 'blog_title'],
@@ -96,9 +101,8 @@ const blogUrlSchema = {
     properties: {
         url_slug: { type: "string", pattern: "^\\S", minLength: 1 },
         canonical: { type: "string", pattern: "^\\S", minLength: 1 },
-        category: { type: "string", pattern: "^\\S", minLength: 1 },
     },
-    required: ["url_slug", "canonical", "category"],
+    required: ["url_slug", "canonical"],
     additionalProperties: false,
 };
 

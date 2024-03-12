@@ -21,8 +21,10 @@ export default class Meta extends Component {
         }
     }
     componentDidMount() {
-        const { editBlogData } = this.context
+        const { editBlogData, setBlogMetaData } = this.context
         this.setState({ meta: editBlogData.meta })
+        setBlogMetaData(editBlogData.meta)
+
     }
     render() {
         return (

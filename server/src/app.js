@@ -2,10 +2,17 @@ const express = require('express');
 const fs = require('fs');
 const cors = require('cors');
 const path = require('path');
-const blog_add = require('./routes/blog_add')
-const blog_get = require('./routes/blog_get')
-const blog_edit = require('./routes/blog_edit')
-const blog_delete = require('./routes/blog_delete')
+const blogAdd = require('./routes/blogAdd')
+const blogGet = require('./routes/blogGet')
+const blogEdit = require('./routes/blogEdit')
+const blogDelete = require('./routes/blogDelete')
+const userList = require('./routes/userList')
+const userAdd = require('./routes/userAdd')
+const userEdit = require('./routes/userEdit')
+const userDelete = require('./routes/userDelete')
+const categoryList = require('./routes/categoryList')
+const categoryAdd = require('./routes/categoryAdd')
+const categoryDelete = require('./routes/categoryDelete')
 
 const app = express();
 
@@ -17,15 +24,21 @@ app.get('/', (req, res) => {
     res.send('blog cms')
 })
 
-app.post('/blog_add', blog_add.add)
-app.post('/blog_get', blog_get.get)
-app.post('/blog_edit', blog_edit.edit)
-app.post('/blog_delete', blog_delete.delete)
+app.post('/blogAdd', blogAdd.blog)
+app.post('/blogGet', blogGet.blog)
+app.post('/blogEdit', blogEdit.blog)
+app.post('/blogDelete', blogDelete.blog)
 
-app.post('blogData', (req, res) => {
+app.post('/userList', userList.user)
+app.post('/userAdd', userAdd.user)
+app.post('/userEdit', userEdit.user)
+app.post('/userDelete', userDelete.user)
 
-    console.log(req.body)
-    res.send({ code: 200 })
-})
+app.post('/categoryList', categoryList.category)
+app.post('/categoryAdd', categoryAdd.category)
+app.post('/categoryDelete', categoryDelete.category)
 
-app.listen(6000)
+
+
+
+app.listen(5000)

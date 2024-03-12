@@ -383,7 +383,7 @@ class Page extends Component {
             return null; // No change if index is at the boundaries
         });
     }
-    generateUniqueId() {
+    generateUniqueId = () => {
         const randomString = Math.random().toString(36).substr(2, 10);
         return `${new Date().getTime()}_${randomString}`;
     }
@@ -488,7 +488,7 @@ class Page extends Component {
 
         if (validationSub.Meta && validationSub.OG && validationSub.Twitter && validationSub.Article && validationSub.URL && validationSub.category && validationSub.author && validationSub.introduction_section && validationSub.Section && validationSub.FAQ && validationSub.recommended_reading && validationSub.Testimonial) {
 
-            axios.post('https://fca0-103-98-209-186.ngrok-free.app/blog_add', data).then((res) => {
+            axios.post('http://192.168.0.130:5000/blogAdd', data).then((res) => {
                 if (res.data.code === 200) {
                     setAddBlogModal(false)
                 }
@@ -504,7 +504,10 @@ class Page extends Component {
 
     }
     cancel = () => {
-        const { setAddBlogModal, setStickTop, setComment, setBlogMetaData, setBlogArtData, setBlogOgData, setBlogTwitterData, setPubDate } = this.context;
+        const { setAddBlogModal, setStickTop, setComment, setBlogMetaData, setBlogArtData, setBlogOgData, setBlogTwitterData, setPubDate, setAuthor, setCategory } = this.context;
+
+        setAuthor(null);
+        setCategory(null);
         setAddBlogModal(false);
         setStickTop(false);
         setComment(false);

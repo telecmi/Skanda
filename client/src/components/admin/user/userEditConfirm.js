@@ -6,6 +6,7 @@ import { Listbox, } from '@headlessui/react';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 import AppStateContext from '../../../utils/AppStateContext';
 import { user } from '../../../services/userData';
+import axios from 'axios'
 
 const people = [
     { name: 'Admin' },
@@ -62,18 +63,23 @@ class Example extends Component {
     userUpdate = () => {
         const { setEditUserModal, editUserData } = this.context;
 
-        const defaultUserData = {
+        const userData = {
             firstname: this.state.firstnameEdited ? this.state.firstname : editUserData.firstname,
             lastname: this.state.lastnameEdited ? this.state.lastname : editUserData.lastname,
             email: this.state.emailEdited ? this.state.email : editUserData.email,
             role: this.state.roleEdited ? this.state.role : editUserData.role,
             photo: this.state.photoEdited ? this.state.photo : editUserData.photo,
             password: this.state.passwordEdited ? this.state.password : editUserData.password,
+            id: editUserData.id
         };
+
+        axios.post('http://192.168.0.130:5000/userEdit', userData).then((e) => {
+            console.log(e)
+        }).catch((err) => console.log(err))
 
         setEditUserModal(false);
         const userIdToUpdate = editUserData.id;
-        this.updateUserById(userIdToUpdate, defaultUserData);
+        this.updateUserById(userIdToUpdate, userData);
 
         this.setState({ photoEdited: false })
 

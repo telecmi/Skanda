@@ -7,6 +7,7 @@ import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 import AppStateContext from '../../../utils/AppStateContext';
 import _ from 'underscore'
 import { user } from '../../../services/userData';
+import axios from 'axios';
 
 const people = [
     { name: 'Admin' },
@@ -55,14 +56,18 @@ class Example extends Component {
         this.setState({ password: e.target.value.replace(/\s/g, "") })
     }
 
+    generateUniqueId() {
+        const randomString = Math.random().toString(36).substr(2, 10);
+        return `${new Date().getTime()}_${randomString}`;
+    }
+
     userAdd = () => {
 
 
         if (_.isEmpty(this.state.email) || _.isEmpty(this.state.firstname) || _.isEmpty(this.state.lastname) || _.isEmpty(this.state.role.name) || _.isEmpty(this.state.password)) {
-
+            alert('fill the details')
         } else {
 
-            let id = user.length + 1
 
             let userData = {
                 firstname: this.state.firstname,
@@ -71,14 +76,20 @@ class Example extends Component {
                 role: this.state.role.name,
                 photo: this.state.photo,
                 password: this.state.password,
-                id: id,
+                id: this.generateUniqueId(),
             }
 
-            user.push(userData);
+            // user.push(userData);
+
+            axios.post('http://192.168.0.130:5000/userAdd', userData).then((e) => {
+                if (e.data.code === 200) {
+                    this.props.reload()
+                }
+            }).catch((err) => { console.log(err) })
 
             const { setAddUserModal } = this.context;
             setAddUserModal(false)
-            this.setState({photo: ''})
+            this.setState({ photo: '' })
         }
     }
 

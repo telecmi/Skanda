@@ -52,12 +52,6 @@ class Example extends Component {
             }
         })
 
-        // console.log(this.props.previewData)
-
-        // axios.post('https://eabd-103-98-209-186.ngrok-free.app/blog_add', this.props.previewData).then((res) => {
-
-        // }).catch((err) => console.error(err))
-
     }
 
     render() {

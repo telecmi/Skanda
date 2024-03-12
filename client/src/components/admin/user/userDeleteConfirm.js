@@ -3,6 +3,7 @@ import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import AppStateContext from '../../../utils/AppStateContext';
 import { user } from '../../../services/userData'
+import axios from 'axios'
 
 const people = [
     { name: 'Admin' },
@@ -33,6 +34,10 @@ class Example extends Component {
 
     userDelete = () => {
         const { setDeleteUserModal, editUserData } = this.context;
+
+        axios.post('http://192.168.0.130:5000/userDelete', { id: editUserData.id }).then((e) => {
+            console.log(e)
+        }).catch((err) => console.log(err))
 
         this.deleteUserById(editUserData.id);
 

@@ -64,9 +64,8 @@ class Example extends Component {
         return (
             <>
 
-                <AddUserModal addUserModal={this.state.addUserModal} addUser={this.addUser} />
-
-
+                {/* <AddUserModal /> */}
+                {/* <AddUserModal addUserModal={this.state.addUserModal} addUser={this.addUser} /> */}
 
                 {/* <AddBlog /> */}
 

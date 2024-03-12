@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import { PlusIcon, UserCircleIcon } from '@heroicons/react/24/solid';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 import AppStateContext from '../../../utils/AppStateContext';
-import { user } from '../../../services/userData';
-
-
+// import { user } from '../../../services/userData';
+import axios from 'axios'
+import AddUserModal from './addUser'
 export default class users extends Component {
 
     static contextType = AppStateContext;
@@ -13,7 +13,8 @@ export default class users extends Component {
         super(props)
 
         this.state = {
-            userData: ''
+            userData: '',
+            user: []
         }
     }
 
@@ -26,8 +27,6 @@ export default class users extends Component {
         const { setEditUserModal, setEditUserData } = this.context;
         setEditUserModal(true)
         setEditUserData(e)
-
-        console.log(e)
     }
 
     deleteUser = (e) => {
@@ -36,12 +35,29 @@ export default class users extends Component {
         setEditUserData(e)
     }
 
+    reload = () => {
+
+        console.log('reload')
+        axios.post('http://192.168.0.130:5000/userList').then((e) => {
+            this.setState({ user: e.data.users })
+        }).catch((e) => { })
+    }
+
+    componentDidMount() {
+        axios.post('http://192.168.0.130:5000/userList').then((e) => {
+            this.setState({ user: e.data.users })
+        }).catch((e) => { })
+    }
+
     render() {
         return (
             <div className="bg-white">
+                {
+                    <AddUserModal reload={this.reload} />
+                }
                 <div className="mx-auto max-w-8xl px-6 lg:px-8">
                     <div className="mx-auto my-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-                        <div style={{ height: user.length === 0 ? '230px' : 'auto' }} onClick={this.addUser} className=' sm:h-auto cursor-pointer'>
+                        <div style={{ height: this.state.user.length === 0 ? '230px' : 'auto' }} onClick={this.addUser} className=' sm:h-auto cursor-pointer'>
                             <div className=' space-x-3 rounded-2xl cursor-pointer border border-[#f58f8f] h-full'>
                                 <div className=' flex flex-col space-y-5 justify-center items-center h-full' >
                                     <div className=' bg-[#f0f1f2] p-2 rounded-2xl'>
@@ -53,7 +69,7 @@ export default class users extends Component {
                                 </div>
                             </div>
                         </div>
-                        {user.map((person, index) => (
+                        {this.state.user.map((person, index) => (
                             <div key={index} className=' h-full px-3 py-4 flex flex-col justify-center rounded-2xl border border-gray'>
                                 {
                                     person.photo ?

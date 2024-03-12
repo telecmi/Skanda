@@ -500,7 +500,7 @@ class Page extends Component {
         
 
         if (validationSub.Meta && validationSub.OG && validationSub.Twitter && validationSub.Article && validationSub.URL && validationSub.category && validationSub.author && validationSub.introduction_section && validationSub.Section && validationSub.FAQ && validationSub.recommended_reading && validationSub.Testimonial) {
-            axios.post('https://fca0-103-98-209-186.ngrok-free.app/blog_edit', data).then((res) => {
+            axios.post('http://192.168.0.130:5000/blogEdit', data).then((res) => {
                 if (res.data.code === 200) {
                     setEditBlogModal(false)
                 }

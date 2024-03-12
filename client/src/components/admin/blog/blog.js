@@ -40,7 +40,7 @@ export default class blogComponent extends Component {
     }
 
     componentDidMount() {
-        axios.post('https://fca0-103-98-209-186.ngrok-free.app/blog_get').then((e) => {
+        axios.post('http://192.168.0.130:5000/blogGet').then((e) => {
             this.setState({ data: e.data.blog })
         }).catch((e) => { })
     }

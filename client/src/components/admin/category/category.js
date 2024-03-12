@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { XMarkIcon } from '@heroicons/react/24/solid'
 import CategoryList from '../../../services/categoryData';
-
+import axios from 'axios'
 export default class category extends Component {
     constructor(props) {
         super(props)
@@ -14,19 +14,47 @@ export default class category extends Component {
     category = (e) => {
         this.setState({ category: e })
     }
-    onEnter = (e) => {
+    generateUniqueId = () => {
+        const randomString = Math.random().toString(36).substr(2, 10);
+        return `${new Date().getTime()}_${randomString}`;
+    }
+    onEnter = async (e) => {
         if (e.code === 'Enter' && this.state.category) {
-            this.state.categoryList.push(this.state.category)
-            this.setState({ category: '' })
+            let data = { id: this.generateUniqueId(), category: this.state.category };
+            await axios.post('http://192.168.0.130:5000/categoryAdd', data)
+                .then((res) => {
+                    if (res.data.code === 200) {
+                        setTimeout(() => {
+                            this.categoryList();
+                            this.setState({ category: '' });
+                        }, 1000);
+                    }
+                })
+                .catch((err) => console.log(err));
         }
     }
+
     removeCategory = (e) => {
-        this.setState({ categoryList: this.state.categoryList.filter(item => item !== e) })
+        // this.setState({ categoryList: this.state.categoryList.filter(item => item !== e) })
+        axios.post('http://192.168.0.130:5000/categoryDelete', e).then((res) => {
+            if (res.data.code === 200) {
+                setTimeout(() => {
+                    this.categoryList();
+                }, 1000);
+            }
+        }).catch((err) => console.log(err))
+    }
+
+    categoryList = () => {
+        axios.post('http://192.168.0.130:5000/categoryList').then((e) => {
+            this.setState({ categoryList: e.data.category })
+        }).catch((err) => console.log(err))
     }
 
     componentDidMount() {
-        this.setState({ categoryList: CategoryList.category })
-        console.log(CategoryList.category)
+        setInterval((
+            this.categoryList()
+        ), 3000)
     }
 
     render() {
@@ -39,7 +67,7 @@ export default class category extends Component {
                 <div className='flex flex-wrap gap-x-4 mt-5'>
                     {this.state.categoryList.map((e, index) => (
                         <div key={index} className='mt-5 mb-2 relative border border-slate-400 px-4 py-0.5 rounded-md w-fit'>
-                            <p className=''>{e}</p>
+                            <p className=''>{e.category}</p>
                             <div onClick={() => this.removeCategory(e)} className=' absolute -right-[6px] -top-2 bg-red-400 p-[1px] rounded-full cursor-pointer'>
                                 <XMarkIcon className='w-3 text-white' />
                             </div>

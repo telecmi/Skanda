@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { blog_twitter_structure } from '../jsondata'
 import AppStateContext from '../../../../utils/AppStateContext'
 
 

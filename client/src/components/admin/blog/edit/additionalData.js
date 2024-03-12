@@ -51,9 +51,6 @@ export default class additionalData extends Component {
     };
     componentDidMount() {
         document.addEventListener('click', this.handleOutsideClickAddData);
-        const { editBlogData } = this.context
-        console.log(editBlogData.additional_data)
-
     }
     componentWillUnmount() {
         document.removeEventListener('click', this.handleOutsideClickAddData);

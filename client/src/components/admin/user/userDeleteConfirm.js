@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import AppStateContext from '../../../utils/AppStateContext';
-import { user } from '../../../services/userData'
-import axios from 'axios'
+import axiosInstance from '../../../services/apiconfig';
 
 const people = [
     { name: 'Admin' },
@@ -35,33 +34,13 @@ class Example extends Component {
     userDelete = () => {
         const { setDeleteUserModal, editUserData } = this.context;
 
-        axios.post('http://192.168.0.130:5000/userDelete', { id: editUserData.id }).then((e) => {
-            console.log(e)
+        axiosInstance.post('/userDelete', { id: editUserData.id }).then((e) => {
+            if (e.data.code === 200) {
+                setDeleteUserModal(false);
+            }
         }).catch((err) => console.log(err))
-
-        this.deleteUserById(editUserData.id);
-
-        setDeleteUserModal(false);
     }
-    deleteUserById = (id) => {
-        // Find the index of the user with the specified id
-        const indexToDelete = user.findIndex((user) => user.id === id);
 
-        // If the user with the specified id is found
-        if (indexToDelete !== -1) {
-            // Create a new array without the user to delete
-            // const updatedUsers = [...user.slice(0, indexToDelete), ...user.slice(indexToDelete + 1)];
-
-            // Update the 'user' array
-            let updateUser = user.splice(indexToDelete, 1);
-
-            // Return the updated array of users
-            return updateUser;
-        } else {
-            // If the user with the specified id is not found, return the original array
-            return user;
-        }
-    };
 
     userCancel = () => {
         const { setDeleteUserModal } = this.context;

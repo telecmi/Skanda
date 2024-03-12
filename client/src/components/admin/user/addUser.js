@@ -6,8 +6,7 @@ import { Listbox, } from '@headlessui/react';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 import AppStateContext from '../../../utils/AppStateContext';
 import _ from 'underscore'
-import { user } from '../../../services/userData';
-import axios from 'axios';
+import axiosInstance from '../../../services/apiconfig';
 
 const people = [
     { name: 'Admin' },
@@ -81,7 +80,7 @@ class Example extends Component {
 
             // user.push(userData);
 
-            axios.post('http://192.168.0.130:5000/userAdd', userData).then((e) => {
+            axiosInstance.post('/userAdd', userData).then((e) => {
                 if (e.data.code === 200) {
                     this.props.reload()
                 }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Cog6ToothIcon, FolderIcon, UsersIcon } from '@heroicons/react/24/outline';
+import { FolderIcon, UsersIcon } from '@heroicons/react/24/outline';
 
 
 const navigation = [
@@ -22,7 +22,8 @@ export default class sidebar extends Component {
         super(props);
         this.state = {
             sidebarOpen: false,
-            currentNavigation: ''
+            currentNavigation: '',
+            filteredNavigation: []
         };
     }
 
@@ -39,6 +40,16 @@ export default class sidebar extends Component {
             this.setState({ currentNavigation: currentPath });
         } else {
             this.setState({ currentNavigation: 'blog' });
+        }
+
+        let userData = JSON.parse(localStorage.getItem('user'))
+
+        let filteredNavigation
+
+        if (userData) {
+            filteredNavigation = userData.role === 'Admin' ? navigation : navigation.filter(item => item.name !== 'Users');
+
+            this.setState({ filteredNavigation: filteredNavigation })
         }
     }
 
@@ -59,7 +70,7 @@ export default class sidebar extends Component {
                     <nav className="flex flex-1 flex-col">
                         <div className="flex flex-1 flex-col gap-y-7">
                             <div className="-mx-2 space-y-3">
-                                {navigation.map((item) => (
+                                {this.state.filteredNavigation.map((item) => (
                                     <div key={item.name}>
                                         <div
                                             href={item.href}
@@ -84,7 +95,7 @@ export default class sidebar extends Component {
                                 ))}
                             </div>
 
-                            <div className="mt-auto">
+                            {/* <div className="mt-auto">
                                 <div className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
                                 >
                                     <Cog6ToothIcon
@@ -93,7 +104,7 @@ export default class sidebar extends Component {
                                     />
                                     Settings
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </nav>
                 </div>

@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import CategoryList from '../../../../services/categoryData';
 import AppStateContext from '../../../../utils/AppStateContext';
+import axiosInstance from '../../../../services/apiconfig';
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -27,10 +27,11 @@ class Example extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({ categoryList: CategoryList.category })
-        // this.setState({ selected: this.props.category })
-
-        console.log(this.context.editBlogData.category)
+        axiosInstance.post('/categoryList').then((e) => {
+            if (e.data.code === 200) {
+                this.setState({ categoryList: e.data.category })
+            }
+        })
     }
 
     render() {
@@ -55,21 +56,21 @@ class Example extends React.Component {
                                 leaveFrom="opacity-100"
                                 leaveTo="opacity-0"
                             >
-                                <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                                    {this.state.categoryList.map((person, index) => (
+                                <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                                    {this.state.categoryList.map((name, index) => (
                                         <Listbox.Option
                                             key={index}
                                             className={({ active }) =>
                                                 classNames(
                                                     active ? 'bg-slate-400 text-white' : 'text-gray-900',
-                                                    'relative cursor-default select-none py-2 pl-3 pr-9'
+                                                    'relative cursor-pointer select-none py-2 pl-3 pr-9 capitalize'
                                                 )
                                             }
-                                            value={person}
+                                            value={name.category}
                                         >
-                                            <div onClick={() => this.selectAuthor(person)}>
-                                                <div className="flex items-center">
-                                                    {person}
+                                            <div onClick={() => this.selectAuthor(name.category)}>
+                                                <div className="flex items-center capitalize">
+                                                    {name.category}
                                                 </div>
                                             </div>
                                         </Listbox.Option>

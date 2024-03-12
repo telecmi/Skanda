@@ -5,8 +5,7 @@ import { UserCircleIcon } from '@heroicons/react/24/outline';
 import { Listbox, } from '@headlessui/react';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 import AppStateContext from '../../../utils/AppStateContext';
-import { user } from '../../../services/userData';
-import axios from 'axios'
+import axiosInstance from '../../../services/apiconfig';
 
 const people = [
     { name: 'Admin' },
@@ -73,34 +72,12 @@ class Example extends Component {
             id: editUserData.id
         };
 
-        axios.post('http://192.168.0.130:5000/userEdit', userData).then((e) => {
-            console.log(e)
-        }).catch((err) => console.log(err))
-
-        setEditUserModal(false);
-        const userIdToUpdate = editUserData.id;
-        this.updateUserById(userIdToUpdate, userData);
-
-        this.setState({ photoEdited: false })
-
-    };
-
-    updateUserById = (id, updatedUserInfo) => {
-        // Map over the 'user' array
-        const updatedUsers = user.map((userInfo) => {
-            // If the user id matches the provided id, update the user info
-            if (userInfo.id === id) {
-                return { ...userInfo, ...updatedUserInfo }; // Merge the existing user info with updated user info
+        axiosInstance.post('/userEdit', userData).then((e) => {
+            if (e.data.code === 200) {
+                this.setState({ photoEdited: false })
+                setEditUserModal(false);
             }
-            // If the user id does not match, return the original user info
-            return userInfo;
-        });
-
-        // Update the 'user' array with the updated users
-        user.splice(0, user.length, ...updatedUsers);
-
-        // Return the updated array of users
-        return updatedUsers;
+        }).catch((err) => console.log(err))
     };
 
     userCancel = () => {

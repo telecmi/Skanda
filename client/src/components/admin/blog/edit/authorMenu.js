@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
-import UserList from '../../../../services/userData';
 import AppStateContext from '../../../../utils/AppStateContext';
+import axiosInstance from '../../../../services/apiconfig';
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -27,7 +27,11 @@ class Example extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({ authorList: UserList.user })
+        axiosInstance.post('/userList').then((e) => {
+            if (e.data.code === 200) {
+                this.setState({ authorList: e.data.users })
+            }
+        })
     }
 
     render() {
@@ -38,7 +42,7 @@ class Example extends React.Component {
                         <div className="relative mt-2">
                             <Listbox.Button className="relative w-full cursor-pointer rounded-md bg-white py-1.5 pl-3 pr-10 h-10 text-left text-gray-900 shadow-sm ring-1 ring-inset focus:outline-none  sm:text-sm sm:leading-6">
                                 <span className="flex items-center">
-                                    <span className="ml-1 block truncate">{this.state.selected || this.context.editBlogData.author.firstname + ' ' + this.context.editBlogData.author.lastname}</span>
+                                    <span className="ml-1 block truncate capitalize">{this.state.selected || this.context.editBlogData.author.firstname + ' ' + this.context.editBlogData.author.lastname}</span>
                                 </span>
                                 <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
                                     <ChevronDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -52,14 +56,14 @@ class Example extends React.Component {
                                 leaveFrom="opacity-100"
                                 leaveTo="opacity-0"
                             >
-                                <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                                    {this.state.authorList.map((person) => (
+                                <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                                    {this.state.authorList.map((person, index) => (
                                         <Listbox.Option
-                                            key={person.id}
+                                            key={index}
                                             className={({ active }) =>
                                                 classNames(
                                                     active ? 'bg-slate-400 text-white' : 'text-gray-900',
-                                                    'relative cursor-default select-none py-2 pl-3 pr-9'
+                                                    'relative cursor-default select-none py-2 pr-9 capitalize'
                                                 )
                                             }
                                             value={person}
@@ -68,7 +72,7 @@ class Example extends React.Component {
                                                 <div onClick={() => this.selectAuthor(person)}>
                                                     <div className="flex items-center">
                                                         <span
-                                                            className={classNames(selected ? 'font-semibold' : 'font-normal', 'ml-3 block truncate')}
+                                                            className={classNames(selected ? 'font-semibold' : 'font-normal', 'ml-3 block truncate capitalize')}
                                                         >
                                                             {person.firstname + ' ' + person.lastname}
                                                         </span>

@@ -1,22 +1,45 @@
 import React, { Component, Fragment } from 'react'
-import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid';
+import { ChevronDownIcon, MagnifyingGlassIcon, UserCircleIcon } from '@heroicons/react/20/solid';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 import { Transition, Menu } from '@headlessui/react';
-
+import { Navigate } from 'react-router-dom'
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ');
 }
 
 const userNavigation = [
-    { name: 'Your profile' },
-    { name: 'Sign out' },
+    { name: 'Log out' },
 ];
 
 export default class header extends Component {
+
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            navigate: false,
+            userData: ''
+        }
+    }
+
+
+    menu = (e) => {
+        if (e === 'Log out') {
+            this.setState({ navigate: true })
+            localStorage.removeItem('user')
+        }
+    }
+    componentDidMount() {
+        const userData = JSON.parse(localStorage.getItem('user'));
+        this.setState({ userData: userData })
+    }
     render() {
         return (
+
+
             <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+                {this.state.navigate && <Navigate to='/' />}
                 <div className="flex h-16 items-center lg:hidden">
                     <img
                         className="h-6 w-auto"
@@ -58,14 +81,18 @@ export default class header extends Component {
                         <Menu as="div" className="relative">
                             <Menu.Button className="-m-1.5 flex items-center p-1.5">
                                 <span className="sr-only">Open user menu</span>
-                                <img
-                                    className="h-8 w-8 rounded-full bg-gray-50"
-                                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                    alt=""
-                                />
+                                {
+                                    this.state.userData.photo ?
+                                        <img
+                                            className="h-8 w-8 rounded-full bg-gray-50"
+                                            src={this.state.userData.photo}
+                                            alt="User"
+                                        /> :
+                                        <UserCircleIcon className="" />
+                                }
                                 <span className="hidden lg:flex lg:items-center">
-                                    <span className="ml-4 text-sm font-semibold leading-6 text-gray-900" aria-hidden="true">
-                                        Tom Cook
+                                    <span className="ml-4 text-sm font-semibold capitalize leading-6 text-gray-900" aria-hidden="true">
+                                        {this.state.userData.firstname + ' ' + this.state.userData.lastname}
                                     </span>
                                     <ChevronDownIcon className="ml-2 h-5 w-5 text-gray-400" aria-hidden="true" />
                                 </span>
@@ -81,7 +108,7 @@ export default class header extends Component {
                             >
                                 <Menu.Items className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
                                     {userNavigation.map((item) => (
-                                        <Menu.Item key={item.name}>
+                                        <Menu.Item className='cursor-pointer' onClick={() => this.menu(item.name)} key={item.name}>
                                             {({ active }) => (
                                                 <p
                                                     className={classNames(

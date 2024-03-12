@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import AppStateContext from '../../../utils/AppStateContext';
-import { blog } from '../../../services/blogData';
-import axios from 'axios';
+import axiosInstance from '../../../services/apiconfig';
 
 
 
@@ -23,7 +22,7 @@ class Example extends Component {
     blogDelete = () => {
         const { setDeleteBlogModal, deleteBlogData } = this.context;
         setDeleteBlogModal(false);
-        axios.post('http://192.168.0.130:5000/blogDelete', deleteBlogData).then((res) => {
+        axiosInstance.post('/blogDelete', deleteBlogData).then((res) => {
         }).catch((err) => { })
     }
 

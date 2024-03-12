@@ -4,7 +4,6 @@ import BlogData from './blog/blog'
 import Header from './layout/header'
 import SideBar from './layout/sidebar'
 import SideBarMob from './layout/sidebarMob';
-import AddUserModal from './user/addUser';
 import UserEditConfirm from './user/userEditConfirm'
 import UserDeleteConfirm from './user/userDeleteConfirm'
 import BlogDeleteConfirm from './blog/blogDeleteConfirm'

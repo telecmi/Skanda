@@ -2,6 +2,8 @@ const express = require('express');
 const fs = require('fs');
 const cors = require('cors');
 const path = require('path');
+
+const login = require('./routes/login');
 const blogAdd = require('./routes/blogAdd')
 const blogGet = require('./routes/blogGet')
 const blogEdit = require('./routes/blogEdit')
@@ -23,6 +25,8 @@ app.use(express.urlencoded({ limit: '1024mb', extended: true }))
 app.get('/', (req, res) => {
     res.send('blog cms')
 })
+
+app.post('/login', login.login)
 
 app.post('/blogAdd', blogAdd.blog)
 app.post('/blogGet', blogGet.blog)

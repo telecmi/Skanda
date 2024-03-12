@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react';
-import { Cog6ToothIcon, FolderIcon, UsersIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { FolderIcon, UsersIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 
 const navigation = [
@@ -106,7 +106,7 @@ export default class sidebarMob extends Component {
                                                 ))}
                                             </div>
 
-                                            <div className="mt-auto">
+                                            {/* <div className="mt-auto">
                                                 <div   className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
                                                 >
                                                     <Cog6ToothIcon
@@ -115,7 +115,7 @@ export default class sidebarMob extends Component {
                                                     />
                                                     Settings
                                                 </div>
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </nav>
                                 </div>

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { XMarkIcon, ChevronUpIcon, ChevronDownIcon, EyeIcon } from '@heroicons/react/24/solid'
 import { blog_structure, blog_intro } from '../jsondata'
 import AppStateContext from '../../../../utils/AppStateContext';
-import axios from 'axios';
+import axiosInstance from '../../../../services/apiconfig';
 import BlogMetaData from '../edit/meta';
 import BlogOgData from '../edit/og';
 import BlogTwitterData from '../edit/twitter';
@@ -494,13 +494,10 @@ class Page extends Component {
         let validationSub = {
             Meta: metaValid, OG: ogValid, Twitter: twitterValid, Article: articleValid, URL: blogUrlValid, category: categoryValid, author: authorValid, introduction_section: blogIntroValid, Section: sectionValidCheck, FAQ: faqValidCheck, recommended_reading: rcValidCheck, Testimonial: testiValidCheck
         }
-
-        console.log(validationSub)
-        console.log(data)
         
 
         if (validationSub.Meta && validationSub.OG && validationSub.Twitter && validationSub.Article && validationSub.URL && validationSub.category && validationSub.author && validationSub.introduction_section && validationSub.Section && validationSub.FAQ && validationSub.recommended_reading && validationSub.Testimonial) {
-            axios.post('http://192.168.0.130:5000/blogEdit', data).then((res) => {
+            axiosInstance.post('/blogEdit', data).then((res) => {
                 if (res.data.code === 200) {
                     setEditBlogModal(false)
                 }

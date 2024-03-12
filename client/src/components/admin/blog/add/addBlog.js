@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { XMarkIcon, ChevronUpIcon, ChevronDownIcon, EyeIcon } from '@heroicons/react/24/solid'
 import { blog_structure, blog_intro } from '../jsondata'
 import AppStateContext from '../../../../utils/AppStateContext';
-import axios from 'axios';
+import axiosInstance from '../../../../services/apiconfig';
 import BlogMetaData from './meta';
 import BlogOgData from './og';
 import BlogTwitterData from './twitter';
@@ -488,7 +488,7 @@ class Page extends Component {
 
         if (validationSub.Meta && validationSub.OG && validationSub.Twitter && validationSub.Article && validationSub.URL && validationSub.category && validationSub.author && validationSub.introduction_section && validationSub.Section && validationSub.FAQ && validationSub.recommended_reading && validationSub.Testimonial) {
 
-            axios.post('http://192.168.0.130:5000/blogAdd', data).then((res) => {
+            axiosInstance.post('/blogAdd', data).then((res) => {
                 if (res.data.code === 200) {
                     setAddBlogModal(false)
                 }

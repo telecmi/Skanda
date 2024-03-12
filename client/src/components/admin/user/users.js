@@ -2,9 +2,8 @@ import React, { Component } from 'react'
 import { PlusIcon, UserCircleIcon } from '@heroicons/react/24/solid';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 import AppStateContext from '../../../utils/AppStateContext';
-// import { user } from '../../../services/userData';
-import axios from 'axios'
 import AddUserModal from './addUser'
+import axiosInstance from '../../../services/apiconfig';
 export default class users extends Component {
 
     static contextType = AppStateContext;
@@ -36,15 +35,13 @@ export default class users extends Component {
     }
 
     reload = () => {
-
-        console.log('reload')
-        axios.post('http://192.168.0.130:5000/userList').then((e) => {
+        axiosInstance.post('/userList').then((e) => {
             this.setState({ user: e.data.users })
         }).catch((e) => { })
     }
 
     componentDidMount() {
-        axios.post('http://192.168.0.130:5000/userList').then((e) => {
+        axiosInstance.post('/userList').then((e) => {
             this.setState({ user: e.data.users })
         }).catch((e) => { })
     }

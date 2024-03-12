@@ -5,7 +5,7 @@ import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 import AppStateContext from '../../../utils/AppStateContext';
 import AddBlog from './add/addBlog'
 import EditBlog from './edit/editBlog'
-import axios from 'axios';
+import axiosInstance from '../../../services/apiconfig';
 import moment from 'moment';
 
 export default class blogComponent extends Component {
@@ -40,7 +40,7 @@ export default class blogComponent extends Component {
     }
 
     componentDidMount() {
-        axios.post('http://192.168.0.130:5000/blogGet').then((e) => {
+        axiosInstance.post('/blogGet').then((e) => {
             this.setState({ data: e.data.blog })
         }).catch((e) => { })
     }
@@ -76,7 +76,7 @@ export default class blogComponent extends Component {
                                                 <p className="text-base leading-7 text-gray-600">{moment(blog.additional_data ? blog.additional_data.schedule : new Date()).format('MMMM DD, YYYY')}</p>
                                                 <div className='flex justify-between items-end'>
                                                     <div className=' overflow-hidden'>
-                                                        <p className=' overflow-hidden whitespace-nowrap text-ellipsis'>{blog.author.firstname + ' ' + blog.author.lastname}</p>
+                                                        <p className=' overflow-hidden whitespace-nowrap text-ellipsis capitalize'>{blog.author.firstname + ' ' + blog.author.lastname}</p>
                                                     </div>
                                                     <div className=' space-x-6 mt-2 pl-3 flex justify-end'>
                                                         <button onClick={() => this.editBlog(blog)} type="button" className="" >

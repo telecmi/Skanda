@@ -1,4 +1,4 @@
-// import Page from '../components/admin/page'
+import Login from '../components/admin/login/login'
 import Dashboard from '../components/admin/home'
 import Preview from '../components/admin/blog/preview'
 // import AddBlog from '../components/admin/blog/addBlog'
@@ -14,7 +14,8 @@ function App() {
 
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/home" element={<Dashboard />} />
           <Route path="/preview" element={<Preview />} />
         </Routes>
       </BrowserRouter>

@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { blog_meta_structure } from '../jsondata'
 import AppStateContext from '../../../../utils/AppStateContext'
 
 export default class Meta extends Component {

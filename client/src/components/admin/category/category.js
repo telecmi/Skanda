@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { XMarkIcon } from '@heroicons/react/24/solid'
-import CategoryList from '../../../services/categoryData';
-import axios from 'axios'
+import axiosInstance from '../../../services/apiconfig';
 export default class category extends Component {
     constructor(props) {
         super(props)
@@ -21,7 +20,7 @@ export default class category extends Component {
     onEnter = async (e) => {
         if (e.code === 'Enter' && this.state.category) {
             let data = { id: this.generateUniqueId(), category: this.state.category };
-            await axios.post('http://192.168.0.130:5000/categoryAdd', data)
+            await axiosInstance.post('/categoryAdd', data)
                 .then((res) => {
                     if (res.data.code === 200) {
                         setTimeout(() => {
@@ -36,7 +35,7 @@ export default class category extends Component {
 
     removeCategory = (e) => {
         // this.setState({ categoryList: this.state.categoryList.filter(item => item !== e) })
-        axios.post('http://192.168.0.130:5000/categoryDelete', e).then((res) => {
+        axiosInstance.post('/categoryDelete', e).then((res) => {
             if (res.data.code === 200) {
                 setTimeout(() => {
                     this.categoryList();
@@ -46,7 +45,7 @@ export default class category extends Component {
     }
 
     categoryList = () => {
-        axios.post('http://192.168.0.130:5000/categoryList').then((e) => {
+        axiosInstance.post('/categoryList').then((e) => {
             this.setState({ categoryList: e.data.category })
         }).catch((err) => console.log(err))
     }
@@ -67,7 +66,7 @@ export default class category extends Component {
                 <div className='flex flex-wrap gap-x-4 mt-5'>
                     {this.state.categoryList.map((e, index) => (
                         <div key={index} className='mt-5 mb-2 relative border border-slate-400 px-4 py-0.5 rounded-md w-fit'>
-                            <p className=''>{e.category}</p>
+                            <p className=' capitalize'>{e.category}</p>
                             <div onClick={() => this.removeCategory(e)} className=' absolute -right-[6px] -top-2 bg-red-400 p-[1px] rounded-full cursor-pointer'>
                                 <XMarkIcon className='w-3 text-white' />
                             </div>

@@ -23,6 +23,9 @@ class Example extends Component {
         const { setDeleteBlogModal, deleteBlogData } = this.context;
         setDeleteBlogModal(false);
         axiosInstance.post('/blogDelete', deleteBlogData).then((res) => {
+            if (res.data.code === 200) {
+                this.props.reload()
+            }
         }).catch((err) => { })
     }
 
@@ -69,10 +72,10 @@ class Example extends Component {
 
                                 <div>
                                     <h4 className=' font-semibold'>
-                                        Would you like to delete this User ?
+                                        Would you like to delete this blog ?
                                     </h4>
                                     <p className='mt-2'>
-                                        Once you delete this User, It may affect your team !
+                                        Once you delete this blog, It can't be revert !
                                     </p>
                                 </div>
                                 <div className="mt-5 sm:mt-8 flex space-x-10 justify-center">

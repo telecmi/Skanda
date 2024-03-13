@@ -6,6 +6,7 @@ import { Listbox, } from '@headlessui/react';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 import AppStateContext from '../../../utils/AppStateContext';
 import axiosInstance from '../../../services/apiconfig';
+import _ from 'underscore'
 
 const people = [
     { name: 'Admin' },
@@ -27,6 +28,7 @@ class Example extends Component {
             lastname: '',
             email: '',
             password: '',
+            cpassword: ''
         };
     }
 
@@ -58,9 +60,16 @@ class Example extends Component {
         this.setState({ password: e.target.value.replace(/\s/g, "") })
         this.setState({ passwordEdited: true })
     }
+    cpasswordChange = (e) => {
+        this.setState({ cpassword: e.target.value.replace(/\s/g, "") })
+        this.setState({ cpasswordEdited: true })
+    }
 
     userUpdate = () => {
         const { setEditUserModal, editUserData } = this.context;
+
+        let cpassword = this.state.cpasswordEdited ? this.state.cpassword : editUserData.password
+
 
         const userData = {
             firstname: this.state.firstnameEdited ? this.state.firstname : editUserData.firstname,
@@ -72,12 +81,22 @@ class Example extends Component {
             id: editUserData.id
         };
 
-        axiosInstance.post('/userEdit', userData).then((e) => {
-            if (e.data.code === 200) {
-                this.setState({ photoEdited: false })
-                setEditUserModal(false);
-            }
-        }).catch((err) => console.log(err))
+        if (_.isEmpty(userData.email) || _.isEmpty(userData.firstname) || _.isEmpty(userData.lastname) || _.isEmpty(userData.password)) {
+            alert('fill the details')
+        }
+        else if (userData.password !== cpassword) {
+            alert('Password and confirm password not same')
+        }
+        else {
+            axiosInstance.post('/userEdit', userData).then((e) => {
+                if (e.data.code === 200) {
+                    this.setState({ roleEdited: false, firstnameEdited: false, lastnameEdited: false, emailEdited: false, passwordEdited: false, cpasswordEdited: false, photoEdited: false })
+                    setEditUserModal(false);
+                    this.props.reload()
+                }
+            }).catch((err) => console.log(err))
+        }
+
     };
 
     userCancel = () => {

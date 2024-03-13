@@ -4,12 +4,7 @@ import BlogData from './blog/blog'
 import Header from './layout/header'
 import SideBar from './layout/sidebar'
 import SideBarMob from './layout/sidebarMob';
-import UserEditConfirm from './user/userEditConfirm'
-import UserDeleteConfirm from './user/userDeleteConfirm'
-import BlogDeleteConfirm from './blog/blogDeleteConfirm'
 import Category from './category/category';
-// import ValidationPop from './blog/validationPop';
-// import AddBlog from './blog/addBlog'
 import AppStateContext from '../../utils/AppStateContext';
 
 class Example extends Component {
@@ -28,8 +23,9 @@ class Example extends Component {
 
     componentDidMount() {
         const currentPath = window.location.pathname.substring(1);
-        if (currentPath) {
-            this.setState({ currentNavigation: currentPath });
+
+        if (currentPath === 'home') {
+            this.setState({ currentNavigation: 'blog' });
         } else {
             this.setState({ currentNavigation: 'blog' });
         }
@@ -57,22 +53,10 @@ class Example extends Component {
 
 
 
-
     render() {
 
         return (
             <>
-
-                {/* <AddUserModal /> */}
-                {/* <AddUserModal addUserModal={this.state.addUserModal} addUser={this.addUser} /> */}
-
-                {/* <AddBlog /> */}
-
-                <UserEditConfirm />
-
-                <UserDeleteConfirm />
-
-                <BlogDeleteConfirm />
 
                 <SideBarMob />
 
@@ -96,7 +80,6 @@ class Example extends Component {
                         }
                     </div>
                 </div>
-
 
             </>
         );

@@ -28,6 +28,7 @@ class Example extends Component {
             lastname: '',
             email: '',
             password: '',
+            cpassword: ''
         };
     }
 
@@ -55,9 +56,35 @@ class Example extends Component {
         this.setState({ password: e.target.value.replace(/\s/g, "") })
     }
 
+    cpasswordChange = (e) => {
+        this.setState({ cpassword: e.target.value.replace(/\s/g, "") })
+    }
+
     generateUniqueId() {
         const randomString = Math.random().toString(36).substr(2, 10);
         return `${new Date().getTime()}_${randomString}`;
+    }
+
+    userSubmit = () => {
+        let userData = {
+            firstname: this.state.firstname,
+            lastname: this.state.lastname,
+            email: this.state.email,
+            role: this.state.role.name,
+            photo: this.state.photo,
+            password: this.state.password,
+            id: this.generateUniqueId(),
+        }
+
+        axiosInstance.post('/userAdd', userData).then((e) => {
+            if (e.data.code === 200) {
+                this.props.reload()
+            }
+        }).catch((err) => { console.log(err) })
+
+        const { setAddUserModal } = this.context;
+        setAddUserModal(false)
+        this.setState({ photo: '' })
     }
 
     userAdd = () => {
@@ -65,30 +92,22 @@ class Example extends Component {
 
         if (_.isEmpty(this.state.email) || _.isEmpty(this.state.firstname) || _.isEmpty(this.state.lastname) || _.isEmpty(this.state.role.name) || _.isEmpty(this.state.password)) {
             alert('fill the details')
-        } else {
-
-
-            let userData = {
-                firstname: this.state.firstname,
-                lastname: this.state.lastname,
-                email: this.state.email,
-                role: this.state.role.name,
-                photo: this.state.photo,
-                password: this.state.password,
-                id: this.generateUniqueId(),
-            }
-
-            // user.push(userData);
-
-            axiosInstance.post('/userAdd', userData).then((e) => {
+        }
+        else if (this.state.password !== this.state.cpassword) {
+            alert('Password and confirm password not same')
+        }
+        else {
+            axiosInstance.post('/userList').then((e) => {
                 if (e.data.code === 200) {
-                    this.props.reload()
+                    let addNewUser = e.data.users.find(user => user.email === this.state.email) !== undefined
+
+                    if (addNewUser) {
+                        alert("This Email is already exist")
+                    } else {
+                        this.userSubmit()
+                    }
                 }
             }).catch((err) => { console.log(err) })
-
-            const { setAddUserModal } = this.context;
-            setAddUserModal(false)
-            this.setState({ photo: '' })
         }
     }
 

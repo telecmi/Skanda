@@ -37,7 +37,7 @@ export default class sidebar extends Component {
         // Set initial state based on the current URL or any other logic
         const currentPath = window.location.pathname.substring(1); // Assuming your URLs don't have leading '/'
         if (currentPath) {
-            this.setState({ currentNavigation: currentPath });
+            this.setState({ currentNavigation: currentPath === 'home' ? 'blog' : '' });
         } else {
             this.setState({ currentNavigation: 'blog' });
         }

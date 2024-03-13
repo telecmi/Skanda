@@ -37,6 +37,7 @@ class Example extends Component {
         axiosInstance.post('/userDelete', { id: editUserData.id }).then((e) => {
             if (e.data.code === 200) {
                 setDeleteUserModal(false);
+                this.props.reload()
             }
         }).catch((err) => console.log(err))
     }
@@ -48,9 +49,7 @@ class Example extends Component {
         setDeleteUserModal(false)
     }
 
-    componentDidMount() {
-
-    }
+  
 
 
     render() {

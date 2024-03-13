@@ -5,6 +5,7 @@ import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 import AppStateContext from '../../../utils/AppStateContext';
 import AddBlog from './add/addBlog'
 import EditBlog from './edit/editBlog'
+import BlogDeleteConfirm from './blogDeleteConfirm'
 import axiosInstance from '../../../services/apiconfig';
 import moment from 'moment';
 
@@ -17,7 +18,8 @@ export default class blogComponent extends Component {
 
         this.state = {
             data: [],
-            nav: false
+            nav: false,
+            userRole: ''
         }
     }
 
@@ -39,22 +41,37 @@ export default class blogComponent extends Component {
         setDeleteBlogData(e)
     }
 
+    reload = () => {
+        setTimeout(() => {
+            axiosInstance.post('/blogGet').then((e) => {
+                this.setState({ data: e.data.blog })
+            }).catch((e) => { })
+        }, 1000)
+    }
+
     componentDidMount() {
         axiosInstance.post('/blogGet').then((e) => {
             this.setState({ data: e.data.blog })
         }).catch((e) => { })
+
+        let userData = JSON.parse(localStorage.getItem('user'))
+
+        if (userData) {
+            this.setState({ userRole: userData.role })
+        }
+
     }
 
     render() {
 
         return (
             <div className="bg-white">
-                {/* {
-                    this.state.nav && <Navigate to="/edit" />
-                } */}
+                {
+                    <BlogDeleteConfirm reload={this.reload} />
+                }
                 {
                     this.context.addBlogModal ?
-                        <AddBlog /> : this.context.editBlogModal ? <EditBlog /> :
+                        <AddBlog reload={this.reload} /> : this.context.editBlogModal ? <EditBlog reload={this.reload} /> :
                             <div className="mx-auto max-w-7xl px-6 lg:px-8">
                                 <div className="mx-auto my-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3">
                                     <div onClick={this.addBlog} style={{ height: this.state.data.length === 0 ? '346px' : 'auto', }} className=' space-x-3 rounded-2xl cursor-pointer border border-[#f58f8f] h-full'>
@@ -84,10 +101,13 @@ export default class blogComponent extends Component {
                                                             <PencilSquareIcon className="h-6 w-6 text-gray-700" aria-hidden="true" />
                                                         </button>
 
-                                                        <button onClick={() => this.deleteBlog(blog)} type="button" className="">
-                                                            <span className="sr-only">Delete</span>
-                                                            <TrashIcon className="h-6 w-6 text-red-500" aria-hidden="true" />
-                                                        </button>
+                                                        {
+                                                            this.state.userRole === 'Admin' &&
+                                                            <button onClick={() => this.deleteBlog(blog)} type="button" className="">
+                                                                <span className="sr-only">Delete</span>
+                                                                <TrashIcon className="h-6 w-6 text-red-500" aria-hidden="true" />
+                                                            </button>
+                                                        }
                                                     </div>
                                                 </div>
                                             </div>

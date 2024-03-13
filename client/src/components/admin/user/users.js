@@ -2,7 +2,9 @@ import React, { Component } from 'react'
 import { PlusIcon, UserCircleIcon } from '@heroicons/react/24/solid';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 import AppStateContext from '../../../utils/AppStateContext';
-import AddUserModal from './addUser'
+import AddUserModal from './addUser';
+import UserEditConfirm from './userEditConfirm';
+import UserDeleteConfirm from './userDeleteConfirm';
 import axiosInstance from '../../../services/apiconfig';
 export default class users extends Component {
 
@@ -35,9 +37,11 @@ export default class users extends Component {
     }
 
     reload = () => {
-        axiosInstance.post('/userList').then((e) => {
-            this.setState({ user: e.data.users })
-        }).catch((e) => { })
+        setTimeout(() => {
+            axiosInstance.post('/userList').then((e) => {
+                this.setState({ user: e.data.users })
+            }).catch((e) => { })
+        }, 1000)
     }
 
     componentDidMount() {
@@ -51,6 +55,12 @@ export default class users extends Component {
             <div className="bg-white">
                 {
                     <AddUserModal reload={this.reload} />
+                }
+                {
+                    <UserDeleteConfirm reload={this.reload} />
+                }
+                {
+                    <UserEditConfirm reload={this.reload} />
                 }
                 <div className="mx-auto max-w-8xl px-6 lg:px-8">
                     <div className="mx-auto my-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3">

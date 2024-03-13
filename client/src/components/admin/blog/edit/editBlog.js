@@ -500,6 +500,7 @@ class Page extends Component {
             axiosInstance.post('/blogEdit', data).then((res) => {
                 if (res.data.code === 200) {
                     setEditBlogModal(false)
+                    this.props.reload()
                 }
             }).catch((err) => console.error(err))
         }

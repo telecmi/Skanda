@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { XMarkIcon } from '@heroicons/react/24/solid'
 import axiosInstance from '../../../services/apiconfig';
+import _ from 'underscore'
 export default class category extends Component {
     constructor(props) {
         super(props)
@@ -18,7 +19,7 @@ export default class category extends Component {
         return `${new Date().getTime()}_${randomString}`;
     }
     onEnter = async (e) => {
-        if (e.code === 'Enter' && this.state.category) {
+        if (e.code === 'Enter' && !_.isEmpty(this.state.category)) {
             let data = { id: this.generateUniqueId(), category: this.state.category };
             await axiosInstance.post('/categoryAdd', data)
                 .then((res) => {
@@ -34,8 +35,7 @@ export default class category extends Component {
     }
 
     removeCategory = (e) => {
-        // this.setState({ categoryList: this.state.categoryList.filter(item => item !== e) })
-        axiosInstance.post('/categoryDelete', e).then((res) => {
+        axiosInstance.post('/categoryDelete', { id: e }).then((res) => {
             if (res.data.code === 200) {
                 setTimeout(() => {
                     this.categoryList();
@@ -67,7 +67,7 @@ export default class category extends Component {
                     {this.state.categoryList.map((e, index) => (
                         <div key={index} className='mt-5 mb-2 relative border border-slate-400 px-4 py-0.5 rounded-md w-fit'>
                             <p className=' capitalize'>{e.category}</p>
-                            <div onClick={() => this.removeCategory(e)} className=' absolute -right-[6px] -top-2 bg-red-400 p-[1px] rounded-full cursor-pointer'>
+                            <div onClick={() => this.removeCategory(e._id)} className=' absolute -right-[6px] -top-2 bg-red-400 p-[1px] rounded-full cursor-pointer'>
                                 <XMarkIcon className='w-3 text-white' />
                             </div>
                         </div>

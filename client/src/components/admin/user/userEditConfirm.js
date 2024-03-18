@@ -76,10 +76,15 @@ class Example extends Component {
             lastname: this.state.lastnameEdited ? this.state.lastname : editUserData.lastname,
             email: this.state.emailEdited ? this.state.email : editUserData.email,
             role: this.state.roleEdited ? this.state.role : editUserData.role,
-            photo: this.state.photoEdited ? this.state.photo : editUserData.photo,
             password: this.state.passwordEdited ? this.state.password : editUserData.password,
-            id: editUserData.id
+            photoOld: this.state.photoEdited ? true : false,
+            id: editUserData._id,
+            photoOldURL: editUserData.photo || false
         };
+
+        let formData = new FormData()
+        this.state.photoEdited && formData.append('photo', this.state.photoURL)
+        formData.append('userData', JSON.stringify(userData))
 
         if (_.isEmpty(userData.email) || _.isEmpty(userData.firstname) || _.isEmpty(userData.lastname) || _.isEmpty(userData.password)) {
             alert('fill the details')
@@ -88,8 +93,13 @@ class Example extends Component {
             alert('Password and confirm password not same')
         }
         else {
-            axiosInstance.post('/userEdit', userData).then((e) => {
+            axiosInstance.post('/userEdit', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then((e) => {
                 if (e.data.code === 200) {
+                    console.log(e.data)
+                    this.setState({ roleEdited: false, firstnameEdited: false, lastnameEdited: false, emailEdited: false, passwordEdited: false, cpasswordEdited: false, photoEdited: false })
+                    setEditUserModal(false);
+                    this.props.reload()
+                } else {
                     this.setState({ roleEdited: false, firstnameEdited: false, lastnameEdited: false, emailEdited: false, passwordEdited: false, cpasswordEdited: false, photoEdited: false })
                     setEditUserModal(false);
                     this.props.reload()
@@ -106,6 +116,7 @@ class Example extends Component {
 
     handleImageChange = (e) => {
         const selectedImage = e.target.files[0];
+        this.setState({ photoURL: selectedImage })
         const reader = new FileReader();
 
         reader.onloadend = () => {
@@ -169,7 +180,7 @@ class Example extends Component {
                                                     this.context.editUserData.photo ?
 
                                                         <div className='h-12 w-12 rounded-full overflow-hidden flex'>
-                                                            <img className='h-12 w-12 rounded' src={this.context.editUserData.photo} alt="user profile" />
+                                                            <img className='h-12 w-12 rounded' src={'http://localhost:4000' + this.context.editUserData.photo} alt="user profile" />
                                                         </div> :
 
                                                         <UserCircleIcon className="h-12 w-12 text-gray-300" aria-hidden="true" />
@@ -279,6 +290,7 @@ class Example extends Component {
                                     </label>
                                     <div className="mt-2">
                                         <input
+                                            disabled
                                             onChange={this.emailChange}
                                             defaultValue={this.context.editUserData.email}
                                             type="text"

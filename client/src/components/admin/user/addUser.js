@@ -65,26 +65,35 @@ class Example extends Component {
         return `${new Date().getTime()}_${randomString}`;
     }
 
-    userSubmit = () => {
+    userSubmit = async () => {
         let userData = {
             firstname: this.state.firstname,
             lastname: this.state.lastname,
             email: this.state.email,
             role: this.state.role.name,
-            photo: this.state.photo,
-            password: this.state.password,
-            id: this.generateUniqueId(),
+            password: this.state.password
         }
 
-        axiosInstance.post('/userAdd', userData).then((e) => {
-            if (e.data.code === 200) {
-                this.props.reload()
-            }
-        }).catch((err) => { console.log(err) })
+        const formData = new FormData()
+        formData.append('photo', this.state.photoURL)
+        formData.append('userData', JSON.stringify(userData))
 
-        const { setAddUserModal } = this.context;
-        setAddUserModal(false)
-        this.setState({ photo: '' })
+        try {
+
+            const response = await axiosInstance.post('/userAdd', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+
+            if (response.data.code === 200) {
+                this.props.reload()
+                const { setAddUserModal } = this.context;
+                setAddUserModal(false)
+                this.setState({ photo: '' })
+            } else {
+                alert(response.data.msg)
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     userAdd = () => {
@@ -113,7 +122,10 @@ class Example extends Component {
 
     handleImageChange = (e) => {
         const selectedImage = e.target.files[0];
+
         const reader = new FileReader();
+
+        this.setState({ photoURL: selectedImage })
 
         reader.onloadend = () => {
             // Set the selected image to the state

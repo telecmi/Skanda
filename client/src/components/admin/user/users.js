@@ -82,7 +82,7 @@ export default class users extends Component {
                                     person.photo ?
                                         <div className='mb-2 mt-[7px] w-full flex justify-center'>
                                             <div className=' rounded-full overflow-hidden'>
-                                                <img className='h-16 w-16' src={person.photo} alt='user profile' />
+                                                <img className='h-16 w-16' src={'http://localhost:4000' + person.photo} alt='user profile' />
                                             </div>
                                         </div>
                                         :

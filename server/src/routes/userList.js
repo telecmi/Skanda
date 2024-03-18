@@ -1,6 +1,14 @@
 const data = require('../utils/userData.json');
+const mongodb = require('../models/mongodb');
 
-exports.user = (req, res) => {
+exports.user = async (req, res) => {
 
-    res.send({ code: 200, count: data.user.length, users: data.user })
+    let dbName = await mongodb();
+    let collection = dbName.collection('users')
+
+    let userList = await collection.find({}).toArray()
+
+
+
+    res.send({ code: 200, count: userList.length, users: userList })
 }

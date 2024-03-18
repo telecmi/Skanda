@@ -21,6 +21,8 @@ const app = express();
 app.use(cors())
 app.use(express.json({ limit: '1024mb' }))
 app.use(express.urlencoded({ limit: '1024mb', extended: true }))
+app.use(express.static(path.join(__dirname, '../')))
+
 
 app.get('/', (req, res) => {
     res.send('blog cms')
@@ -45,4 +47,4 @@ app.post('/categoryDelete', categoryDelete.category)
 
 
 
-app.listen(5000)
+app.listen(4000)

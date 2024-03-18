@@ -1,8 +1,13 @@
-const data = require('../utils/categoryData.json');
+const mongodb = require('../models/mongodb')
 
-exports.category = (req, res) => {
 
-    console.log(data.category)
-    res.send({ code: 200, count: data.category.length, category: data.category })
+exports.category = async (req, res) => {
+
+    let dbName = await mongodb();
+    let collection = dbName.collection('category')
+
+    let category = await collection.find({}).toArray()
+
+    res.send({ code: 200, count: category.length, category: category })
 
 }

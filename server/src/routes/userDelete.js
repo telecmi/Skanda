@@ -1,29 +1,43 @@
 const fs = require('fs');
 const path = require('path')
+const mongodb = require('../models/mongodb')
+const { ObjectId } = require('mongodb')
 
-exports.user = (req, res) => {
+exports.user = async (req, res) => {
     const { id } = req.body;
-    const jsonpath = path.join(__dirname, '../utils/userData.json');
-    let data = JSON.parse(fs.readFileSync(jsonpath));
 
-    console.log(id);
+    if (id) {
+        let dbName = await mongodb();
+        let collection = dbName.collection('users')
 
-    // Find the index of the user with the specified ID
-    const userIndex = data.user.findIndex(user => user.id === id);
+        let userData = await collection.findOne({ _id: new ObjectId(id) })
 
-    if (userIndex !== -1) {
-        // Remove the user from the array
-        data.user.splice(userIndex, 1);
+        const fileDeletion = () => {
+            const filePath = path.join(__dirname, '../../', userData.photo);
+            const filename = userData.photo
 
-        // Convert the JavaScript object back to JSON format
-        const updatedJsonData = JSON.stringify(data, null, 2);
+            fs.unlink(filePath, (err) => {
 
-        // Write the updated JSON data back to the file
-        fs.writeFileSync(jsonpath, updatedJsonData);
+                if (err) {
+                    console.error('Error deleting file:', err);
+                    res.send({ code: 500, msg: 'Failed to delete file', data: user })
+                } else {
+                    console.log('File deleted successfully:', filename);
+                    res.send({ code: 200, msg: "File deleted successfully" })
+                }
 
-        res.send({ code: 200, msg: 'User deleted successfully' });
+            });
+        }
+
+        let user = await collection.deleteOne({ _id: new ObjectId(id) })
+
+        if (user.deletedCount > 0) {
+            fileDeletion()
+        } else {
+            res.send({ code: 400, msg: 'User not delete', data: user })
+        }
     } else {
-        res.status(404).send({ code: 404, msg: 'User not found' });
+        res.send({ code: 400, msg: 'ID not found', data: user })
     }
 }
 

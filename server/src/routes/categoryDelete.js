@@ -1,17 +1,18 @@
-const data = require('../utils/categoryData.json');
-const path = require('path')
-const fs = require('fs');
+const mongodb = require('../models/mongodb')
+const { ObjectId } = require('mongodb')
 
-exports.category = (req, res) => {
-    const categoryIdToRemove = req.body.id; // Assuming the request body contains the ID of the category to remove
-    const jsonDataPath = path.join(__dirname, '../utils/categoryData.json'); // Path to the JSON file
-    let data = require(jsonDataPath); // Load JSON data
+exports.category = async (req, res) => {
+    let dbName = await mongodb();
+    let collection = dbName.collection('category')
 
-    // Filter out the category with the specified ID
-    data.category = data.category.filter(category => category.id !== categoryIdToRemove);
+    if (req.body) {
+        let id = req.body.id
+        let category = await collection.deleteOne({ _id: new ObjectId(id) })
 
-    // Write the updated JSON data back to the file
-    fs.writeFileSync(jsonDataPath, JSON.stringify(data, null, 2));
-
-    res.send({ code: 200, msg: "Category deleted successfully" });
+        if (category.deletedCount > 0) {
+            res.send({ code: 200, msg: 'Category deleted successfully' })
+        } else {
+            res.send({ code: 400, msg: 'User not delete' })
+        }
+    }
 }

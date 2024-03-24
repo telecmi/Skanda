@@ -66,9 +66,9 @@ exports.user = async (req, res) => {
                 let result = await collection.updateOne({ _id: new ObjectId(id) }, { $set: data })
 
                 if (result.modifiedCount === 1) {
-                    res.send({ code: 200, message: 'User updated successfully', data: data });
+                    res.send({ code: 200, message: 'User updated successfully', user: data });
                 } else {
-                    res.send({ code: 404, message: 'User not found or no changes made', data: data });
+                    res.send({ code: 404, message: 'User not found or no changes made', user: data });
                 }
             } catch (error) {
                 console.error('Error updating user:', error);

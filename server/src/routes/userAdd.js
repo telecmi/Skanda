@@ -10,7 +10,7 @@ const generateId = () => {
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, __dirname + '../../../public/img/user')
+        cb(null, __dirname + '../../../public/user')
     },
     filename: (req, file, cb) => {
 

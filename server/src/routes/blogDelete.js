@@ -1,39 +1,45 @@
 const jsonData = require('../utils/blogData.json');
-const fs = require('fs');
+const mongodb = require('../models/mongodb')
+const { ObjectId } = require('mongodb')
 const path = require('path');
+const fs = require('fs');
 
-exports.blog = (req, res) => {
-    const id = req.body.id;
+exports.blog = async (req, res) => {
+    const id = req.body._id;
+    const deleteFileID = req.body.id;
 
-    let jsonpath = path.join(__dirname, '../utils/blogData.json');
+    let dir = path.join(__dirname, '../../public/blog')
 
-    // // Send response
+    const dbName = await mongodb()
+    const collection = dbName.collection('blogs')
 
-    fs.readFile(jsonpath, 'utf8', (err, data) => {
-        if (err) {
-            console.error('Error reading JSON file:', err);
-            return;
-        }
+    let deleteBlog = await collection.deleteOne({ _id: new ObjectId(id) })
 
-        try {
-            // Parse the JSON data
-            const jsonData = JSON.parse(data);
+    if (deleteBlog.deletedCount > 0) {
 
-            // Filter out the object with the matching ID
-            jsonData.blog = jsonData.blog.filter(item => item.id !== id);
+        fs.readdir(dir, (err, files) => {
+            if (err) {
+                res.send({ code: 400, message: 'Blog not deleted' });
+                return;
+            }
 
-            // Write the updated JSON data back to the file
-            fs.writeFile(jsonpath, JSON.stringify(jsonData, null, 2), 'utf8', (err) => {
-                if (err) {
-                    console.error('Error writing JSON file:', err);
-                    return;
+            files.forEach(file => {
+                if (file.includes(deleteFileID)) {
+                    fs.unlink(path.join(dir, file), err => {
+                        if (err) {
+                            // res.send({ code: 400, message: 'Unable to delete blog files' });
+                        } else {
+                            // res.send({ code: 200, message: 'Blog deleted successfully' });
+                        }
+                    });
                 }
-                console.log('Object with ID', id, 'deleted successfully.');
             });
-        } catch (error) {
-            console.error('Error parsing JSON data:', error);
-        }
-    });
+        });
 
-    res.send({ code: 200, message: 'Blog delete successfully' });
+        res.send({ code: 200, message: 'Blog deleted successfully' });
+
+    } else {
+        res.send({ code: 400, message: 'Blog not deleted' });
+    }
+
 }

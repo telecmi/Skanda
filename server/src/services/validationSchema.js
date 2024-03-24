@@ -2,7 +2,7 @@ exports.blogIntroSchema = {
     type: "object",
     properties: {
         blog_title: { type: "string", pattern: "^\\S", minLength: 1 },
-        img: { type: "string", pattern: "^\\S", minLength: 1 },
+        img: { type: "object" },
         img_alt: { type: "string", pattern: "^\\S", minLength: 1 },
         description: {
             type: "array",

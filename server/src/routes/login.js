@@ -1,19 +1,27 @@
 const data = require('../utils/userData.json');
+const mongodb = require('../models/mongodb');
 
 
-exports.login = (req, res) => {
+exports.login = async (req, res) => {
+    try {
+        const data = req.body;
 
-    const findUser = (email, password) => {
-        return data.user.find(user => user.email === email && user.password === password);
-    };
+        if (!data) {
+            return res.status(400).json({ code: 400, msg: 'Invalid request: Missing data' });
+        }
 
-    const input = req.body
-    const user = findUser(input.userid, input.password);
+        const dbName = await mongodb();
+        const collection = dbName.collection('users');
 
-    if (user) {
-        res.send({ code: 200, msg: "user login successful", user: user });
-    } else {
-        res.send({ code: 400, msg: "user not found" });
+        const user = await collection.findOne({ email: data.userid, password: data.password });
+
+        if (user) {
+            return res.status(200).json({ code: 200, msg: 'User login successful', user: user });
+        } else {
+            return res.status(404).json({ code: 404, msg: 'User not found' });
+        }
+    } catch (error) {
+        console.error('Error during login:', error);
+        return res.status(500).json({ code: 500, msg: 'Internal server error' });
     }
-
-}
+};

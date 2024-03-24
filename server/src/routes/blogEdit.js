@@ -1,84 +1,91 @@
 const jsonData = require('../utils/blogData.json');
+const mongodb = require('../models/mongodb')
+const { ObjectId } = require('mongodb')
 const fs = require('fs');
 const path = require('path');
-const Ajv = require('ajv')
-const { metaSchema, ogSchema, twitterSchema, articleSchema, authorSchema, categorySchema, blogAdditionalSchema, blogIntroSchema, blogUrlSchema, sectionSchema, rcSchema, testiSchema, faqSchema } = require('../services/validationSchema')
 
-const ajv = new Ajv({
-    allowUnionTypes: true
-})
 
-exports.blog = (req, res) => {
-    const id = req.body.id;
-    const newData = req.body;
+exports.blog = async (req, res) => {
 
-    const metaValidate = ajv.compile(metaSchema)
-    const metaValid = metaValidate(newData.meta)
+    let data = req.body
+    let _id = req.body._id
 
-    const ogValidate = ajv.compile(ogSchema)
-    const ogValid = ogValidate(newData.og)
+    const uploadDir = '../../public/blog';
+    let fileArray = []
 
-    const twitterValidate = ajv.compile(twitterSchema)
-    const twitterValid = twitterValidate(newData.twitter)
+    let filesToKeep = [];
 
-    const articleValidate = ajv.compile(articleSchema)
-    const articleValid = articleValidate(newData.article)
-
-    const blogIntroValidate = ajv.compile(blogIntroSchema)
-    const blogIntroValid = blogIntroValidate(newData.blog_intro)
-
-    const blogUrlValidate = ajv.compile(blogUrlSchema)
-    const blogUrlValid = blogUrlValidate({ url_slug: newData.url_slug, canonical: newData.canonical })
-
-    const authorValidate = ajv.compile(authorSchema)
-    const authorValid = authorValidate(newData.author)
-
-    const categoryValidate = ajv.compile(categorySchema)
-    const categoryValid = categoryValidate(newData.category)
-
-    const additionalDataValidate = ajv.compile(blogAdditionalSchema)
-    const additionalDataValid = additionalDataValidate(newData.additional_data)
-
-    let sectionValid = true;
-    let faqValid = true;
-    let rcValid = true;
-    let testiValid = true;
-
-    newData.blog_data.forEach((e) => {
-        if (e.type === 'section') {
-            const sectionValidate = ajv.compile(sectionSchema)
-            sectionValid = sectionValidate(e.data)
+    function collectPaths(obj) {
+        for (let key in obj) {
+            if (typeof obj[key] === 'string' && obj[key].includes('/public/blog')) {
+                remove_pub_blog = obj[key].replace('/public/blog/', '')
+                filesToKeep.push(remove_pub_blog);
+            } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+                collectPaths(obj[key]);
+            }
         }
-        else if (e.type === 'faq') {
-            const faqValidate = ajv.compile(faqSchema)
-            faqValid = faqValidate(e.data)
-        }
-        else if (e.type === 'recommended_reading') {
-            const rcValidate = ajv.compile(rcSchema)
-            rcValid = rcValidate(e.data)
-        }
-        else if (e.type === 'testimonials') {
-            const testiValidate = ajv.compile(testiSchema)
-            testiValid = testiValidate(e.data)
-        }
-    })
-
-    if (metaValid && ogValid && twitterValid && articleValid && blogIntroValid && blogUrlValid && authorValid && categoryValid && additionalDataValid && sectionValid && rcValid && testiValid && faqValid) {
-
-        let jsonpath = path.join(__dirname, '../utils/blogData.json');
-        let blogData = JSON.parse(fs.readFileSync(jsonpath));
-
-        // Find the index of the entry with the matching ID
-        const index = blogData.blog.findIndex(entry => entry.id === id);
-        if (index !== -1) {
-            // Replace the old entry with the new data
-            blogData.blog[index] = newData;
-        }
-
-        fs.writeFileSync(jsonpath, JSON.stringify(blogData, null, 2));
-
-        res.send({ code: 200, message: 'Blog updated successfully' });
-    } else {
-        res.send({ code: 400, message: 'Blog not updated' });
     }
+
+    collectPaths(data);
+
+    console.log(filesToKeep);
+
+
+    fs.readdir(path.join(__dirname, uploadDir), (err, files) => {
+        if (err) {
+            console.error('Could not list the directory.', err);
+            return;
+        }
+
+        files.forEach((file) => {
+            if (file.startsWith(data.id+'_') && !filesToKeep.includes(file)) {
+                // This file is not in the list and should be removed
+                fs.unlink(path.join(path.join(__dirname, uploadDir), file), (err) => {
+                    if (err) {
+                        console.error('Error removing file:', file, err);
+                    } else {
+                        console.log('Removed file:', file);
+                    }
+                });
+            }
+        });
+    });
+
+    if (req.files) {
+        req.files.forEach((file) => {
+            const destinationPath = path.join(__dirname, uploadDir, data.id + '_' + file.originalname);
+
+            fs.writeFile(destinationPath, file.buffer, (err) => {
+                if (err) {
+                    // console.error('Error moving file:', err);
+                } else {
+                    // console.log('File uploaded successfully:', destinationPath);
+                }
+            });
+            fileArray.push({ "field": file.fieldname, "filename": '/public' + destinationPath.split('/public')[1] });
+        });
+    }
+
+
+    fileArray.forEach(({ field, filename }) => {
+        const path = field.split(/[\[\].]+/).filter(p => p);
+        let ref = data;
+        for (let i = 0; i < path.length - 1; i++) {
+            ref = ref[path[i]];
+            if (Array.isArray(ref)) {
+
+                ref = ref[parseInt(path[++i], 10)];
+            }
+        }
+        ref[path[path.length - 1]] = filename;
+    });
+
+    delete data._id
+
+    let dbName = await mongodb()
+    let collection = dbName.collection('blogs')
+    // await collection.insertOne(data)
+    await collection.updateOne({_id: new ObjectId(_id)},{$set: data})
+
+    res.send({ code: 200, msg: 'success' })
 }

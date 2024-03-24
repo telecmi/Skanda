@@ -1,109 +1,49 @@
 const fs = require('fs');
 const path = require('path');
-const Ajv = require('ajv')
-const { metaSchema, ogSchema, twitterSchema, articleSchema, authorSchema, categorySchema, blogAdditionalSchema, blogIntroSchema, blogUrlSchema, sectionSchema, rcSchema, testiSchema, faqSchema } = require('../services/validationSchema')
-
-const ajv = new Ajv({
-    allowUnionTypes: true
-})
+const mongodb = require('../models/mongodb')
 
 
-exports.blog = (req, res) => {
-    const newData = req.body;
+exports.blog = async (req, res) => {
 
-    const metaValidate = ajv.compile(metaSchema)
-    const metaValid = metaValidate(newData.meta)
+    let data = req.body
 
-    const ogValidate = ajv.compile(ogSchema)
-    const ogValid = ogValidate(newData.og)
+    const uploadDir = '../../public/blog';
+    let fileArray = []
 
-    const twitterValidate = ajv.compile(twitterSchema)
-    const twitterValid = twitterValidate(newData.twitter)
+    if (req.files) {
+        req.files.forEach((file) => {
+            const destinationPath = path.join(__dirname, uploadDir, data.id + '_' + file.originalname);
 
-    const articleValidate = ajv.compile(articleSchema)
-    const articleValid = articleValidate(newData.article)
-
-    const blogIntroValidate = ajv.compile(blogIntroSchema)
-    const blogIntroValid = blogIntroValidate(newData.blog_intro)
-
-    const blogUrlValidate = ajv.compile(blogUrlSchema)
-    const blogUrlValid = blogUrlValidate({ url_slug: newData.url_slug, canonical: newData.canonical })
-
-    const authorValidate = ajv.compile(authorSchema)
-    const authorValid = authorValidate(newData.author)
-
-    const categoryValidate = ajv.compile(categorySchema)
-    const categoryValid = categoryValidate(newData.category)
-
-    const additionalDataValidate = ajv.compile(blogAdditionalSchema)
-    const additionalDataValid = additionalDataValidate(newData.additional_data)
-
-    let sectionValid = true;
-    let faqValid = true;
-    let rcValid = true;
-    let testiValid = true;
-
-    newData.blog_data.forEach((e) => {
-        if (e.type === 'section') {
-            const sectionValidate = ajv.compile(sectionSchema)
-            sectionValid = sectionValidate(e.data)
-        }
-        else if (e.type === 'faq') {
-            const faqValidate = ajv.compile(faqSchema)
-            faqValid = faqValidate(e.data)
-        }
-        else if (e.type === 'recommended_reading') {
-            const rcValidate = ajv.compile(rcSchema)
-            rcValid = rcValidate(e.data)
-        }
-        else if (e.type === 'testimonials') {
-            const testiValidate = ajv.compile(testiSchema)
-            testiValid = testiValidate(e.data)
-        }
-    })
-
-    if (metaValid && ogValid && twitterValid && articleValid && blogIntroValid && blogUrlValid && authorValid && categoryValid && additionalDataValid && sectionValid && rcValid && testiValid && faqValid) {
-
-        // Define the file path where you want to store the data
-        const filePath = path.join(__dirname, '../utils/blogData.json')
-
-        // Read the existing data from the file
-        fs.readFile(filePath, 'utf8', (err, fileData) => {
-            if (err) {
-                return;
-            }
-
-            let jsonData = {};
-
-            // If file is empty or does not contain valid JSON, initialize jsonData with an empty blog array
-            if (!fileData.trim()) {
-                jsonData.blog = [];
-            } else {
-                try {
-                    // Parse the existing JSON data
-                    jsonData = JSON.parse(fileData);
-                } catch (parseError) {
-                    return;
-                }
-            }
-
-            // Push the new data into the blog array
-            jsonData.blog.push(newData);
-
-            // Convert the JavaScript object to a JSON string
-            const updatedData = JSON.stringify(jsonData);
-
-            // Write the updated JSON string back to the file
-            fs.writeFile(filePath, updatedData, (writeErr) => {
-                if (writeErr) {
-                    return;
+            fs.writeFile(destinationPath, file.buffer, (err) => {
+                if (err) {
+                    // console.error('Error moving file:', err);
+                } else {
+                    // console.log('File uploaded successfully:', destinationPath);
                 }
             });
+            fileArray.push({ "field": file.fieldname, "filename": '/public' + destinationPath.split('/public')[1] });
         });
-
-        res.send({ code: 200, msg: 'Blog added successfully' })
-
-    } else {
-        res.send({ code: 400, msg: 'Blog not added' })
     }
+
+
+    fileArray.forEach(({ field, filename }) => {
+        const path = field.split(/[\[\].]+/).filter(p => p);
+        let ref = data;
+        for (let i = 0; i < path.length - 1; i++) {
+            ref = ref[path[i]];
+            if (Array.isArray(ref)) {
+
+                ref = ref[parseInt(path[++i], 10)];
+            }
+        }
+        ref[path[path.length - 1]] = filename;
+    });
+
+
+
+    let dbName = await mongodb()
+    let collection = dbName.collection('blogs')
+    await collection.insertOne(data)
+
+    res.send({ code: 200, msg: 'success' })
 }

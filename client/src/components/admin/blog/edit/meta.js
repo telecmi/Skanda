@@ -12,13 +12,18 @@ export default class Meta extends Component {
         }
     }
     updateMetaContent = (value, type) => {
-        const foundIndex = this.state.meta.findIndex(item => item.type === type);
-        if (foundIndex !== -1) {
-            this.state.meta[foundIndex].content = value;
-            const { setBlogMetaData } = this.context
-            setBlogMetaData(this.state.meta)
-        }
-    }
+        const updatedMeta = this.state.meta.map(item => {
+            if (item.type === type) {
+                return { ...item, content: value };
+            }
+            return item;
+        });
+
+        this.setState({ meta: updatedMeta }, () => {
+            const { setBlogMetaData } = this.context;
+            setBlogMetaData(this.state.meta);
+        });
+    };
     componentDidMount() {
         const { editBlogData, setBlogMetaData } = this.context
         this.setState({ meta: editBlogData.meta })

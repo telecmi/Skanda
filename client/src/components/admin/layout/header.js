@@ -32,7 +32,9 @@ export default class header extends Component {
     }
     componentDidMount() {
         const userData = JSON.parse(localStorage.getItem('user'));
-        this.setState({ userData: userData })
+        if (userData) {
+            this.setState({ userData: userData })
+        }
     }
     render() {
         return (
@@ -81,18 +83,15 @@ export default class header extends Component {
                         <Menu as="div" className="relative">
                             <Menu.Button className="-m-1.5 flex items-center p-1.5">
                                 <span className="sr-only">Open user menu</span>
+                                {console.log(this.state.userData.photo)}
                                 {
                                     this.state.userData.photo ?
-                                        <img
-                                            className="h-8 w-8 rounded-full bg-gray-50"
-                                            src={this.state.userData.photo}
-                                            alt="User"
-                                        /> :
-                                        <UserCircleIcon className="" />
+                                        <img className="h-8 w-8 rounded-full bg-gray-50" src={'http://localhost:4000' + this.state.userData.photo} alt="User" /> :
+                                        <UserCircleIcon className="text-[#e1e3e5] h-10 w-auto " />
                                 }
                                 <span className="hidden lg:flex lg:items-center">
                                     <span className="ml-4 text-sm font-semibold capitalize leading-6 text-gray-900" aria-hidden="true">
-                                        {this.state.userData.firstname + ' ' + this.state.userData.lastname}
+                                        {this.state.userData && this.state.userData.firstname + ' ' + this.state.userData.lastname}
                                     </span>
                                     <ChevronDownIcon className="ml-2 h-5 w-5 text-gray-400" aria-hidden="true" />
                                 </span>

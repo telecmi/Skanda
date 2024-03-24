@@ -128,7 +128,7 @@ class Page extends Component {
     updateFaqQuestion = (content, sectionId) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
             ...blog,
-            data: blog.data.map(secData => ({
+            data: blog.data && blog.data.map(secData => ({
                 ...secData,
                 question: secData.id === sectionId ? this.formatContent(content) : secData.question
             }))
@@ -138,7 +138,7 @@ class Page extends Component {
     updateFaqAnswer = (content, sectionId) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
             ...blog,
-            data: blog.data.map(secData => ({
+            data: blog.data && blog.data.map(secData => ({
                 ...secData,
                 answer: secData.id === sectionId ? this.formatContent(content) : secData.answer
             }))
@@ -154,7 +154,7 @@ class Page extends Component {
     updateRCDesc = (content, sectionId) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
             ...blog,
-            data: blog.data.map(secData => ({
+            data: blog.data && blog.data && blog.data.map(secData => ({
                 ...secData,
                 description: secData.id === sectionId ? content : secData.description
             }))
@@ -164,7 +164,7 @@ class Page extends Component {
     updateRCLink = (content, sectionId) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
             ...blog,
-            data: blog.data.map(secData => ({
+            data: blog.data && blog.data && blog.data.map(secData => ({
                 ...secData,
                 link: secData.id === sectionId ? content : secData.link
             }))
@@ -174,7 +174,7 @@ class Page extends Component {
     updatetestiDesc = (content, sectionId) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
             ...blog,
-            data: blog.data.map(secData => ({
+            data: blog.data && blog.data.map(secData => ({
                 ...secData,
                 description: secData.id === sectionId ? content : secData.description
             }))
@@ -183,28 +183,23 @@ class Page extends Component {
     }
     updateTestiImg = (e, id) => {
         const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const fileData = reader.result;
-            const updatedSectionData = this.state.sectionData.map(blog => ({
-                ...blog,
-                data: blog.data.map(secData => {
-                    if (secData.id === id) {
-                        return { ...secData, img: fileData }
-                    }
-                    return secData
-                })
-            }));
-            this.setState({ sectionData: updatedSectionData });
-        };
-        if (file) {
-            reader.readAsDataURL(file);
-        }
+
+        const updatedSectionData = this.state.sectionData.map(blog => ({
+            ...blog,
+            data: blog.data && blog.data.map(secData => {
+                if (secData.id === id) {
+                    return { ...secData, img: file }
+                }
+                return secData
+            })
+        }));
+        this.setState({ sectionData: updatedSectionData });
+
     }
     updateTestiName = (content, sectionId) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
             ...blog,
-            data: blog.data.map(secData => ({
+            data: blog.data && blog.data.map(secData => ({
                 ...secData,
                 name: secData.id === sectionId ? content : secData.name
             }))
@@ -214,7 +209,7 @@ class Page extends Component {
     updateTestiRole = (content, sectionId) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
             ...blog,
-            data: blog.data.map(secData => ({
+            data: blog.data && blog.data.map(secData => ({
                 ...secData,
                 role: secData.id === sectionId ? content : secData.role
             }))
@@ -235,7 +230,7 @@ class Page extends Component {
 
         const updatedSectionData = this.state.sectionData.map(blog => ({
             ...blog,
-            data: blog.data.map(secDataItem => {
+            data: blog.data && blog.data.map(secDataItem => {
                 if (secDataItem.id === secData.id) {
                     return { ...secDataItem, content: e };
                 }
@@ -247,7 +242,7 @@ class Page extends Component {
     updateSecButData = (e, secData) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
             ...blog,
-            data: blog.data.map(secDataItem => {
+            data: blog.data && blog.data.map(secDataItem => {
                 if (secDataItem.id === secData.id) {
                     return { ...secDataItem, link: e.target.value };
                 }
@@ -258,28 +253,23 @@ class Page extends Component {
     }
     handleFileUpload = (e, id) => {
         const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const fileData = reader.result;
-            const updatedSectionData = this.state.sectionData.map(blog => ({
-                ...blog,
-                data: blog.data.map(secDataItem => {
-                    if (secDataItem.id === id) {
-                        return { ...secDataItem, content: fileData };
-                    }
-                    return secDataItem;
-                })
-            }));
-            this.setState({ sectionData: updatedSectionData });
-        };
-        if (file) {
-            reader.readAsDataURL(file);
-        }
+
+        const updatedSectionData = this.state.sectionData.map(blog => ({
+            ...blog,
+            data: blog.data && blog.data.map(secDataItem => {
+                if (secDataItem.id === id) {
+                    return { ...secDataItem, content: file };
+                }
+                return secDataItem;
+            })
+        }));
+        this.setState({ sectionData: updatedSectionData });
+
     };
     altText = (e, secData) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
             ...blog,
-            data: blog.data.map(secDataItem => {
+            data: blog.data && blog.data.map(secDataItem => {
                 if (secDataItem.id === secData.id) {
                     return { ...secDataItem, alt: e.target.value };
                 }
@@ -408,14 +398,14 @@ class Page extends Component {
 
         const { blogMetaData, setEditBlogModal, blogArtData, blogOgData, blogTwitterData, blogTableData, stickTop, comment, pubDate, editBlogData } = this.context
 
-        this.state.sectionData.forEach((e) => {
-            e.data.forEach((lk) => {
-                if (lk.id === blogTableData.id) {
-                    lk.content = blogTableData.data
-                    lk.colm = blogTableData.colm
-                }
-            })
-        })
+        // this.state.sectionData.forEach((e) => {
+        //     e.data.forEach((lk) => {
+        //         if (lk.id === blogTableData.id) {
+        //             lk.content = blogTableData.data
+        //             lk.colm = blogTableData.colm
+        //         }
+        //     })
+        // })
 
         let blogIntro = {
             "img": this.state.blog_intro_img,
@@ -443,6 +433,7 @@ class Page extends Component {
             "blog_data": this.state.sectionData,
             "additional_data": additionalData,
             "blog_intro": blogIntro,
+            "_id": editBlogData._id,
             "id": editBlogData.id
         }
 
@@ -494,10 +485,32 @@ class Page extends Component {
         let validationSub = {
             Meta: metaValid, OG: ogValid, Twitter: twitterValid, Article: articleValid, URL: blogUrlValid, category: categoryValid, author: authorValid, introduction_section: blogIntroValid, Section: sectionValidCheck, FAQ: faqValidCheck, recommended_reading: rcValidCheck, Testimonial: testiValidCheck
         }
-        
 
         if (validationSub.Meta && validationSub.OG && validationSub.Twitter && validationSub.Article && validationSub.URL && validationSub.category && validationSub.author && validationSub.introduction_section && validationSub.Section && validationSub.FAQ && validationSub.recommended_reading && validationSub.Testimonial) {
-            axiosInstance.post('/blogEdit', data).then((res) => {
+
+            let appendFormData = (data, parentKey, formData) => {
+                if (Array.isArray(data)) {
+                    data.forEach((item, index) => {
+                        appendFormData(item, `${parentKey}[${index}]`, formData);
+                    });
+                } else if (data && typeof data === 'object' && !(data instanceof File)) {
+                    Object.keys(data).forEach(key => {
+                        const fullKey = parentKey ? `${parentKey}[${key}]` : key;
+                        if (typeof data[key] === 'object' && !(data[key] instanceof File)) {
+                            appendFormData(data[key], fullKey, formData);
+                        } else if (data[key] !== undefined) {  // Ensure we don't append undefined values
+                            formData.append(fullKey, data[key]);
+                        }
+                    });
+                } else if (data !== undefined) {  // Ensure we don't append undefined values
+                    formData.append(parentKey, data);
+                }
+            };
+
+            const formData = new FormData();
+            appendFormData(data, '', formData);
+
+            axiosInstance.post('/blogEdit', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then((res) => {
                 if (res.data.code === 200) {
                     setEditBlogModal(false)
                     this.props.reload()
@@ -533,14 +546,14 @@ class Page extends Component {
 
 
 
-        this.state.sectionData.forEach((e) => {
-            e.data.forEach((lk) => {
-                if (lk.id === blogTableData.id) {
-                    lk.content = blogTableData.data
-                    lk.colm = blogTableData.colm
-                }
-            })
-        })
+        // this.state.sectionData.forEach((e) => {
+        //     e.data.forEach((lk) => {
+        //         if (lk.id === blogTableData.id) {
+        //             lk.content = blogTableData.data
+        //             lk.colm = blogTableData.colm
+        //         }
+        //     })
+        // })
 
         let blogIntro = {
             "img": this.state.blog_intro_img,
@@ -581,13 +594,7 @@ class Page extends Component {
     }
     blog_intro_img = (e) => {
         const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            this.setState({ blog_intro_img: reader.result });
-        };
-        if (file) {
-            reader.readAsDataURL(file);
-        }
+        this.setState({ blog_intro_img: file });
     }
     blog_intro_img_alt = (e) => {
         this.setState({ blog_intro_img_alt: e });
@@ -641,7 +648,7 @@ class Page extends Component {
 
         if (editBlogData) {
             let introData = editBlogData.blog_intro
-            let sectionData = editBlogData.blog_data
+            let sectionData = editBlogData ? editBlogData.blog_data : ''
             let url = [{ type: 'canonical', content: editBlogData.canonical }, { type: 'url_slug', content: editBlogData.url_slug }]
 
             this.setState({
@@ -789,7 +796,7 @@ class Page extends Component {
                                     </div>
                                 </div>
 
-                                {
+                                {this.state.sectionData &&
                                     this.state.sectionData.map((section, index) => (
                                         <div key={index} className="sm:col-span-2">
                                             <label className="mt-2 block text-sm font-semibold capitalize leading-6 text-gray-900">
@@ -853,7 +860,7 @@ class Page extends Component {
                                                                     </div> : ''
                                                     }
                                                     <div className='w-full'>
-                                                        {
+                                                        {section.data &&
                                                             section.data.map((secData, secIndex) => (
                                                                 <div key={secIndex}>
                                                                     <div className=' relative'>
@@ -958,7 +965,6 @@ class Page extends Component {
                                                                                             {
                                                                                                 secData.title === 'image' ?
                                                                                                     <div className='flex flex-col ring-1 gap-y-4 p-3 rounded-lg'>
-                                                                                                        {/* <img src={secData.content} alt="" className='w-80' /> */}
                                                                                                         <input accept=".webp, .png" type='file' onChange={(e) => this.handleFileUpload(e, secData.id)} className={`block w-full rounded-md  text-xs  px-3.5 py-2 text-gray-900 bg-white ring-1 border-none outline-none`} />
                                                                                                         <input onChange={(e) => this.altText(e, secData)} value={secData.alt} placeholder='ALT Text' type="text" className='block w-full rounded-md  px-3.5 py-2 text-gray-900 bg-white ring-1 border-none' />
                                                                                                     </div> :
@@ -1035,17 +1041,17 @@ class Page extends Component {
                                 <button onClick={() => this.addSection('section')} type="button" className="rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                                     Section
                                 </button>
-                                <button onClick={() => this.addSection('faq')} type="button" className="rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover-bg-gray-50">
-                                    FAQ
+                                <button onClick={() => this.addSection('recommended_reading')} type="button" className="rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover-bg-gray-50">
+                                    Recommended Reading
                                 </button>
                                 <button onClick={() => this.addSection('cta')} type="button" className="rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover-bg-gray-50">
                                     CTA
                                 </button>
-                                <button onClick={() => this.addSection('recommended_reading')} type="button" className="rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover-bg-gray-50">
-                                    Recommended Reading
-                                </button>
                                 <button onClick={() => this.addSection('testimonials')} type="button" className="rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover-bg-gray-50">
                                     Testimonials
+                                </button>
+                                <button onClick={() => this.addSection('faq')} type="button" className="rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover-bg-gray-50">
+                                    FAQ
                                 </button>
                             </div>
                             <div className="mt-10 flex justify-center space-x-6 pt-8">

@@ -88,9 +88,9 @@ export default class blogComponent extends Component {
                                     {this.state.data.map((blog, index) => (
                                         <div key={index}>
                                             <div>
-                                                <img className=" w-full rounded-2xl object-cover" src={blog.blog_intro.img} alt="Blog Images" />
+                                                <img style={{ aspectRatio: 1.75 }} className=" w-full rounded-2xl object-contain" src={'http://localhost:4000' + blog.blog_intro.img} alt="Blog Images" />
                                                 <h3 className="mt-5 text-lg font-semibold leading-8 tracking-tight text-gray-900 overflow-hidden text-ellipsis whitespace-nowrap">{blog.blog_intro.blog_title ? blog.blog_intro.blog_title : ""}</h3>
-                                                <p className="text-base leading-7 text-gray-600">{moment(blog.additional_data ? blog.additional_data.schedule : new Date()).format('MMMM DD, YYYY')}</p>
+                                                <p className="text-base leading-7 text-gray-600">{moment(blog.additional_data ? JSON.parse(blog.additional_data.schedule) : new Date()).format('MMMM DD, YYYY')}</p>
                                                 <div className='flex justify-between items-end'>
                                                     <div className=' overflow-hidden'>
                                                         <p className=' overflow-hidden whitespace-nowrap text-ellipsis capitalize'>{blog.author.firstname + ' ' + blog.author.lastname}</p>

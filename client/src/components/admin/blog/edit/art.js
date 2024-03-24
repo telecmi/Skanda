@@ -12,13 +12,18 @@ export default class Art extends Component {
         }
     }
     updateArtContent = (value, type) => {
-        const foundIndex = this.state.art.findIndex(item => item.type === type);
-        if (foundIndex !== -1) {
-            this.state.art[foundIndex].content = value;
-            const { setBlogArtData } = this.context
-            setBlogArtData(this.state.art)
-        }
-    }
+        const updatedArt = this.state.art.map(item => {
+            if (item.type === type) {
+                return { ...item, content: value };
+            }
+            return item;
+        });
+
+        this.setState({ art: updatedArt }, () => {
+            const { setBlogArtData } = this.context;
+            setBlogArtData(this.state.art);
+        });
+    };
     componentDidMount() {
         const { editBlogData, setBlogArtData } = this.context
         this.setState({ art: editBlogData.article })

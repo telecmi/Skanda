@@ -96,6 +96,7 @@ class Example extends Component {
             axiosInstance.post('/userEdit', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then((e) => {
                 if (e.data.code === 200) {
                     console.log(e.data)
+                    localStorage.setItem('user', JSON.stringify(e.data.user))
                     this.setState({ roleEdited: false, firstnameEdited: false, lastnameEdited: false, emailEdited: false, passwordEdited: false, cpasswordEdited: false, photoEdited: false })
                     setEditUserModal(false);
                     this.props.reload()

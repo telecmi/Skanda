@@ -9,7 +9,7 @@ const wordCount = (data) => {
         })
     }
 
-    data.sectionData.forEach((section) => {
+    data.sectionData && data.sectionData.forEach((section) => {
 
         if (section.type === 'section') {
             section.data.forEach((secData) => {
@@ -40,7 +40,7 @@ const wordCount = (data) => {
         }
     })
 
-    let count = wordcount.reduce((total, sentence) => total + sentence.split(/\s+/).length, 0);
+    let count = wordcount.reduce((total, sentence) => total + sentence.length, 0);
 
     const wordsPerMinute = 200;
     const baseTime = 1;

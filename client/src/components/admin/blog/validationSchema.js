@@ -2,7 +2,7 @@ const blogIntroSchema = {
     type: "object",
     properties: {
         blog_title: { type: "string", pattern: "^\\S", minLength: 1 },
-        img: { type: "string", pattern: "^\\S", minLength: 1 },
+        img: { type: ['object', 'string'], pattern: "^\\S", minLength: 1 },
         img_alt: { type: "string", pattern: "^\\S", minLength: 1 },
         description: {
             type: "array",
@@ -15,7 +15,6 @@ const blogIntroSchema = {
         },
     },
     required: ["img", "img_alt", "description", 'blog_title'],
-    additionalProperties: false,
 }
 
 const categorySchema = {
@@ -61,7 +60,7 @@ const ogSchema = {
         properties: {
             type: { type: 'string', minLength: 1 },
             content: {
-                type: 'string', pattern: "^\\S", minLength: 1
+                type: ['string', 'object'], pattern: "^\\S", minLength: 1
             },
         },
         // required: ['type', 'content']
@@ -75,7 +74,7 @@ const twitterSchema = {
         properties: {
             type: { type: 'string', minLength: 1 },
             content: {
-                type: 'string', pattern: "^\\S", minLength: 1
+                type: ['string', 'object'], pattern: "^\\S", minLength: 1
             },
         },
         // required: ['type', 'content']
@@ -111,7 +110,7 @@ const blogAdditionalSchema = {
     properties: {
         stick_to_top: { type: "boolean" },
         allow_comment: { type: "boolean" },
-        schedule: { type: "integer", },
+        schedule: { type: ["integer", 'string'], },
     },
     required: ["stick_to_top", "allow_comment", "schedule"],
     additionalProperties: false,
@@ -124,7 +123,7 @@ const sectionSchema = {
         properties: {
             title: { type: "string" },
             content: {
-                type: ["string", 'array', 'null'],
+                type: ["string", 'array', 'object', 'null'],
                 items: {
                     type: "string",
                     pattern: "^\\S",
@@ -169,7 +168,7 @@ const testiSchema = {
         type: "object",
         properties: {
             description: { type: ["string", "null"], pattern: "^\\S", minLength: 1 },
-            img: { type: ["string", "null"], },
+            img: { type: ["string", "object"], },
             name: { type: ["string", "null"], pattern: "^\\S", minLength: 1 },
             role: { type: ["string", "null"], pattern: "^\\S", minLength: 1 },
         },

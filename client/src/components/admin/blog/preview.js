@@ -29,28 +29,37 @@ class Example extends Component {
 
     componentDidMount() {
 
-        this.props.previewData.blog_data.forEach((e) => {
-            if (e.type === 'faq') {
-                this.setState({ blog_faq: e.data })
-            }
-        })
+        setTimeout(() => {
+            window.scrollTo(0, 0);
+          }, 100);
 
-        this.props.previewData.blog_data.forEach((e) => {
-            if (e.type === 'section') {
-                e.data.forEach((secData) => {
-                    if (secData.title === 'table') {
-                        let data = secData.content
-                        const colSize = secData.colm;
-                        const headers = data.slice(0, colSize);
-                        const bodyContent = data.slice(colSize);
-                        this.setState({ headers: headers, bodyContent: bodyContent, tableBodyCount: bodyContent.length / parseInt(secData.colm), })
-                    }
-                    if (secData.title === 'heading' && secData.titleTag === 'h2') {
-                        this.state.toc.push(secData.content)
-                    }
-                })
-            }
-        })
+        if (this.props.previewData.blog_data) {
+
+            this.props.previewData.blog_data.forEach((e) => {
+                if (e.type === 'faq') {
+                    this.setState({ blog_faq: e.data })
+                }
+            })
+
+            this.props.previewData.blog_data.forEach((e) => {
+                if (e.type === 'section') {
+                    e.data.forEach((secData) => {
+                        if (secData.title === 'table') {
+                            let data = secData.content
+                            const colSize = secData.colm;
+                            const headers = data.slice(0, colSize);
+                            const bodyContent = data.slice(colSize);
+                            this.setState({ headers: headers, bodyContent: bodyContent, tableBodyCount: bodyContent.length / parseInt(secData.colm), })
+                        }
+                        if (secData.title === 'heading' && secData.titleTag === 'h2') {
+                            this.state.toc.push(secData.content)
+                        }
+                    })
+                }
+            })
+
+        }
+
 
     }
 
@@ -100,7 +109,7 @@ class Example extends Component {
                                     <div className='flex'>
                                         <div className='w-3/4 flex'>
                                             <div className='w-11/12 rounded-3xl overflow-hidden'>
-                                                <img className='w-full' src={this.props.previewData ? this.props.previewData.blog_intro.img : ""} alt={this.props.previewData ? this.props.previewData.blog_intro.alt : ''} />
+                                                <img style={{aspectRatio: '1.75'}} className='w-full object-contain' src={this.props.previewData ? 'http://localhost:4000' + this.props.previewData.blog_intro.img : ""} alt={this.props.previewData ? this.props.previewData.blog_intro.alt : ''} />
                                             </div>
                                         </div>
                                         <div className='w-1/4 flex flex-col items-center justify-end'>
@@ -117,13 +126,13 @@ class Example extends Component {
                                                             {
                                                                 this.props.previewData.author.photo ?
 
-                                                                    <img style={{ width: '100%', height: '100%', objectFit: 'cover' }} src={this.props.previewData.author.photo} alt="Author" />
+                                                                    <img style={{ width: '100%', height: '100%', objectFit: 'cover' }} src={'http://localhost:4000' + this.props.previewData.author.photo} alt="Author" />
 
                                                                     : <UserCircleIcon className='w-full h-full text-[#e1e3e5]' />
                                                             }
                                                         </div>
                                                         <div className='text-center w-24 flex flex-col gap-y-1'>
-                                                            <p className='text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis'>{this.props.previewData.author.firstname + ' ' + this.props.previewData.author.lastname}</p>
+                                                            <p className='text-xs font-medium whitespace-nowrap capitalize overflow-hidden overflow-ellipsis'>{this.props.previewData.author.firstname + ' ' + this.props.previewData.author.lastname}</p>
                                                             <p className='text-[11px] whitespace-nowrap overflow-hidden overflow-ellipsis'>{this.props.previewData.author.role}</p>
                                                         </div>
                                                     </div>
@@ -137,7 +146,7 @@ class Example extends Component {
 
                                     {/* Left table of contents & CTA */}
                                     <div className='w-1/4 flex flex-col gap-y-6'>
-                                        {this.state.toc > 0 &&
+                                        {this.state.toc.length > 0 &&
                                             <div className='py-10 px-8 flex flex-col gap-y-4 bg-white shadow-md rounded-2xl text-left'>
                                                 <p className='text-[#898e99] text-base font-medium'>Introduction</p>
                                                 {this.state.toc.map((e, index) => (
@@ -169,7 +178,7 @@ class Example extends Component {
                                                         <span dangerouslySetInnerHTML={{
                                                             __html: e.description
                                                                 .replace(/\*(.*?)\*/g, '<strong>$1</strong>')
-                                                                .replace(/(-\- )(.*)[^:]/g, '<li style="padding-left: 10px; list-style-type: disc;">$2</li>')
+                                                                .replace(/(-- )(.*)[^:]/g, '<li style="padding-left: 10px; list-style-type: disc;">$2</li>')
                                                         }} />
                                                     </p>
                                                 ))
@@ -197,7 +206,7 @@ class Example extends Component {
                                                                     e.data.map((e, index) => (
                                                                         <ul key={index} className='flex flex-col list-disc pl-8 gap-y-3'>
                                                                             <li className='text-[#f0f1f2] text-base text-left'>
-                                                                                <a target='_blank' href={e.link}>{e.description}</a>
+                                                                                <a target='_blank' rel='noreferrer' href={e.link}>{e.description}</a>
                                                                             </li>
                                                                         </ul>
                                                                     ))
@@ -236,10 +245,10 @@ class Example extends Component {
                                                                         {e.data[0].description}
                                                                     </p>
                                                                 </div>
-                                                                
+
                                                                 <div className='flex gap-x-5'>
                                                                     <div className='w-12 h-12 rounded-full overflow-hidden'>
-                                                                        <img className='w-full h-full' src={e.data[0].img} alt="" />
+                                                                        <img className='w-full h-full' src={'http://localhost:4000' + e.data[0].img} alt="" />
                                                                     </div>
                                                                     <div className='flex flex-col gap-y-1 items-start'>
                                                                         <p className='text-[#222222] font-semibold'>{e.data[0].name}</p>
@@ -268,20 +277,20 @@ class Example extends Component {
                                                                                         <span dangerouslySetInnerHTML={{
                                                                                             __html: secData.content
                                                                                                 .replace(/\*(.*?)\*/g, '<strong>$1</strong>') // Bold text enclosed in '*'
-                                                                                                .replace(/(-\- )(.*)[^:]/g, '<li style="padding-left: 10px; list-style-type: disc;">$2</li>') // '-. ' followed by content
-                                                                                                .replace(/(\.\s)(\w)/g, '.$2') // Reduce space between '.' and content starting letter
+                                                                                                .replace(/(-- )(.*)[^:]/g, '<li style="padding-left: 10px; list-style-type: disc;">$2</li>') // '-. ' followed by content
+                                                                                            // Reduce space between '.' and content starting letter
                                                                                         }} />
                                                                                     </p>
                                                                                 )
                                                                                     :
                                                                                     secData.title === 'image' ?
                                                                                         <div className='w-11/12 overflow-hidden rounded-2xl my-2'>
-                                                                                            <img className='' src={secData.content} alt="" />
+                                                                                            <img className='' src={'http://localhost:4000' + secData.content} alt="" />
                                                                                         </div>
                                                                                         :
                                                                                         secData.title === 'video' ?
                                                                                             <div className='w-11/12 overflow-hidden rounded-2xl my-2'>
-                                                                                                <video controls className='' src={secData.content} alt="" />
+                                                                                                <video controls className='' src={'http://localhost:4000' + secData.content} alt="" />
                                                                                             </div>
                                                                                             :
                                                                                             secData.title === 'table' ?

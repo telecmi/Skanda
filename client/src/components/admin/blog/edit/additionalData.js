@@ -69,7 +69,7 @@ export default class additionalData extends Component {
                             <div className="space-y-5">
                                 <div className="relative flex items-start">
                                     <div className="flex h-6 items-center">
-                                        <input onChange={this.stickCheckboxChange} checked={this.context.stickTop} id="comments" aria-describedby="comments-description" name="comments" type="checkbox" className="h-4 w-4 rounded border-gray-300 text-gray-700 focus:ring-0" />
+                                        <input onChange={this.stickCheckboxChange} checked={JSON.parse(this.context.stickTop)} id="comments" aria-describedby="comments-description" name="comments" type="checkbox" className="h-4 w-4 rounded border-gray-300 text-gray-700 focus:ring-0" />
                                     </div>
                                     <div className="ml-3 text-sm leading-6">
                                         <label htmlFor="comments" className="font-medium text-gray-900">
@@ -79,7 +79,7 @@ export default class additionalData extends Component {
                                 </div>
                                 <div className="relative flex items-start">
                                     <div className="flex h-6 items-center">
-                                        <input onChange={this.commentCheckboxChange} checked={this.context.comment} id="candidates" aria-describedby="candidates-description" name="candidates" type="checkbox" className="h-4 w-4 rounded border-gray-300 text-gray-700 focus:ring-0" />
+                                        <input onChange={this.commentCheckboxChange} checked={JSON.parse(this.context.comment)} id="candidates" aria-describedby="candidates-description" name="candidates" type="checkbox" className="h-4 w-4 rounded border-gray-300 text-gray-700 focus:ring-0" />
                                     </div>
                                     <div className="ml-3 text-sm leading-6">
                                         <label htmlFor="candidates" className="font-medium text-gray-900">
@@ -94,12 +94,12 @@ export default class additionalData extends Component {
                                     {
                                         this.state.selectDate ?
                                             <div className=' max-w-[80%]'>
-                                                <Calendar onChange={this.onChangeDate} value={this.context.pubDate ? moment(this.context.pubDate).format('MMMM DD,YYYY') : new Date()} />
+                                                <Calendar onChange={this.onChangeDate} value={this.context.pubDate ? moment(parseInt(this.context.pubDate)).format('MMMM DD,YYYY') : new Date()} />
                                             </div>
                                             :
                                             <div className="mt-0 flex items-center space-x-5">
                                                 <CalendarIcon onClick={this.calenderOpen} className='w-6 h-6 text-slate-600 cursor-pointer' />
-                                                <input className=' w-4/5 text-sm rounded-md' type="text" readOnly value={this.context.pubDate ? moment(this.context.pubDate).format('MMMM DD,YYYY') : ''} />
+                                                <input className=' w-4/5 text-sm rounded-md' type="text" readOnly value={this.context.pubDate ? moment(parseInt(this.context.pubDate)).format('MMMM DD,YYYY') : ''} />
                                             </div>
                                     }
                                 </div>

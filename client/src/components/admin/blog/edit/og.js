@@ -21,15 +21,13 @@ export default class Og extends Component {
 
             if (files && files.length > 0) {
                 // Handle file data
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    updatedOgData[foundIndex].content = reader.result; // Update the content with file data
 
-                    const { setBlogOgData } = this.context
-                    setBlogOgData(updatedOgData)
-                    this.setState({ ogData: updatedOgData }); // Update the state with the updated ogData array
-                };
-                reader.readAsDataURL(files[0]); // Read the file as a data URL
+                updatedOgData[foundIndex].content = files[0]; // Update the content with file data
+
+                const { setBlogOgData } = this.context
+                setBlogOgData(updatedOgData)
+                this.setState({ ogData: updatedOgData }); // Update the state with the updated ogData array
+                // Read the file as a data URL
             } else {
                 // Handle text data
                 updatedOgData[foundIndex].content = value; // Update the content with text data

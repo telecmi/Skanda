@@ -23,7 +23,7 @@ export default class Og extends Component {
                 // Handle file data
                 const reader = new FileReader();
                 reader.onloadend = () => {
-                    updatedOgData[foundIndex].content = reader.result; // Update the content with file data
+                    updatedOgData[foundIndex].content = files[0] // Update the content with file data
 
                     const { setBlogOgData } = this.context
                     setBlogOgData(updatedOgData)
@@ -41,25 +41,6 @@ export default class Og extends Component {
         }
     }
 
-    fileUpload = (e, type) => {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-
-        reader.onloadend = () => {
-            const fileData = reader.result;
-            const updatedSectionData = blog_og_structure.map(og => {
-                if (og.type === type) {
-                    return { ...og, content: fileData }
-                }
-                return og
-            })
-            const { setBlogOgData } = this.context
-            setBlogOgData(updatedSectionData)
-        };
-        if (file) {
-            reader.readAsDataURL(file);
-        }
-    }
     render() {
         return (
             <div className='mt-2'>
@@ -77,7 +58,7 @@ export default class Og extends Component {
                                 <div className='relative'>
                                     {section.type === 'og_image' || section.type === 'og_image_secure_url' ?
                                         <input
-                                            onChange={(e) => this.updateOgContent(e, section.type)} type='file'
+                                            onChange={(e) => this.updateOgContent(e, section.type)} type='file' accept='.webp, .png'
                                             className={`block w-full rounded-md text-xs py-[9px] px-3.5 text-gray-900 shadow-sm ring-1 border-none bg-white `}
                                         /> :
                                         <input

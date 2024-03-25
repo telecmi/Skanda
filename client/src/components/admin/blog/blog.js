@@ -43,14 +43,14 @@ export default class blogComponent extends Component {
 
     reload = () => {
         setTimeout(() => {
-            axiosInstance.post('/blogGet').then((e) => {
+            axiosInstance.get('/blogGet').then((e) => {
                 this.setState({ data: e.data.blog })
             }).catch((e) => { })
         }, 1000)
     }
 
     componentDidMount() {
-        axiosInstance.post('/blogGet').then((e) => {
+        axiosInstance.get('/blogGet').then((e) => {
             this.setState({ data: e.data.blog })
         }).catch((e) => { })
 

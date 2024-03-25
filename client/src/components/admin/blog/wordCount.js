@@ -40,13 +40,19 @@ const wordCount = (data) => {
         }
     })
 
-    let count = wordcount.reduce((total, sentence) => total + sentence.length, 0);
+
+    let count = wordcount.reduce((total, text) => {
+        // Split the text on spaces, punctuation, and line breaks to count words.
+        const words = text.split(/[\s,.!?;:()]+/).filter(Boolean);
+        return total + words.length;
+    }, 0);
 
     const wordsPerMinute = 200;
-    const baseTime = 1;
+    const additionalTime = Math.ceil(count / wordsPerMinute);
 
-    const additionalTime = Math.ceil(count / wordsPerMinute) - 1;
-    const totalTime = baseTime + additionalTime + `${additionalTime > 0 ? ' mins read' : ' min read'} `;
+    // If the additional time is 0, it means the reading time is less than a minute.
+    // We can adjust the message accordingly.
+    const totalTime = additionalTime > 0 ? `${additionalTime} mins read` : 'Less than a minute read';
 
     return totalTime;
 }

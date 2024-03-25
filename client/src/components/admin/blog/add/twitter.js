@@ -16,7 +16,7 @@ export default class meta extends Component {
     updateTwitterContent = (e, type) => {
         const { value, files } = e.target;
         if (!Array.isArray(this.state.twitterData)) {
-            console.error('twitterData is not an array');
+            // console.error('twitterData is not an array');
             return;
         }
 

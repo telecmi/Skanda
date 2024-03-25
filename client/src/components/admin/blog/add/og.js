@@ -62,7 +62,7 @@ export default class Og extends Component {
                                             className={`block w-full rounded-md text-xs py-[9px] px-3.5 text-gray-900 shadow-sm ring-1 border-none bg-white `}
                                         /> :
                                         <input
-                                            onChange={(e) => this.updateOgContent(e, section.type)} pattern="[0-9]{10}" type={section.type === 'og_image_width' || section.type === 'og_image_height' ? 'number' : 'text'}
+                                            onChange={(e) => this.updateOgContent(e, section.type)} pattern="[0-9]" type={section.type === 'og_image_width' || section.type === 'og_image_height' ? 'number' : 'text'}
                                             className={`block w-full rounded-md  py-2 px-3.5 text-gray-900 shadow-sm ring-1 border-none bg-white `}
                                         />
                                     }

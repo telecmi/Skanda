@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react';
 import { FolderIcon, UsersIcon, XMarkIcon } from '@heroicons/react/24/outline';
-
+import AppStateContext from '../../../utils/AppStateContext';
 
 const navigation = [
     { name: 'Blog', href: 'blog', icon: FolderIcon, current: true },
@@ -17,19 +17,49 @@ function classNames(...classes) {
 
 export default class sidebarMob extends Component {
 
+    static contextType = AppStateContext
     constructor(props) {
         super(props);
         this.state = {
             sidebarOpen: false,
-            currentNavigation: ''
+            currentNavigation: '',
+            filteredNavigation: []
         };
     }
+    closeMenu = () => {
+        const { setSidebarMenu } = this.context
+        setSidebarMenu(false)
+    }
+    handleNavigationClick = (item) => {
+        this.setState({ currentNavigation: item.href, sidebarOpen: false });
+        this.props.redirect(item.href)
+        const { setSidebarMenu } = this.context
+        setSidebarMenu(false)
+    };
+    componentDidMount() {
+        // Set initial state based on the current URL or any other logic
+        const currentPath = window.location.pathname.substring(1); // Assuming your URLs don't have leading '/'
+        if (currentPath) {
+            this.setState({ currentNavigation: currentPath === 'home' ? 'blog' : '' });
+        } else {
+            this.setState({ currentNavigation: 'blog' });
+        }
+
+        let userData = JSON.parse(localStorage.getItem('user'))
+
+        let filteredNavigation
+
+        if (userData) {
+            filteredNavigation = userData.role === 'Admin' ? navigation : navigation.filter(item => item.name !== 'Users');
+
+            this.setState({ filteredNavigation: filteredNavigation })
+        }
+    }
     render() {
-        const { sidebarOpen } = this.state;
 
         return (
-            <Transition.Root show={sidebarOpen} as={Fragment}>
-                <Dialog as="div" className="relative z-50 lg:hidden" onClose={() => this.setState({ sidebarOpen: false })}>
+            <Transition.Root show={this.context.sidebarMenu} as={Fragment}>
+                <Dialog as="div" className="relative z-50 lg:hidden" onClose={() => this.closeMenu()}>
                     <Transition.Child
                         as={Fragment}
                         enter="transition-opacity ease-linear duration-300"
@@ -63,7 +93,7 @@ export default class sidebarMob extends Component {
                                     leaveTo="opacity-0"
                                 >
                                     <div className="absolute left-full top-0 flex w-16 justify-center pt-5">
-                                        <button type="button" className="-m-2.5 p-2.5" onClick={() => this.setState({ sidebarOpen: false })}>
+                                        <button type="button" className="-m-2.5 p-2.5" onClick={() => this.closeMenu()}>
                                             <span className="sr-only">Close sidebar</span>
                                             <XMarkIcon className="h-6 w-6 text-white" aria-hidden="true" />
                                         </button>
@@ -84,24 +114,25 @@ export default class sidebarMob extends Component {
                                             <div className="-mx-2 space-y-1">
                                                 {navigation.map((item) => (
                                                     <div key={item.name}>
-                                                        <a
+                                                        <div
                                                             href={item.href}
+                                                            onClick={() => this.handleNavigationClick(item)}
                                                             className={classNames(
                                                                 item.current
-                                                                    ? 'bg-gray-50 text-indigo-600'
-                                                                    : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50',
-                                                                'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                                                                    ? 'bg-gray-50 text-[#e84c3d]'
+                                                                    : 'text-gray-700 hover:text-[#e84c3d] hover:bg-gray-50',
+                                                                'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold cursor-pointer'
                                                             )}
                                                         >
                                                             <item.icon
                                                                 className={classNames(
-                                                                    item.current ? 'text-indigo-600' : 'text-gray-400 group-hover:text-indigo-600',
+                                                                    item.current ? 'text-[#e84c3d]' : 'text-gray-400 group-hover:text-[#e84c3d]',
                                                                     'h-6 w-6 shrink-0'
                                                                 )}
                                                                 aria-hidden="true"
                                                             />
                                                             {item.href}
-                                                        </a>
+                                                        </div>
                                                     </div>
                                                 ))}
                                             </div>

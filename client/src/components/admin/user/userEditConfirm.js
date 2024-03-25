@@ -22,13 +22,18 @@ class Example extends Component {
         super(props);
         this.state = {
             open: true,
-            photo: '',
+            photo: null,
             role: people[0],
-            firstname: '',
-            lastname: '',
-            email: '',
-            password: '',
-            cpassword: ''
+            firstname: null,
+            lastname: null,
+            email: null,
+            password: null,
+            cpassword: null,
+            bio: null,
+            twitter: null,
+            instagram: null,
+            linkedin: null,
+            facebook: null,
         };
     }
 
@@ -72,32 +77,58 @@ class Example extends Component {
 
 
         const userData = {
+            photo: this.state.photoEdited ? this.state.photo : editUserData.photo,
             firstname: this.state.firstnameEdited ? this.state.firstname : editUserData.firstname,
             lastname: this.state.lastnameEdited ? this.state.lastname : editUserData.lastname,
             email: this.state.emailEdited ? this.state.email : editUserData.email,
             role: this.state.roleEdited ? this.state.role : editUserData.role,
             password: this.state.passwordEdited ? this.state.password : editUserData.password,
-            photoOld: this.state.photoEdited ? true : false,
-            id: editUserData._id,
-            photoOldURL: editUserData.photo || false
+            _id: editUserData._id,
+            id: editUserData.id,
+            bio: this.state.bioEdited ? this.state.bio : editUserData.bio,
+            twitter: this.state.twitterEdited ? this.state.twitter : editUserData.twitter,
+            instagram: this.state.instagramEdited ? this.state.instagram : editUserData.instagram,
+            linkedin: this.state.linkedinEdited ? this.state.linkedin : editUserData.linkedin,
+            facebook: this.state.facebookEdited ? this.state.facebook : editUserData.facebook,
         };
 
-        let formData = new FormData()
-        this.state.photoEdited && formData.append('photo', this.state.photoURL)
-        formData.append('userData', JSON.stringify(userData))
+        let appendFormData = (data, parentKey, formData) => {
+            if (Array.isArray(data)) {
+                data.forEach((item, index) => {
+                    appendFormData(item, `${parentKey}[${index}]`, formData);
+                });
+            } else if (data && typeof data === 'object' && !(data instanceof File)) {
+                Object.keys(data).forEach(key => {
+                    const fullKey = parentKey ? `${parentKey}[${key}]` : key;
+                    if (typeof data[key] === 'object' && !(data[key] instanceof File)) {
+                        appendFormData(data[key], fullKey, formData);
+                    } else if (data[key] !== undefined) {  // Ensure we don't append undefined values
+                        formData.append(fullKey, data[key]);
+                    }
+                });
+            } else if (data !== undefined) {  // Ensure we don't append undefined values
+                formData.append(parentKey, data);
+            }
+        };
 
-        if (_.isEmpty(userData.email) || _.isEmpty(userData.firstname) || _.isEmpty(userData.lastname) || _.isEmpty(userData.password)) {
+        const formData = new FormData();
+        appendFormData(userData, '', formData);
+
+        // let formData = new FormData()
+        // this.state.photoEdited && formData.append('photo', this.state.photoURL)
+        // formData.append('userData', JSON.stringify(userData))
+
+        if (_.isEmpty(userData.email) || _.isEmpty(userData.firstname) || _.isEmpty(userData.lastname) || _.isEmpty(userData.password) || _.isEmpty(userData.bio)) {
             alert('fill the details')
         }
         else if (userData.password !== cpassword) {
             alert('Password and confirm password not same')
         }
         else {
-            axiosInstance.post('/userEdit', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then((e) => {
+            axiosInstance.put('/userEdit', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then((e) => {
                 if (e.data.code === 200) {
-                    console.log(e.data)
-                    localStorage.setItem('user', JSON.stringify(e.data.user))
-                    this.setState({ roleEdited: false, firstnameEdited: false, lastnameEdited: false, emailEdited: false, passwordEdited: false, cpasswordEdited: false, photoEdited: false })
+                    // localStorage.setItem('user', JSON.stringify(e.data.user))
+                    this.setState({ roleEdited: false, firstnameEdited: false, lastnameEdited: false, emailEdited: false, passwordEdited: false, cpasswordEdited: false, photoEdited: false, bioEdited: false })
                     setEditUserModal(false);
                     this.props.reload()
                 } else {
@@ -116,20 +147,15 @@ class Example extends Component {
     }
 
     handleImageChange = (e) => {
-        const selectedImage = e.target.files[0];
-        this.setState({ photoURL: selectedImage })
+        let file = e.target.files[0]
+        this.setState({ photo: file })
+        this.setState({ photoEdited: true })
         const reader = new FileReader();
-
         reader.onloadend = () => {
-            // Set the selected image to the state
-            this.setState({ photo: reader.result });
-            this.setState({ photoEdited: true });
-
+            this.setState({ photoURL: reader.result });
         };
-
-        if (selectedImage) {
-            // Read the selected image as a data URL
-            reader.readAsDataURL(selectedImage);
+        if (file) {
+            reader.readAsDataURL(file);
         }
     };
 
@@ -164,7 +190,7 @@ class Example extends Component {
                             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         >
-                            <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:w-full sm:max-w-md sm:p-6">
+                            <div className="relative transform overflow-auto h-[530px] rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:w-full sm:max-w-md sm:p-6">
 
                                 <div className='flex justify-between'>
                                     <div className="col-span-full pb-4">
@@ -175,13 +201,13 @@ class Example extends Component {
                                             {
                                                 this.state.photoEdited ?
                                                     <div className='h-12 w-12 rounded-full overflow-hidden flex'>
-                                                        <img className='h-12 w-12 rounded' src={this.state.photo} alt="user profile" />
+                                                        <img className='h-12 w-12 rounded object-contain' src={this.state.photoURL} alt="user profile" />
                                                     </div>
                                                     :
                                                     this.context.editUserData.photo ?
 
                                                         <div className='h-12 w-12 rounded-full overflow-hidden flex'>
-                                                            <img className='h-12 w-12 rounded' src={'http://localhost:4000' + this.context.editUserData.photo} alt="user profile" />
+                                                            <img className='h-12 w-12 rounded object-contain' src={'http://localhost:4000' + this.context.editUserData.photo} alt="user profile" />
                                                         </div> :
 
                                                         <UserCircleIcon className="h-12 w-12 text-gray-300" aria-hidden="true" />
@@ -276,10 +302,6 @@ class Example extends Component {
                                         <input
                                             onChange={this.lastnameChange}
                                             defaultValue={this.context.editUserData.lastname}
-                                            type="text"
-                                            name="first-name"
-                                            id="last-name"
-                                            autoComplete="given-name"
                                             className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1  ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                                         />
                                     </div>
@@ -294,10 +316,6 @@ class Example extends Component {
                                             disabled
                                             onChange={this.emailChange}
                                             defaultValue={this.context.editUserData.email}
-                                            type="text"
-                                            name="first-name"
-                                            id="email"
-                                            autoComplete="given-name"
                                             className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1  ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                                         />
                                     </div>
@@ -312,9 +330,6 @@ class Example extends Component {
                                             onChange={this.passwordChange}
                                             defaultValue={this.context.editUserData.password}
                                             type="password"
-                                            name="first-name"
-                                            id="password"
-                                            autoComplete="given-name"
                                             className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1  ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                                         />
                                     </div>
@@ -329,9 +344,71 @@ class Example extends Component {
                                             onChange={this.cpasswordChange}
                                             defaultValue={this.context.editUserData.password}
                                             type="password"
-                                            name="first-name"
-                                            id="confirm-password"
-                                            autoComplete="given-name"
+                                            className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1  ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="sm:col-span-3 pb-4">
+                                    <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
+                                        Bio *
+                                    </label>
+                                    <div className="mt-2">
+                                        <input
+                                            onChange={(e) => this.setState({ bio: e.target.value, bioEdited: true })}
+                                            defaultValue={this.context.editUserData.bio}
+                                            className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1  ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="sm:col-span-3 pb-4">
+                                    <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
+                                        Twitter
+                                    </label>
+                                    <div className="mt-2">
+                                        <input
+                                            onChange={(e) => this.setState({ twitter: e.target.value, twitterEdited: true })}
+                                            defaultValue={this.context.editUserData.twitter}
+                                            className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1  ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="sm:col-span-3 pb-4">
+                                    <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
+                                        Instagram
+                                    </label>
+                                    <div className="mt-2">
+                                        <input
+                                            onChange={(e) => this.setState({ instagram: e.target.value, instagramEdited: true })}
+                                            defaultValue={this.context.editUserData.instagram}
+                                            className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1  ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="sm:col-span-3 pb-4">
+                                    <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
+                                        LinkedIn
+                                    </label>
+                                    <div className="mt-2">
+                                        <input
+                                            onChange={(e) => this.setState({ linkedin: e.target.value, linkedinEdited: true })}
+                                            defaultValue={this.context.editUserData.linkedin}
+                                            className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1  ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="sm:col-span-3 pb-4">
+                                    <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
+                                        Facebook
+                                    </label>
+                                    <div className="mt-2">
+                                        <input
+                                            onChange={(e) => this.setState({ facebook: e.target.value, facebookEdited: true })}
+                                            defaultValue={this.context.editUserData.facebook}
                                             className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1  ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                                         />
                                     </div>

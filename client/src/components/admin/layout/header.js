@@ -3,6 +3,7 @@ import { ChevronDownIcon, MagnifyingGlassIcon, UserCircleIcon } from '@heroicons
 import { Bars3Icon } from '@heroicons/react/24/outline';
 import { Transition, Menu } from '@headlessui/react';
 import { Navigate } from 'react-router-dom'
+import AppStateContext from '../../../utils/AppStateContext';
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ');
@@ -14,6 +15,7 @@ const userNavigation = [
 
 export default class header extends Component {
 
+    static contextType = AppStateContext
     constructor(props) {
         super(props)
 
@@ -23,7 +25,10 @@ export default class header extends Component {
         }
     }
 
-
+    openMenu = () => {
+        const { setSidebarMenu } = this.context
+        setSidebarMenu(true)
+    }
     menu = (e) => {
         if (e === 'Log out') {
             this.setState({ navigate: true })
@@ -51,7 +56,7 @@ export default class header extends Component {
                 </div>
                 <button type="button" className="-m-2.5 p-2.5 text-gray-700 lg:hidden" onClick={() => this.setState({ sidebarOpen: true })}>
                     <span className="sr-only">Open sidebar</span>
-                    <Bars3Icon className="h-6 w-6" aria-hidden="true" />
+                    <Bars3Icon onClick={this.openMenu} className="h-6 w-6" aria-hidden="true" />
                 </button>
 
                 {/* Separator */}
@@ -83,7 +88,6 @@ export default class header extends Component {
                         <Menu as="div" className="relative">
                             <Menu.Button className="-m-1.5 flex items-center p-1.5">
                                 <span className="sr-only">Open user menu</span>
-                                {console.log(this.state.userData.photo)}
                                 {
                                     this.state.userData.photo ?
                                         <img className="h-8 w-8 rounded-full bg-gray-50" src={'http://localhost:4000' + this.state.userData.photo} alt="User" /> :

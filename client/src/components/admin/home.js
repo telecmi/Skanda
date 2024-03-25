@@ -67,7 +67,7 @@ class Example extends Component {
             <>
                 {this.state.navigate && <Navigate to='/' />}
 
-                <SideBarMob />
+                <SideBarMob redirect={this.redirect} />
 
                 <SideBar redirect={this.redirect} />
 

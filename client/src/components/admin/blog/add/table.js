@@ -8,8 +8,8 @@ class TableInputForm extends Component {
         super(props);
         this.state = {
             numRows: 1,
-            numCols: 3,
-            tableData: Array(1).fill(Array(3).fill('')),
+            numCols: 2,
+            tableData: Array(1).fill(Array(2).fill('')),
         };
     }
 

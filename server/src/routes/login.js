@@ -1,4 +1,3 @@
-const data = require('../utils/userData.json');
 const mongodb = require('../models/mongodb');
 
 

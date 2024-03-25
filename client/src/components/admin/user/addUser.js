@@ -22,13 +22,18 @@ class Example extends Component {
         super(props);
         this.state = {
             open: true,
-            photo: '',
+            photo: null,
             role: people[0],
-            firstname: '',
-            lastname: '',
-            email: '',
-            password: '',
-            cpassword: ''
+            firstname: null,
+            lastname: null,
+            email: null,
+            password: null,
+            cpassword: null,
+            bio: null,
+            twitter: null,
+            instagram: null,
+            linkedin: null,
+            facebook: null,
         };
     }
 
@@ -67,16 +72,42 @@ class Example extends Component {
 
     userSubmit = async () => {
         let userData = {
+            id: this.generateUniqueId(),
+            photo: this.state.photo,
             firstname: this.state.firstname,
             lastname: this.state.lastname,
             email: this.state.email,
             role: this.state.role.name,
-            password: this.state.password
+            password: this.state.password,
+            bio: this.state.bio,
+            twitter: this.state.twitter,
+            instagram: this.state.instagram,
+            linkedin: this.state.linkedin,
+            facebook: this.state.facebook,
         }
 
-        const formData = new FormData()
-        formData.append('photo', this.state.photoURL)
-        formData.append('userData', JSON.stringify(userData))
+        let appendFormData = (data, parentKey, formData) => {
+            if (Array.isArray(data)) {
+                data.forEach((item, index) => {
+                    appendFormData(item, `${parentKey}[${index}]`, formData);
+                });
+            } else if (data && typeof data === 'object' && !(data instanceof File)) {
+                Object.keys(data).forEach(key => {
+                    const fullKey = parentKey ? `${parentKey}[${key}]` : key;
+                    if (typeof data[key] === 'object' && !(data[key] instanceof File)) {
+                        appendFormData(data[key], fullKey, formData);
+                    } else if (data[key] !== undefined) {  // Ensure we don't append undefined values
+                        formData.append(fullKey, data[key]);
+                    }
+                });
+            } else if (data !== undefined) {  // Ensure we don't append undefined values
+                formData.append(parentKey, data);
+            }
+        };
+
+        const formData = new FormData();
+        appendFormData(userData, '', formData);
+
 
         try {
 
@@ -99,14 +130,14 @@ class Example extends Component {
     userAdd = () => {
 
 
-        if (_.isEmpty(this.state.email) || _.isEmpty(this.state.firstname) || _.isEmpty(this.state.lastname) || _.isEmpty(this.state.role.name) || _.isEmpty(this.state.password)) {
+        if (_.isEmpty(this.state.email) || _.isEmpty(this.state.firstname) || _.isEmpty(this.state.lastname) || _.isEmpty(this.state.role.name) || _.isEmpty(this.state.password) || _.isEmpty(this.state.bio)) {
             alert('fill the details')
         }
         else if (this.state.password !== this.state.cpassword) {
             alert('Password and confirm password not same')
         }
         else {
-            axiosInstance.post('/userList').then((e) => {
+            axiosInstance.get('/userList').then((e) => {
                 if (e.data.code === 200) {
                     let addNewUser = e.data.users.find(user => user.email === this.state.email) !== undefined
 
@@ -121,23 +152,16 @@ class Example extends Component {
     }
 
     handleImageChange = (e) => {
-        const selectedImage = e.target.files[0];
-
+        const file = e.target.files[0];
+        this.setState({ photo: file })    
         const reader = new FileReader();
-
-        this.setState({ photoURL: selectedImage })
-
         reader.onloadend = () => {
-            // Set the selected image to the state
-            this.setState({ photo: reader.result });
-            this.setState({ photoEdited: true });
-
+            this.setState({ photoURL: reader.result });
         };
-
-        if (selectedImage) {
-            // Read the selected image as a data URL
-            reader.readAsDataURL(selectedImage);
+        if (file) {
+            reader.readAsDataURL(file);
         }
+
     };
 
     userCancel = () => {
@@ -172,7 +196,7 @@ class Example extends Component {
                             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         >
-                            <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:w-full sm:max-w-md sm:p-6">
+                            <div className="relative transform rounded-lg h-[530px] overflow-auto bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:w-full sm:max-w-md sm:p-6">
 
                                 <div className='flex justify-between'>
                                     <div className="col-span-full pb-4">
@@ -181,7 +205,7 @@ class Example extends Component {
                                         </label>
                                         <div className=" flex items-center gap-x-3 ">
                                             {
-                                                this.state.photo ? <div className='h-12 w-12 rounded-full overflow-hidden flex'><img className='h-12 w-12 rounded' src={this.state.photo} alt="user profile" /></div> :
+                                                this.state.photoURL ? <div className='h-12 w-12 rounded-full overflow-hidden flex'><img className='h-12 w-12 rounded' src={this.state.photoURL} alt="user profile" /></div> :
                                                     <UserCircleIcon className="h-12 w-12 text-gray-300" aria-hidden="true" />
                                             }
 
@@ -324,6 +348,61 @@ class Example extends Component {
                                             name="confirm-password"
                                             id="confirm-password"
                                             autoComplete="given-name"
+                                            className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1  ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="sm:col-span-3 pb-4">
+                                    <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
+                                        Bio *
+                                    </label>
+                                    <div className="mt-2">
+                                        <textarea onChange={(e) => this.setState({ bio: e.target.value })}
+                                            className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1  ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="sm:col-span-3 pb-4">
+                                    <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
+                                        Twitter
+                                    </label>
+                                    <div className="mt-2">
+                                        <input onChange={(e) => this.setState({ twitter: e.target.value })}
+                                            className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1  ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="sm:col-span-3 pb-4">
+                                    <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
+                                        Instagram
+                                    </label>
+                                    <div className="mt-2">
+                                        <input onChange={(e) => this.setState({ instagram: e.target.value })}
+                                            className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1  ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="sm:col-span-3 pb-4">
+                                    <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
+                                        LinkedIn
+                                    </label>
+                                    <div className="mt-2">
+                                        <input onChange={(e) => this.setState({ linkedin: e.target.value })}
+                                            className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1  ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="sm:col-span-3 pb-4">
+                                    <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
+                                        Facebook
+                                    </label>
+                                    <div className="mt-2">
+                                        <input onChange={(e) => this.setState({ facebook: e.target.value })}
                                             className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1  ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                                         />
                                     </div>

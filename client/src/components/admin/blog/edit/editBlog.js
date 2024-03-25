@@ -8,7 +8,7 @@ import BlogOgData from '../edit/og';
 import BlogTwitterData from '../edit/twitter';
 import BlogArtData from '../edit/art';
 import AditionalData from '../edit/additionalData';
-import UserList from '../../../../services/userData';
+// import UserList from '../../../../services/userData';
 import AuthorListMenu from '../edit/authorMenu';
 import Category from '../edit/categoryMenu'
 import { wordCount } from '../wordCount'
@@ -219,7 +219,7 @@ class Page extends Component {
     secDataRemoveFaq = (removedSecData) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
             ...blog,
-            data: blog.data.filter(secData => secData.id !== removedSecData.id)
+            data: blog.data && blog.data.filter(secData => secData.id !== removedSecData.id)
         }));
         this.setState({ sectionData: updatedSectionData });
     };
@@ -398,14 +398,20 @@ class Page extends Component {
 
         const { blogMetaData, setEditBlogModal, blogArtData, blogOgData, blogTwitterData, blogTableData, stickTop, comment, pubDate, editBlogData } = this.context
 
-        // this.state.sectionData.forEach((e) => {
-        //     e.data.forEach((lk) => {
-        //         if (lk.id === blogTableData.id) {
-        //             lk.content = blogTableData.data
-        //             lk.colm = blogTableData.colm
-        //         }
-        //     })
-        // })
+
+        if (this.state.sectionData) {
+            this.state.sectionData.forEach((e) => {
+                if (e.type === 'section') {
+                    e.data.forEach((lk) => {
+                        if (lk.id === blogTableData.id) {
+                            lk.content = blogTableData.data
+                            lk.colm = blogTableData.colm
+                        }
+                    })
+                }
+            })
+        }
+
 
         let blogIntro = {
             "img": this.state.blog_intro_img,
@@ -459,28 +465,30 @@ class Page extends Component {
         let rcValidCheck = true;
         let testiValidCheck = true;
 
-        this.state.sectionData.forEach((e) => {
-            if (e.type === 'section') {
-                const sectionValidate = ajv.compile(sectionSchema)
-                const sectionValid = sectionValidate(e.data)
-                sectionValidCheck = sectionValid
-            }
-            else if (e.type === 'faq') {
-                const faqValidate = ajv.compile(faqSchema)
-                const faqValid = faqValidate(e.data)
-                faqValidCheck = faqValid
-            }
-            else if (e.type === 'recommended_reading') {
-                const rcValidate = ajv.compile(rcSchema)
-                const rcValid = rcValidate(e.data)
-                rcValidCheck = rcValid
-            }
-            else if (e.type === 'testimonials') {
-                const testiValidate = ajv.compile(testiSchema)
-                const testiValid = testiValidate(e.data)
-                testiValidCheck = testiValid
-            }
-        })
+        if (this.state.sectionData) {
+            this.state.sectionData.forEach((e) => {
+                if (e.type === 'section') {
+                    const sectionValidate = ajv.compile(sectionSchema)
+                    const sectionValid = sectionValidate(e.data)
+                    sectionValidCheck = sectionValid
+                }
+                else if (e.type === 'faq') {
+                    const faqValidate = ajv.compile(faqSchema)
+                    const faqValid = faqValidate(e.data)
+                    faqValidCheck = faqValid
+                }
+                else if (e.type === 'recommended_reading') {
+                    const rcValidate = ajv.compile(rcSchema)
+                    const rcValid = rcValidate(e.data)
+                    rcValidCheck = rcValid
+                }
+                else if (e.type === 'testimonials') {
+                    const testiValidate = ajv.compile(testiSchema)
+                    const testiValid = testiValidate(e.data)
+                    testiValidCheck = testiValid
+                }
+            })
+        }
 
         let validationSub = {
             Meta: metaValid, OG: ogValid, Twitter: twitterValid, Article: articleValid, URL: blogUrlValid, category: categoryValid, author: authorValid, introduction_section: blogIntroValid, Section: sectionValidCheck, FAQ: faqValidCheck, recommended_reading: rcValidCheck, Testimonial: testiValidCheck
@@ -510,7 +518,7 @@ class Page extends Component {
             const formData = new FormData();
             appendFormData(data, '', formData);
 
-            axiosInstance.post('/blogEdit', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then((res) => {
+            axiosInstance.put('/blogEdit', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then((res) => {
                 if (res.data.code === 200) {
                     setEditBlogModal(false)
                     this.props.reload()
@@ -546,14 +554,16 @@ class Page extends Component {
 
 
 
-        // this.state.sectionData.forEach((e) => {
-        //     e.data.forEach((lk) => {
-        //         if (lk.id === blogTableData.id) {
-        //             lk.content = blogTableData.data
-        //             lk.colm = blogTableData.colm
-        //         }
-        //     })
-        // })
+        this.state.sectionData.forEach((e) => {
+            if (e.type === 'section') {
+                e.data.forEach((lk) => {
+                    if (lk.id === blogTableData.id) {
+                        lk.content = blogTableData.data
+                        lk.colm = blogTableData.colm
+                    }
+                })
+            }
+        })
 
         let blogIntro = {
             "img": this.state.blog_intro_img,
@@ -642,7 +652,7 @@ class Page extends Component {
     componentDidMount() {
         document.addEventListener('click', this.handleOutsideClick);
 
-        this.setState({ userList: UserList.user })
+        // this.setState({ userList: UserList.user })
 
         const { editBlogData, setCategory, setAuthor, setStickTop, setComment, setPubDate } = this.context
 
@@ -660,7 +670,8 @@ class Page extends Component {
                 data: url,
                 jsondata: { 'url_slug': editBlogData.url_slug, 'canonical': editBlogData.canonical },
                 category: editBlogData.category,
-                additionalData: editBlogData.additionalData
+                additionalData: editBlogData.additionalData,
+
             })
 
         }

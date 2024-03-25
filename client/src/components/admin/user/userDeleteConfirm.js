@@ -34,10 +34,8 @@ class Example extends Component {
     userDelete = () => {
         const { setDeleteUserModal, editUserData } = this.context;
 
-        axiosInstance.post('/userDelete', { id: editUserData._id }).then((e) => {
+        axiosInstance.delete(`/userDelete/${editUserData._id}`, { data: editUserData }).then((e) => {
             if (e.data.code === 200) {
-
-                console.log(e.data)
                 setDeleteUserModal(false);
                 this.props.reload()
             }

@@ -35,7 +35,7 @@ export default class category extends Component {
     }
 
     removeCategory = (e) => {
-        axiosInstance.post('/categoryDelete', { id: e }).then((res) => {
+        axiosInstance.delete(`/categoryDelete/${e}`).then((res) => {
             if (res.data.code === 200) {
                 setTimeout(() => {
                     this.categoryList();
@@ -45,7 +45,7 @@ export default class category extends Component {
     }
 
     categoryList = () => {
-        axiosInstance.post('/categoryList').then((e) => {
+        axiosInstance.get('/categoryList').then((e) => {
             this.setState({ categoryList: e.data.category })
         }).catch((err) => console.log(err))
     }

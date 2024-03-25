@@ -22,7 +22,7 @@ class Example extends Component {
     blogDelete = () => {
         const { setDeleteBlogModal, deleteBlogData } = this.context;
         setDeleteBlogModal(false);
-        axiosInstance.post('/blogDelete', deleteBlogData).then((res) => {
+        axiosInstance.delete(`/blogDelete/${deleteBlogData._id}`, { data: deleteBlogData }).then((res) => {
             if (res.data.code === 200) {
                 this.props.reload()
             }

@@ -4,7 +4,6 @@ import { CalendarIcon, ClockIcon, XMarkIcon, MinusSmallIcon, PlusSmallIcon, User
 import AppStateContext from '../../../utils/AppStateContext';
 import '../../../assets/scroll.css'
 import moment from 'moment';
-// import axios from 'axios';
 
 
 class Example extends Component {
@@ -31,7 +30,7 @@ class Example extends Component {
 
         setTimeout(() => {
             window.scrollTo(0, 0);
-          }, 100);
+        }, 100);
 
         if (this.props.previewData.blog_data) {
 
@@ -99,7 +98,7 @@ class Example extends Component {
                                                 </div>
                                                 <div className='flex gap-x-2'>
                                                     <CalendarIcon className='w-4 text-[#2BAC58]' />
-                                                    <p className='text-xs text-[#898e99]'>Posted on {moment(this.props.previewData ? this.props.previewData.schedule : new Date()).format('MMM DD, YYYY')}</p>
+                                                    <p className='text-xs text-[#898e99]'>Posted on {moment(this.context.pubDate ? parseInt(this.context.pubDate) : new Date()).format('MMM DD, YYYY')}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -109,7 +108,7 @@ class Example extends Component {
                                     <div className='flex'>
                                         <div className='w-3/4 flex'>
                                             <div className='w-11/12 rounded-3xl overflow-hidden'>
-                                                <img style={{aspectRatio: '1.75'}} className='w-full object-contain' src={this.props.previewData ? 'http://localhost:4000' + this.props.previewData.blog_intro.img : ""} alt={this.props.previewData ? this.props.previewData.blog_intro.alt : ''} />
+                                                <img style={{ aspectRatio: '1.75' }} className='w-full object-contain' src={this.props.previewData ? 'http://localhost:4000' + this.props.previewData.blog_intro.img : ""} alt={this.props.previewData ? this.props.previewData.blog_intro.alt : ''} />
                                             </div>
                                         </div>
                                         <div className='w-1/4 flex flex-col items-center justify-end'>
@@ -248,7 +247,7 @@ class Example extends Component {
 
                                                                 <div className='flex gap-x-5'>
                                                                     <div className='w-12 h-12 rounded-full overflow-hidden'>
-                                                                        <img className='w-full h-full' src={'http://localhost:4000' + e.data[0].img} alt="" />
+                                                                        <img className='w-full h-full object-contain' src={'http://localhost:4000' + e.data[0].img} alt="" />
                                                                     </div>
                                                                     <div className='flex flex-col gap-y-1 items-start'>
                                                                         <p className='text-[#222222] font-semibold'>{e.data[0].name}</p>

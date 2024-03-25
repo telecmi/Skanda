@@ -25,6 +25,7 @@ export class AppStateProvider extends Component {
     validationPop: false,
     author: '',
     category: '',
+    sidebarMenu: false
   };
 
   setAddUserModal = (e) => { this.setState({ addUserModal: e }) };
@@ -48,18 +49,20 @@ export class AppStateProvider extends Component {
   setValidationPop = (e) => { this.setState({ validationPop: e }) };
   setAuthor = (e) => { this.setState({ author: e }) };
   setCategory = (e) => { this.setState({ category: e }) };
+  setSidebarMenu = (e) => { this.setState({ sidebarMenu: e }) };
+  
   
 
   render() {
     const { children } = this.props;
-    const { editUserModal, deleteUserModal, addUserModal, editUserData, deleteBlogModal, editBlogData, addBlogModal, deleteBlogData, editBlogModal, blogMetaData, blogArtData, blogOgData, blogTwitterData, blogTableData, stickTop, comment, pubDate, preview, validationPop, author, category } = this.state;
+    const { editUserModal, deleteUserModal, addUserModal, editUserData, deleteBlogModal, editBlogData, addBlogModal, deleteBlogData, editBlogModal, blogMetaData, blogArtData, blogOgData, blogTwitterData, blogTableData, stickTop, comment, pubDate, preview, validationPop, author, category, sidebarMenu } = this.state;
 
     return (
       <AppStateContext.Provider
         value={{
-          addUserModal, editUserModal, deleteUserModal, editUserData, deleteBlogModal, editBlogData, addBlogModal, deleteBlogData, editBlogModal, blogMetaData, blogArtData, blogOgData, blogTwitterData, blogTableData, stickTop, comment, pubDate, preview, validationPop, author, category,
+          addUserModal, editUserModal, deleteUserModal, editUserData, deleteBlogModal, editBlogData, addBlogModal, deleteBlogData, editBlogModal, blogMetaData, blogArtData, blogOgData, blogTwitterData, blogTableData, stickTop, comment, pubDate, preview, validationPop, author, category, sidebarMenu,
 
-          setAddUserModal: this.setAddUserModal, setEditUserModal: this.setEditUserModal, setDeleteUserModal: this.setDeleteUserModal, setEditUserData: this.setEditUserData, setDeleteBlogModal: this.setDeleteBlogModal, setEditBlogData: this.setEditBlogData, setAddBlogModal: this.setAddBlogModal, setDeleteBlogData: this.setDeleteBlogData, setEditBlogModal: this.setEditBlogModal, setBlogMetaData: this.setBlogMetaData, setBlogArtData: this.setBlogArtData, setBlogOgData: this.setBlogOgData, setBlogTwitterData: this.setBlogTwitterData, setBlogTableData: this.setBlogTableData, setStickTop: this.setStickTop, setComment: this.setComment, setPubDate: this.setPubDate, setPreview: this.setPreview, setValidationPop: this.setValidationPop, setAuthor: this.setAuthor, setCategory: this.setCategory
+          setAddUserModal: this.setAddUserModal, setEditUserModal: this.setEditUserModal, setDeleteUserModal: this.setDeleteUserModal, setEditUserData: this.setEditUserData, setDeleteBlogModal: this.setDeleteBlogModal, setEditBlogData: this.setEditBlogData, setAddBlogModal: this.setAddBlogModal, setDeleteBlogData: this.setDeleteBlogData, setEditBlogModal: this.setEditBlogModal, setBlogMetaData: this.setBlogMetaData, setBlogArtData: this.setBlogArtData, setBlogOgData: this.setBlogOgData, setBlogTwitterData: this.setBlogTwitterData, setBlogTableData: this.setBlogTableData, setStickTop: this.setStickTop, setComment: this.setComment, setPubDate: this.setPubDate, setPreview: this.setPreview, setValidationPop: this.setValidationPop, setAuthor: this.setAuthor, setCategory: this.setCategory, setSidebarMenu: this.setSidebarMenu
         }}
       >
         {children}

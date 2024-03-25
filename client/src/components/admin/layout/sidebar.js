@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { FolderIcon, UsersIcon } from '@heroicons/react/24/outline';
-
+import AppStateContext from '../../../utils/AppStateContext';
 
 const navigation = [
     { name: 'Blog', href: 'blog', icon: FolderIcon, current: true },
@@ -17,6 +17,8 @@ function classNames(...classes) {
 }
 
 export default class sidebar extends Component {
+
+    static contextType = AppStateContext
 
     constructor(props) {
         super(props);
@@ -57,7 +59,7 @@ export default class sidebar extends Component {
         const { currentNavigation } = this.state;
 
         return (
-            <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+            <div className={`hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col`}>
                 {/* Sidebar component, swap this element with another sidebar if you like */}
                 <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
                     <div className="flex h-16 items-center">
@@ -67,7 +69,7 @@ export default class sidebar extends Component {
                             alt="Your Company"
                         />
                     </div>
-                    <nav className="flex flex-1 flex-col">
+                    <nav className={` ${this.context.addBlogModal && 'pointer-events-none'} ${this.context.editBlogModal && 'pointer-events-none'} flex flex-1 flex-col`}>
                         <div className="flex flex-1 flex-col gap-y-7">
                             <div className="-mx-2 space-y-3">
                                 {this.state.filteredNavigation.map((item) => (

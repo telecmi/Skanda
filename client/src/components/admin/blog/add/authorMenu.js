@@ -28,7 +28,7 @@ class Example extends React.Component {
 
     componentDidMount() {
 
-        axiosInstance.post('/userList').then((e) => {
+        axiosInstance.get('/userList').then((e) => {
             if (e.data.code === 200) {
                 this.setState({ authorList: e.data.users })
             }
@@ -62,6 +62,7 @@ class Example extends React.Component {
                                     {this.state.authorList.map((person, index) => (
                                         <Listbox.Option
                                             key={index}
+                                            onClick={() => this.selectAuthor(person)}
                                             className={({ active }) =>
                                                 classNames(
                                                     active ? 'bg-slate-400 text-white' : 'text-gray-900',
@@ -71,7 +72,7 @@ class Example extends React.Component {
                                             value={person}
                                         >
                                             {({ selected, active }) => (
-                                                <div onClick={() => this.selectAuthor(person)}>
+                                                <div>
                                                     <div className="flex items-center">
                                                         <span
                                                             className={classNames(selected ? 'font-semibold' : 'font-normal', 'ml-3 block truncate capitalize')}
@@ -83,7 +84,7 @@ class Example extends React.Component {
                                                         <span
                                                             className={classNames(
                                                                 active ? 'text-white' : 'text-indigo-600',
-                                                                'absolute inset-y-0 right-0 flex items-center pr-4'
+                                                                'absolute inset-y-0 right-0 cursor-pointer flex items-center pr-4'
                                                             )}
                                                         >
                                                             <CheckIcon className="h-5 w-5" aria-hidden="true" />

@@ -3,21 +3,10 @@ const express = require('express'),
     cors = require('cors'),
     path = require('path'),
     multer = require('multer'),
-    // upload = multer({ dest: './public/img/blog' }),
-
     login = require('./routes/login'),
-    blogAdd = require('./routes/blogAdd__'),
-    blogGet = require('./routes/blogGet'),
-    blogEdit = require('./routes/blogEdit'),
-    blogDelete = require('./routes/blogDelete'),
-    userList = require('./routes/userList'),
-    userAdd = require('./routes/userAdd'),
-    userEdit = require('./routes/userEdit'),
-    userDelete = require('./routes/userDelete'),
-    categoryList = require('./routes/categoryList'),
-    categoryAdd = require('./routes/categoryAdd'),
-    categoryDelete = require('./routes/categoryDelete'),
-
+    blog = require('./routes/blog'),
+    user = require('./routes/user'),
+    category = require('./routes/category'),
     app = express();
 
 app.use(cors())
@@ -36,19 +25,19 @@ app.get('/', (req, res) => {
 
 app.post('/login', login.login)
 
-app.post('/blogAdd', upload.any(), blogAdd.blog)
-app.post('/blogGet', blogGet.blog)
-app.post('/blogEdit', upload.any(), blogEdit.blog)
-app.post('/blogDelete', blogDelete.blog)
+app.post('/blogAdd', upload.any(), blog.create)
+app.get('/blogGet', blog.read)
+app.put('/blogEdit', upload.any(), blog.update)
+app.delete('/blogDelete/:id', blog.delete)
 
-app.post('/userList', userList.user)
-app.post('/userAdd', userAdd.user)
-app.post('/userEdit', userEdit.user)
-app.post('/userDelete', userDelete.user)
+app.post('/userAdd', upload.any(), user.create)
+app.get('/userList', user.read)
+app.put('/userEdit', upload.any(), user.update)
+app.delete('/userDelete/:id', user.delete)
 
-app.post('/categoryList', categoryList.category)
-app.post('/categoryAdd', categoryAdd.category)
-app.post('/categoryDelete', categoryDelete.category)
+app.post('/categoryAdd', category.create)
+app.get('/categoryList', category.read )
+app.delete('/categoryDelete/:id', category.delete)
 
 
 

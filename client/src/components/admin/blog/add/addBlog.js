@@ -8,7 +8,7 @@ import BlogOgData from './og';
 import BlogTwitterData from './twitter';
 import BlogArtData from './art';
 import AditionalData from './additionalData';
-import UserList from '../../../../services/userData';
+// import UserList from '../../../../services/userData';
 import AuthorListMenu from './authorMenu';
 import Category from './categoryMenu'
 import { wordCount } from '../wordCount'
@@ -500,12 +500,12 @@ class Page extends Component {
             const formData = new FormData();
             appendFormData(data, '', formData);
 
-
+            
             axiosInstance.post('/blogAdd', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then((res) => {
                 if (res.data.code === 200) {
-                    console.log(res.data)
-                    // this.props.reload()
-                    // setAddBlogModal(false)
+                    // console.log(res.data)
+                    this.props.reload()
+                    setAddBlogModal(false)
                 }
             }).catch((err) => console.error(err))
         }
@@ -637,7 +637,7 @@ class Page extends Component {
     componentDidMount() {
         document.addEventListener('click', this.handleOutsideClick);
 
-        this.setState({ userList: UserList.user })
+        // this.setState({ userList: UserList.user })
     }
 
     render() {

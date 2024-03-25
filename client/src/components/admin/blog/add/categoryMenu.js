@@ -28,7 +28,7 @@ class Example extends React.Component {
 
     componentDidMount() {
 
-        axiosInstance.post('/categoryList').then((e) => {
+        axiosInstance.get('/categoryList').then((e) => {
             if (e.data.code === 200) {
                 this.setState({ categoryList: e.data.category })
             }
@@ -60,6 +60,7 @@ class Example extends React.Component {
                                 <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                                     {this.state.categoryList.map((name, index) => (
                                         <Listbox.Option
+                                        onClick={() => this.selectAuthor(name.category)}
                                             key={index}
                                             className={({ active }) =>
                                                 classNames(
@@ -69,7 +70,7 @@ class Example extends React.Component {
                                             }
                                             value={name.category}
                                         >
-                                            <div onClick={() => this.selectAuthor(name.category)}>
+                                            <div >
                                                 <div className="flex items-center capitalize">
                                                     {name.category}
                                                 </div>

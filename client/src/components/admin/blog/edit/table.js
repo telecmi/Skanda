@@ -72,7 +72,7 @@ class TableInputForm extends Component {
 
     };
     componentDidMount() {
-        this.setState({ numCols: this.props.tableId.colm })
+        this.setState({ numCols: parseInt(this.props.tableId.colm) })
         for (let i = 0; i < this.props.tableId.content.length; i += parseInt(this.props.tableId.colm)) {
             this.state.tableData.push(this.props.tableId.content.slice(i, i + parseInt(this.props.tableId.colm)));
         }

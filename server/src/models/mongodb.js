@@ -1,7 +1,8 @@
 const { MongoClient } = require('mongodb')
+const dbUrl = require('../config/config') 
 
-const url = 'mongodb+srv://rahulvelu:rahulvelu12@cluster0.le5pd.mongodb.net/';
-const client = new MongoClient(url);
+
+const client = new MongoClient(dbUrl);
 
 const dbName = 'blog'
 

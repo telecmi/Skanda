@@ -1,7 +1,5 @@
-import Login from '../components/admin/login/login'
-import Dashboard from '../components/admin/home'
-// import Preview from '../components/admin/blog/preview'
-// import AddBlog from '../components/admin/blog/addBlog'
+import Login from '../components/login/login'
+import Dashboard from '../components/home'
 import React from 'react';
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 
@@ -14,7 +12,6 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/home" element={<Dashboard />} />
-          {/* <Route path="/preview" element={<Preview />} /> */}
         </Routes>
       </BrowserRouter>
 

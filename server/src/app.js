@@ -19,9 +19,9 @@ app.use(express.static(path.join(__dirname, '../')))
 const upload = multer({ limits: { fileSize: 1073741824, fieldSize: 1073741824 } })
 
 
-app.get('/', (req, res) => {
-    res.send('blog cms')
-})
+// app.get('/', (req, res) => {
+//     res.send('blog cms')
+// })
 
 app.post('/login', login.login)
 

@@ -82,25 +82,18 @@ exports.update = async (req, res) => {
 
     collectPaths(data);
 
-    fs.readdir(path.join(__dirname, uploadDir), (err, files) => {
-        if (err) {
-            console.error('Could not list the directory.', err);
-            return;
-        }
-
-        files.forEach((file) => {
+    try {
+        const files = await fs.promises.readdir(path.join(__dirname, uploadDir));
+        for (const file of files) {
             if (file.startsWith(data.id + '_') && !filesToKeep.includes(file)) {
-                // This file is not in the list and should be removed
-                fs.unlink(path.join(path.join(__dirname, uploadDir), file), (err) => {
-                    if (err) {
-                        console.error('Error removing file:', file, err);
-                    } else {
-                        // console.log('Removed file:', file);
-                    }
-                });
+                await fs.promises.unlink(path.join(__dirname, uploadDir, file));
             }
-        });
-    });
+        }
+    } catch (err) {
+        console.error('Error processing the directory.', err);
+        return res.send({ code: 500, msg: 'Failed to process files' });
+    }
+
 
     if (req.files) {
         req.files.forEach((file) => {
@@ -139,7 +132,7 @@ exports.update = async (req, res) => {
     let update = await collection.updateOne({ _id: new ObjectId(_id) }, { $set: data })
 
     // if (update.modifiedCount > 0) {
-        res.send({ code: 200, msg: 'success' })
+    res.send({ code: 200, msg: 'success' })
     // }else{
     //     res.send({ code: 400, msg: 'Blog not updated' })
     // }

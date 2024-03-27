@@ -5,7 +5,7 @@ import AppStateContext from '../../utils/AppStateContext';
 import AddUserModal from './addUser';
 import UserEditConfirm from './userEditConfirm';
 import UserDeleteConfirm from './userDeleteConfirm';
-import axiosInstance from '../../services/apiconfig';
+import { axiosInstance } from '../../services/apiconfig';
 export default class users extends Component {
 
     static contextType = AppStateContext;

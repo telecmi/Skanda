@@ -1,9 +1,8 @@
 import axios from 'axios';
 
-const serverURL = 'http://localhost:4000'; // Your server URL
+export const serverURL = 'http://localhost:4000';
 
-const axiosInstance = axios.create({
-    baseURL: serverURL,
+export const axiosInstance = axios.create({
+    baseURL: 'http://localhost:4000',
 });
 
-export default axiosInstance;

@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import AppStateContext from '../../../utils/AppStateContext';
-import axiosInstance from '../../../services/apiconfig';
+import { axiosInstance } from '../../../services/apiconfig';
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -60,7 +60,7 @@ class Example extends React.Component {
                                 <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                                     {this.state.categoryList.map((name, index) => (
                                         <Listbox.Option
-                                        onClick={() => this.selectAuthor(name.category)}
+                                            onClick={() => this.selectAuthor(name.category)}
                                             key={index}
                                             className={({ active }) =>
                                                 classNames(

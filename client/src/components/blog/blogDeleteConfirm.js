@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import AppStateContext from '../../utils/AppStateContext';
-import axiosInstance from '../../services/apiconfig';
+import { axiosInstance } from '../../services/apiconfig';
 
 
 

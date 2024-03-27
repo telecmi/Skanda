@@ -6,7 +6,7 @@ import AppStateContext from '../../utils/AppStateContext';
 import AddBlog from './add/addBlog'
 import EditBlog from './edit/editBlog'
 import BlogDeleteConfirm from './blogDeleteConfirm'
-import axiosInstance from '../../services/apiconfig';
+import { axiosInstance } from '../../services/apiconfig';
 import moment from 'moment';
 
 export default class blogComponent extends Component {

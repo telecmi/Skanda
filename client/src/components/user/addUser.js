@@ -6,7 +6,7 @@ import { Listbox, } from '@headlessui/react';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 import AppStateContext from '../../utils/AppStateContext';
 import _ from 'underscore'
-import axiosInstance from '../../services/apiconfig';
+import { axiosInstance } from '../../services/apiconfig';
 
 const people = [
     { name: 'Admin' },
@@ -153,7 +153,7 @@ class Example extends Component {
 
     handleImageChange = (e) => {
         const file = e.target.files[0];
-        this.setState({ photo: file })    
+        this.setState({ photo: file })
         const reader = new FileReader();
         reader.onloadend = () => {
             this.setState({ photoURL: reader.result });

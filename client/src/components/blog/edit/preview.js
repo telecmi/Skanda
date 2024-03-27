@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Dialog, Transition, Disclosure } from '@headlessui/react';
 import { CalendarIcon, ClockIcon, XMarkIcon, MinusSmallIcon, PlusSmallIcon, UserCircleIcon } from '@heroicons/react/24/outline';
-import AppStateContext from '../../utils/AppStateContext';
-import '../../assets/scroll.css'
+import AppStateContext from '../../../utils/AppStateContext';
+import '../../../assets/scroll.css'
 import moment from 'moment';
+import { serverURL } from '../../../services/apiconfig'
 
 
 class Example extends Component {
@@ -17,28 +18,58 @@ class Example extends Component {
             blog_faq: [],
             headers: [],
             bodyContent: [],
-            toc: []
+            toc: [],
+            intro_img: null
         };
     }
 
     close = () => {
         const { setPreview } = this.context
-        setPreview(false)
+        // setPreview(false)
+        this.props.previewClose()
+    }
+
+    convertFileToBase64 = (file) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            return reader.result;
+        };
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+
     }
 
     componentDidMount() {
 
-        setTimeout(() => {
-            window.scrollTo(0, 0);
-        }, 100);
 
         if (this.props.previewData.blog_data) {
+
+            if (typeof this.props.previewData.blog_intro.img === 'string' && this.props.previewData.blog_intro.img.includes('/public/blog')) {
+
+                this.setState({ intro_img: this.props.previewData.blog_intro.img })
+
+            } else {
+                let file = this.props.previewData.blog_intro.img
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    const fileData = reader.result;
+
+                    this.setState({ intro_img: fileData })
+
+                };
+                if (file) {
+                    reader.readAsDataURL(file);
+                }
+            }
+
 
             this.props.previewData.blog_data.forEach((e) => {
                 if (e.type === 'faq') {
                     this.setState({ blog_faq: e.data })
                 }
             })
+
 
             this.props.previewData.blog_data.forEach((e) => {
                 if (e.type === 'section') {
@@ -53,19 +84,52 @@ class Example extends Component {
                         if (secData.title === 'heading' && secData.titleTag === 'h2') {
                             this.state.toc.push(secData.content)
                         }
+                        if (typeof secData.content === 'object' && !Array.isArray(secData.content)) {
+
+                            let file = secData.content
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                                const fileData = reader.result;
+
+                                secData.content = fileData
+
+                            };
+                            if (file) {
+                                reader.readAsDataURL(file);
+                            }
+
+                        }
                     })
+                }
+                if (e.type === 'testimonials') {
+                    e.data.forEach((secData) => {
+                        if (typeof secData.img === 'string' && secData.img.includes('/public/blog')) {
+                            // If it's a string and includes '/public/blog', use it as is.
+                            secData.img = secData.img;
+                        } else if (secData.img instanceof Blob || secData.img instanceof File) {
+                            // If it's a Blob or File, read it.
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                                const fileData = reader.result;
+                                secData.img = fileData;
+                            };
+                            reader.readAsDataURL(secData.img);
+                        }
+                    });
                 }
             })
 
         }
 
 
+        this.setState({ blog_data: this.props.previewData.blog_data && this.props.previewData.blog_data })
+
     }
 
     render() {
 
         return (
-            <Transition.Root show={this.context.preview}>
+            <Transition.Root show={this.props.preview}>
                 <Dialog as="div" className="relative z-10 w-full" onClose={() => this.close()}>
                     <Transition.Child enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
                         <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
@@ -74,7 +138,7 @@ class Example extends Component {
                     <div className="fixed left-72 inset-0 z-10 overflow-y-auto">
                         <div className="flex relative min-h-full h-full justify-center p-4 text-center sm:items-center sm:p-0">
                             <Transition.Child enter="ease-out duration-300" enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" enterTo="opacity-100 translate-y-0 sm:scale-100" leave="ease-in duration-200" leaveFrom="opacity-100 translate-y-0 sm:scale-100" leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" className='w-[95%] h-[95%] relative rounded-lg  px-12 bg-[#f7f7f7] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 pb-10' >
-                                <div className=' fixed -ml-14 -mt-4 w-8 h-8 shadow-md rounded-full bg-white flex justify-center items-center cursor-pointer z-10' onClick={this.close}>
+                                <div className=' fixed -ml-14 -mt-4 w-8 h-8 right-4 shadow-md rounded-full bg-white flex justify-center items-center cursor-pointer z-10' onClick={this.close}>
                                     <XMarkIcon className='w-5' />
                                 </div>
 
@@ -107,9 +171,15 @@ class Example extends Component {
                                     {/* blog intro img & author info */}
                                     <div className='flex'>
                                         <div className='w-3/4 flex'>
-                                            {this.props.previewData.blog_intro.img &&
+                                            {
                                                 <div className='w-11/12 rounded-3xl overflow-hidden'>
-                                                    <img style={{ aspectRatio: '1.75' }} className='w-full object-contain' src={this.props.previewData.blog_intro.img ? 'http://localhost:4000' + this.props.previewData.blog_intro.img : null} alt={this.props.previewData ? this.props.previewData.blog_intro.alt : ''} />
+                                                    {typeof this.state.intro_img === 'string' && this.state.intro_img.includes('/public/') ?
+                                                        <img style={{ aspectRatio: '1.75' }} className='w-full object-contain' src={
+                                                            serverURL + this.state.intro_img
+                                                        } alt='' /> :
+                                                        <img style={{ aspectRatio: '1.75' }} className='w-full object-contain' src={
+                                                            this.state.intro_img} alt='' />
+                                                    }
                                                 </div>
                                             }
                                         </div>
@@ -127,7 +197,7 @@ class Example extends Component {
                                                             {
                                                                 this.props.previewData.author.photo ?
 
-                                                                    <img style={{ width: '100%', height: '100%', objectFit: 'cover' }} src={'http://localhost:4000' + this.props.previewData.author.photo} alt="Author" />
+                                                                    <img style={{ width: '100%', height: '100%', objectFit: 'cover' }} src={serverURL + this.props.previewData.author.photo} alt="Author" />
 
                                                                     : <UserCircleIcon className='w-full h-full text-[#e1e3e5]' />
                                                             }
@@ -187,9 +257,9 @@ class Example extends Component {
                                         </div>
 
                                         {/* section */}
-                                        {this.props.previewData.blog_data ?
+                                        {this.state.blog_data ?
 
-                                            this.props.previewData.blog_data.map((e, index) => (
+                                            this.state.blog_data.map((e, index) => (
                                                 <div key={index} className='flex flex-col gap-y-3 w-full'>
 
                                                     {e.type === 'recommended_reading' &&
@@ -249,7 +319,12 @@ class Example extends Component {
 
                                                                 <div className='flex gap-x-5'>
                                                                     <div className='w-12 h-12 rounded-full overflow-hidden'>
-                                                                        <img className='w-full h-full object-contain' src={'http://localhost:4000' + e.data[0].img} alt="" />
+                                                                        {typeof e.data[0].img === 'string' && e.data[0].img.includes('/public/blog') ?
+                                                                            <img className='w-full h-full object-contain' src={serverURL + e.data[0].img} alt="" />
+                                                                            :
+                                                                            <img className='w-full h-full object-contain' src={e.data[0].img} alt="" />
+
+                                                                        }
                                                                     </div>
                                                                     <div className='flex flex-col gap-y-1 items-start'>
                                                                         <p className='text-[#222222] font-semibold'>{e.data[0].name}</p>
@@ -286,12 +361,24 @@ class Example extends Component {
                                                                                     :
                                                                                     secData.title === 'image' ?
                                                                                         <div className='w-11/12 overflow-hidden rounded-2xl my-2'>
-                                                                                            <img className='' src={'http://localhost:4000' + secData.content} alt="" />
+
+                                                                                            {
+                                                                                                typeof secData.content === 'string' && secData.content.includes('/public/blog') ?
+                                                                                                    <img className='' src={serverURL + secData.content} alt="" />
+                                                                                                    :
+                                                                                                    <img className='' src={secData.content} alt="" />
+
+                                                                                            }
                                                                                         </div>
                                                                                         :
                                                                                         secData.title === 'video' ?
                                                                                             <div className='w-11/12 overflow-hidden rounded-2xl my-2'>
-                                                                                                <video controls className='' src={'http://localhost:4000' + secData.content} alt="" />
+                                                                                                {
+                                                                                                    typeof secData.content === 'string' && secData.content.includes('/public/blog') ?
+                                                                                                        <video controls className='' src={serverURL + secData.content} alt="" />
+                                                                                                        :
+                                                                                                        <video controls className='' src={secData.content} alt="" />
+                                                                                                }
                                                                                             </div>
                                                                                             :
                                                                                             secData.title === 'table' ?
@@ -376,6 +463,7 @@ class Example extends Component {
                                 </div>
 
                                 {/* comment section */}
+
                                 {
                                     this.props.previewData.additional_data.allow_comment === 'true' &&
                                     <div className='bg-white w-full h-auto shadow-sm rounded-xl py-5 gap-y-5 my-14 flex  flex-col px-8'>

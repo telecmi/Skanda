@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Dialog, Transition, Disclosure } from '@headlessui/react';
 import { CalendarIcon, ClockIcon, XMarkIcon, MinusSmallIcon, PlusSmallIcon, UserCircleIcon } from '@heroicons/react/24/outline';
-import AppStateContext from '../../utils/AppStateContext';
-import '../../assets/scroll.css'
+import AppStateContext from '../../../utils/AppStateContext';
+import '../../../assets/scroll.css'
 import moment from 'moment';
 
 
@@ -109,7 +109,7 @@ class Example extends Component {
                                         <div className='w-3/4 flex'>
                                             {this.props.previewData.blog_intro.img &&
                                                 <div className='w-11/12 rounded-3xl overflow-hidden'>
-                                                    <img style={{ aspectRatio: '1.75' }} className='w-full object-contain' src={this.props.previewData.blog_intro.img ? 'http://localhost:4000' + this.props.previewData.blog_intro.img : null} alt={this.props.previewData ? this.props.previewData.blog_intro.alt : ''} />
+                                                    <img style={{ aspectRatio: '1.75' }} className='w-full object-contain' src={this.props.previewData.blog_intro.img ?  this.props.previewData.blog_intro.img : null} alt={this.props.previewData ? this.props.previewData.blog_intro.alt : ''} />
                                                 </div>
                                             }
                                         </div>
@@ -377,7 +377,7 @@ class Example extends Component {
 
                                 {/* comment section */}
                                 {
-                                    this.props.previewData.additional_data.allow_comment === 'true' &&
+                                    this.props.previewData.additional_data.allow_comment &&
                                     <div className='bg-white w-full h-auto shadow-sm rounded-xl py-5 gap-y-5 my-14 flex  flex-col px-8'>
                                         <div className='flex justify-start'>
                                             <h3 className='text-2xl text-[#2b2e33] font-bold font-heebo'>

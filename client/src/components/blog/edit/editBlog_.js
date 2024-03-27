@@ -3,20 +3,20 @@ import { XMarkIcon, ChevronUpIcon, ChevronDownIcon, EyeIcon } from '@heroicons/r
 import { blog_structure, blog_intro } from '../jsondata'
 import AppStateContext from '../../../utils/AppStateContext';
 import { axiosInstance, serverURL } from '../../../services/apiconfig';
-import BlogMetaData from '../edit/meta';
-import BlogOgData from '../edit/og';
-import BlogTwitterData from '../edit/twitter';
-import BlogArtData from '../edit/art';
-import AditionalData from '../edit/additionalData';
+import BlogMetaData from './meta';
+import BlogOgData from './og';
+import BlogTwitterData from './twitter';
+import BlogArtData from './art';
+import AditionalData from './additionalData';
 // import UserList from '../../../../services/userData';
-import AuthorListMenu from '../edit/authorMenu';
-import Category from '../edit/categoryMenu'
+import AuthorListMenu from './authorMenu';
+import Category from './categoryMenu'
 import { wordCount } from '../wordCount'
 import { Fragment } from 'react';
 import { Popover, Transition } from '@headlessui/react';
 import Progress from './progress';
 // import _ from 'underscore'
-import Tab from '../edit/table'
+import Tab from './table'
 import 'react-calendar/dist/Calendar.css';
 import ValidationPop from '../validationPop';
 import Preview from './preview';
@@ -43,6 +43,7 @@ class Page extends Component {
             category: '',
             value: new Date(),
             sectionData: [],
+            sectionDataPre: [],
             blogData: [],
             additional_data: [],
             openIndex: false,
@@ -85,22 +86,27 @@ class Page extends Component {
         if (type === 'testimonials') {
             const newData = { type: "testimonials", id: this.generateUniqueId(), data: [{ description: '', img: '', name: '', role: '', id: this.generateUniqueId() }] }
             this.setState({ sectionData: this.state.sectionData.concat(newData) });
+            this.setState({ sectionDataPre: this.state.sectionDataPre.concat(newData) });
         }
         else if (type === 'recommended_reading') {
             const newData = { type: "recommended_reading", id: this.generateUniqueId(), data: [{ description: '', link: '', id: this.generateUniqueId() }] }
             this.setState({ sectionData: this.state.sectionData.concat(newData) });
+            this.setState({ sectionDataPre: this.state.sectionDataPre.concat(newData) });
         }
         else if (type === 'faq') {
             const newData = { type: 'faq', data: [{ question: '', answer: '', id: this.generateUniqueId() }], id: this.generateUniqueId() };
             this.setState({ sectionData: this.state.sectionData.concat(newData) });
+            this.setState({ sectionDataPre: this.state.sectionDataPre.concat(newData) });
         }
         else if (type === 'cta') {
             const newData = { type: 'cta', data: [], id: this.generateUniqueId() };
             this.setState({ sectionData: this.state.sectionData.concat(newData) });
+            this.setState({ sectionDataPre: this.state.sectionDataPre.concat(newData) });
         }
         else if (type === 'section') {
             const newData = { type: "section", id: this.generateUniqueId(), data: [{ title: "heading", content: '', titleTag: "h2", id: this.generateUniqueId() }, { title: "description", content: '', id: this.generateUniqueId() }] }
             this.setState({ sectionData: this.state.sectionData.concat(newData) });
+            this.setState({ sectionDataPre: this.state.sectionDataPre.concat(newData) });
         } else {
             const newData = { type: type.includes('_') ? this.capitalize(type) : type, content: '', id: this.state.data.length + 1 };
             this.setState({ data: [...this.state.data, newData] });
@@ -135,6 +141,15 @@ class Page extends Component {
             }))
         }));
         this.setState({ sectionData: updatedSectionData });
+
+        const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+            ...blog,
+            data: blog.data && blog.data.map(secData => ({
+                ...secData,
+                question: secData.id === sectionId ? this.formatContent(content) : secData.question
+            }))
+        }));
+        this.setState({ sectionDataPre: updatedSectionDataPre });
     };
     updateFaqAnswer = (content, sectionId) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
@@ -145,6 +160,15 @@ class Page extends Component {
             }))
         }));
         this.setState({ sectionData: updatedSectionData });
+
+        const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+            ...blog,
+            data: blog.data && blog.data.map(secData => ({
+                ...secData,
+                answer: secData.id === sectionId ? this.formatContent(content) : secData.answer
+            }))
+        }));
+        this.setState({ sectionDataPre: updatedSectionDataPre });
     };
     formatContent = (e) => {
         const regex = /\[(.*?)\]\((.*?)\)/g;
@@ -161,6 +185,15 @@ class Page extends Component {
             }))
         }));
         this.setState({ sectionData: updatedSectionData });
+
+        const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+            ...blog,
+            data: blog.data && blog.data && blog.data.map(secData => ({
+                ...secData,
+                description: secData.id === sectionId ? content : secData.description
+            }))
+        }));
+        this.setState({ sectionDataPre: updatedSectionDataPre });
     };
     updateRCLink = (content, sectionId) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
@@ -171,6 +204,15 @@ class Page extends Component {
             }))
         }));
         this.setState({ sectionData: updatedSectionData });
+
+        const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+            ...blog,
+            data: blog.data && blog.data && blog.data.map(secData => ({
+                ...secData,
+                link: secData.id === sectionId ? content : secData.link
+            }))
+        }));
+        this.setState({ sectionDataPre: updatedSectionDataPre });
     };
     updatetestiDesc = (content, sectionId) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
@@ -181,6 +223,15 @@ class Page extends Component {
             }))
         }));
         this.setState({ sectionData: updatedSectionData });
+
+        const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+            ...blog,
+            data: blog.data && blog.data.map(secData => ({
+                ...secData,
+                description: secData.id === sectionId ? content : secData.description
+            }))
+        }));
+        this.setState({ sectionDataPre: updatedSectionDataPre });
     }
     updateTestiImg = (e, id) => {
         const file = e.target.files[0];
@@ -196,6 +247,25 @@ class Page extends Component {
         }));
         this.setState({ sectionData: updatedSectionData });
 
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const fileData = reader.result;
+            const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+                ...blog,
+                data: blog.data.map(secData => {
+                    if (secData.id === id) {
+                        return { ...secData, img: fileData }
+                    }
+                    return secData
+                })
+            }));
+            this.setState({ sectionDataPre: updatedSectionDataPre });
+        };
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+
+
     }
     updateTestiName = (content, sectionId) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
@@ -206,6 +276,15 @@ class Page extends Component {
             }))
         }));
         this.setState({ sectionData: updatedSectionData });
+
+        const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+            ...blog,
+            data: blog.data && blog.data.map(secData => ({
+                ...secData,
+                name: secData.id === sectionId ? content : secData.name
+            }))
+        }));
+        this.setState({ sectionDataPre: updatedSectionDataPre });
     }
     updateTestiRole = (content, sectionId) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
@@ -216,6 +295,15 @@ class Page extends Component {
             }))
         }));
         this.setState({ sectionData: updatedSectionData });
+
+        const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+            ...blog,
+            data: blog.data && blog.data.map(secData => ({
+                ...secData,
+                role: secData.id === sectionId ? content : secData.role
+            }))
+        }));
+        this.setState({ sectionDataPre: updatedSectionDataPre });
     }
     secDataRemoveFaq = (removedSecData) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
@@ -223,6 +311,12 @@ class Page extends Component {
             data: blog.data && blog.data.filter(secData => secData.id !== removedSecData.id)
         }));
         this.setState({ sectionData: updatedSectionData });
+
+        const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+            ...blog,
+            data: blog.data && blog.data.filter(secData => secData.id !== removedSecData.id)
+        }));
+        this.setState({ sectionDataPre: updatedSectionDataPre });
     };
     updateSecData = (e, secData) => {
         const regex = /\[(.*?)\]\((.*?)\)/g;
@@ -239,6 +333,17 @@ class Page extends Component {
             })
         }));
         this.setState({ sectionData: updatedSectionData });
+
+        const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+            ...blog,
+            data: blog.data && blog.data.map(secDataItem => {
+                if (secDataItem.id === secData.id) {
+                    return { ...secDataItem, content: e };
+                }
+                return secDataItem;
+            })
+        }));
+        this.setState({ sectionDataPre: updatedSectionDataPre });
     }
     updateSecButData = (e, secData) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
@@ -251,6 +356,17 @@ class Page extends Component {
             })
         }));
         this.setState({ sectionData: updatedSectionData });
+
+        const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+            ...blog,
+            data: blog.data && blog.data.map(secDataItem => {
+                if (secDataItem.id === secData.id) {
+                    return { ...secDataItem, link: e.target.value };
+                }
+                return secDataItem;
+            })
+        }));
+        this.setState({ sectionDataPre: updatedSectionDataPre });
     }
     handleFileUpload = (e, id) => {
         const file = e.target.files[0];
@@ -266,6 +382,25 @@ class Page extends Component {
         }));
         this.setState({ sectionData: updatedSectionData });
 
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const fileData = reader.result;
+            const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+                ...blog,
+                data: blog.data.map(secDataItem => {
+                    if (secDataItem.id === id) {
+                        return { ...secDataItem, content: fileData };
+                    }
+                    return secDataItem;
+                })
+            }));
+            this.setState({ sectionDataPre: updatedSectionDataPre });
+        };
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+
+
     };
     altText = (e, secData) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
@@ -278,6 +413,17 @@ class Page extends Component {
             })
         }))
         this.setState({ sectionData: updatedSectionData });
+
+        const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+            ...blog,
+            data: blog.data && blog.data.map(secDataItem => {
+                if (secDataItem.id === secData.id) {
+                    return { ...secDataItem, alt: e.target.value };
+                }
+                return secDataItem;
+            })
+        }))
+        this.setState({ sectionDataPre: updatedSectionDataPre });
     }
     secDataRemove = (e) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
@@ -285,6 +431,12 @@ class Page extends Component {
             data: blog.data.filter(secData => secData.id !== e.id)
         }));
         this.setState({ sectionData: updatedSectionData });
+
+        const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+            ...blog,
+            data: blog.data.filter(secData => secData.id !== e.id)
+        }));
+        this.setState({ sectionDataPre: updatedSectionDataPre });
     }
     titleTag = (e, section) => {
         this.state.sectionData.forEach((blog) => {
@@ -304,38 +456,47 @@ class Page extends Component {
     sectionTitle = (e) => {
         e.data.push({ title: "heading", content: '', titleTag: "h2", id: this.generateUniqueId() })
         this.setState({ sectionData: this.state.sectionData })
+        this.setState({ sectionDataPre: this.state.sectionDataPre })
     }
     sectionDesc = (e) => {
         e.data.push({ title: "description", content: '', id: this.generateUniqueId() })
         this.setState({ sectionData: this.state.sectionData })
+        this.setState({ sectionDataPre: this.state.sectionDataPre })
     }
     sectionImg = (e) => {
         e.data.push({ title: "image", content: '', alt: '', id: this.generateUniqueId() })
         this.setState({ sectionData: this.state.sectionData })
+        this.setState({ sectionDataPre: this.state.sectionDataPre })
     }
     sectionVid = (e) => {
         e.data.push({ title: "video", content: '', alt: '', id: this.generateUniqueId() })
         this.setState({ sectionData: this.state.sectionData })
+        this.setState({ sectionDataPre: this.state.sectionDataPre })
     }
     sectionTab = (e) => {
         e.data.push({ title: "table", content: '', id: this.generateUniqueId() })
         this.setState({ sectionData: this.state.sectionData })
+        this.setState({ sectionDataPre: this.state.sectionDataPre })
     }
     sectionButton = (e) => {
         e.data.push({ title: "button", content: '', link: '', id: this.generateUniqueId() })
         this.setState({ sectionData: this.state.sectionData })
+        this.setState({ sectionDataPre: this.state.sectionDataPre })
     }
     sectionCta = (e) => {
         e.data.push({ title: "cta", content: '', id: this.generateUniqueId() })
         this.setState({ sectionData: this.state.sectionData })
+        this.setState({ sectionDataPre: this.state.sectionDataPre })
     }
     sectionFaq = (e) => {
         e.data.push({ question: '', answer: '', id: this.generateUniqueId() })
         this.setState({ sectionData: this.state.sectionData })
+        this.setState({ sectionDataPre: this.state.sectionDataPre })
     }
     sectionRC = (e) => {
         e.data.push({ description: '', link: '', id: this.generateUniqueId() })
         this.setState({ sectionData: this.state.sectionData })
+        this.setState({ sectionDataPre: this.state.sectionDataPre })
     }
     removeField = (e) => {
         const newData = [...this.state.data];
@@ -345,6 +506,9 @@ class Page extends Component {
     removeSecDataField = (e) => {
         const updatedSectionData = this.state.sectionData.filter(item => item.id !== e.id);
         this.setState({ sectionData: updatedSectionData });
+
+        const updatedSectionDataPre = this.state.sectionDataPre.filter(item => item.id !== e.id);
+        this.setState({ sectionDataPre: updatedSectionDataPre });
     };
     moveItem = (parentId, childId, direction) => {
         this.setState(prevState => {
@@ -366,6 +530,26 @@ class Page extends Component {
             });
             return { sectionData: updatedData };
         });
+
+        this.setState(prevState => {
+            const updatedDataPre = prevState.sectionDataPre.map(section => {
+                if (section.id === parentId) {
+                    const index = section.data.findIndex(child => child.id === childId);
+                    if (direction === 'up' && index > 0) {
+                        const newData = Array.from(section.data);
+                        [newData[index], newData[index - 1]] = [newData[index - 1], newData[index]];
+                        return { ...section, data: newData };
+                    }
+                    if (direction === 'down' && index < section.data.length - 1) {
+                        const newData = Array.from(section.data);
+                        [newData[index], newData[index + 1]] = [newData[index + 1], newData[index]];
+                        return { ...section, data: newData };
+                    }
+                }
+                return section;
+            });
+            return { sectionDataPre: updatedDataPre };
+        });
     };
     moveParent = (parentId, direction) => {
         this.setState(prevState => {
@@ -379,6 +563,21 @@ class Page extends Component {
                 const newData = Array.from(prevState.sectionData);
                 [newData[index], newData[index + 1]] = [newData[index + 1], newData[index]];
                 return { sectionData: newData };
+            }
+            return null; // No change if index is at the boundaries
+        });
+
+        this.setState(prevState => {
+            const index = prevState.sectionDataPre.findIndex(section => section.id === parentId);
+            if (direction === 'up' && index > 0) {
+                const newData = Array.from(prevState.sectionDataPre);
+                [newData[index], newData[index - 1]] = [newData[index - 1], newData[index]];
+                return { sectionDataPre: newData };
+            }
+            if (direction === 'down' && index < prevState.sectionDataPre.length - 1) {
+                const newData = Array.from(prevState.sectionDataPre);
+                [newData[index], newData[index + 1]] = [newData[index + 1], newData[index]];
+                return { sectionDataPre: newData };
             }
             return null; // No change if index is at the boundaries
         });
@@ -564,6 +763,7 @@ class Page extends Component {
         setBlogTwitterData(null)
         setBlogArtData(null)
         this.setState({ sectionData: [] })
+        this.setState({ sectionDataPre: [] })
         // blog_structure.forEach((e) => {
         //     e.content = ''
         // })
@@ -573,10 +773,13 @@ class Page extends Component {
 
         const { blogMetaData, blogArtData, blogOgData, blogTwitterData, blogTableData, stickTop, comment, pubDate, setPreview } = this.context
 
+        let updatedSectionDataPre = [...this.state.sectionDataPre];
 
+        console.log(this.state.sectionDataPre)
+        console.log(this.state.sectionDataPre)
 
-        if (this.state.sectionData) {
-            this.state.sectionData.forEach((e) => {
+        if (updatedSectionDataPre) {
+            updatedSectionDataPre.forEach((e) => {
                 if (e.type === 'section') {
                     e.data.forEach((lk) => {
                         if (lk.id === blogTableData.id) {
@@ -589,7 +792,7 @@ class Page extends Component {
         }
 
         let blogIntro = {
-            "img": this.state.blog_intro_img,
+            "img": this.state.intro_blog_img_upd ? this.state.blog_intro_img_preview : this.state.blog_intro_img,
             "img_alt": this.state.blog_intro_img_alt,
             "description": this.state.blog_intro_desc,
             "blog_title": this.state.blog_intro_title
@@ -612,7 +815,7 @@ class Page extends Component {
             "author": this.context.author,
             "time_to_read": wordCount(this.state),
             "blog_title": this.state.jsondata.blog_title,
-            "blog_data": this.state.sectionData,
+            "blog_data": updatedSectionDataPre,
             "additional_data": additionalData,
             "blog_intro": blogIntro
         }
@@ -629,15 +832,15 @@ class Page extends Component {
         const file = e.target.files[0];
         this.setState({ blog_intro_img: file });
 
-        // const reader = new FileReader();
-        // reader.onloadend = () => {
-        //     this.setState({ blog_intro_img_preview: reader.result });
-        // };
-        // if (file) {
-        //     reader.readAsDataURL(file);
-        // }
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            this.setState({ blog_intro_img_preview: reader.result });
+        };
+        if (file) {
+            reader.readAsDataURL(file);
+        }
 
-        // this.setState({ intro_blog_img_upd: true })
+        this.setState({ intro_blog_img_upd: true })
     }
     blog_intro_img_alt = (e) => {
         this.setState({ blog_intro_img_alt: e });
@@ -692,6 +895,7 @@ class Page extends Component {
         if (editBlogData) {
             let introData = editBlogData.blog_intro
             let sectionData = editBlogData.blog_data ? editBlogData.blog_data : []
+            let sectionDataPre = editBlogData.blog_data ? editBlogData.blog_data : []
             let url = [{ type: 'canonical', content: editBlogData.canonical }, { type: 'url_slug', content: editBlogData.url_slug }]
 
             this.setState({
@@ -700,6 +904,7 @@ class Page extends Component {
                 blog_intro_img_alt: introData.img_alt,
                 blog_intro_desc: introData.description,
                 sectionData: sectionData,
+                sectionDataPre: sectionDataPre,
                 data: url,
                 jsondata: { 'url_slug': editBlogData.url_slug, 'canonical': editBlogData.canonical },
                 category: editBlogData.category,

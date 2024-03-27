@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { XMarkIcon } from '@heroicons/react/24/solid'
-import axiosInstance from '../../services/apiconfig';
+import { axiosInstance } from '../../services/apiconfig';
 import _ from 'underscore'
 export default class category extends Component {
     constructor(props) {

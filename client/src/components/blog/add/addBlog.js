@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { XMarkIcon, ChevronUpIcon, ChevronDownIcon, EyeIcon } from '@heroicons/react/24/solid'
 import { blog_structure, blog_intro } from '../jsondata'
 import AppStateContext from '../../../utils/AppStateContext';
-import axiosInstance from '../../../services/apiconfig';
+import { axiosInstance } from '../../../services/apiconfig';
 import BlogMetaData from './meta';
 import BlogOgData from './og';
 import BlogTwitterData from './twitter';
@@ -19,7 +19,7 @@ import Progress from '../edit/progress';
 import Tab from './table'
 import 'react-calendar/dist/Calendar.css';
 import ValidationPop from '../validationPop';
-import Preview from '../preview';
+import Preview from './preview';
 import { blogIntroSchema, metaSchema, ogSchema, twitterSchema, articleSchema, blogUrlSchema, categorySchema, authorSchema, sectionSchema, faqSchema, rcSchema, testiSchema } from '../validationSchema';
 import Ajv from "ajv"
 
@@ -42,6 +42,7 @@ class Page extends Component {
             blog_intro_desc: [{ description: '', id: this.generateUniqueId() }],
             value: new Date(),
             sectionData: [],
+            sectionDataPre: [],
             blogData: [],
             additional_data: [{ "stick_to_top": false }, { "schedule": Date.now() }, { "allow_comment": false }],
             openIndex: false,
@@ -84,22 +85,27 @@ class Page extends Component {
         if (type === 'testimonials') {
             const newData = { type: "testimonials", id: this.generateUniqueId(), data: [{ description: '', img: '', name: '', role: '', id: this.generateUniqueId() }] }
             this.setState({ sectionData: this.state.sectionData.concat(newData) });
+            this.setState({ sectionDataPre: this.state.sectionDataPre.concat(newData) });
         }
         else if (type === 'recommended_reading') {
             const newData = { type: "recommended_reading", id: this.generateUniqueId(), data: [{ description: '', link: '', id: this.generateUniqueId() }] }
             this.setState({ sectionData: this.state.sectionData.concat(newData) });
+            this.setState({ sectionDataPre: this.state.sectionDataPre.concat(newData) });
         }
         else if (type === 'faq') {
             const newData = { type: 'faq', data: [{ question: '', answer: '', id: this.generateUniqueId() }], id: this.generateUniqueId() };
             this.setState({ sectionData: this.state.sectionData.concat(newData) });
+            this.setState({ sectionDataPre: this.state.sectionDataPre.concat(newData) });
         }
         else if (type === 'cta') {
             const newData = { type: 'cta', data: [], id: this.generateUniqueId() };
             this.setState({ sectionData: this.state.sectionData.concat(newData) });
+            this.setState({ sectionDataPre: this.state.sectionDataPre.concat(newData) });
         }
         else if (type === 'section') {
             const newData = { type: "section", id: this.generateUniqueId(), data: [{ title: "heading", content: '', titleTag: "h2", id: this.generateUniqueId() }, { title: "description", content: '', id: this.generateUniqueId() }] }
             this.setState({ sectionData: this.state.sectionData.concat(newData) });
+            this.setState({ sectionDataPre: this.state.sectionDataPre.concat(newData) });
         } else {
             const newData = { type: type.includes('_') ? this.capitalize(type) : type, content: '', id: this.state.data.length + 1 };
             this.setState({ data: [...this.state.data, newData] });
@@ -126,6 +132,15 @@ class Page extends Component {
             }))
         }));
         this.setState({ sectionData: updatedSectionData });
+
+        const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+            ...blog,
+            data: blog.data.map(secData => ({
+                ...secData,
+                question: secData.id === sectionId ? this.formatContent(content) : secData.question
+            }))
+        }));
+        this.setState({ sectionDataPre: updatedSectionDataPre });
     };
     updateFaqAnswer = (content, sectionId) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
@@ -136,6 +151,15 @@ class Page extends Component {
             }))
         }));
         this.setState({ sectionData: updatedSectionData });
+
+        const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+            ...blog,
+            data: blog.data.map(secData => ({
+                ...secData,
+                answer: secData.id === sectionId ? this.formatContent(content) : secData.answer
+            }))
+        }));
+        this.setState({ sectionDataPre: updatedSectionDataPre });
     };
     formatContent = (e) => {
         const regex = /\[(.*?)\]\((.*?)\)/g;
@@ -152,6 +176,15 @@ class Page extends Component {
             }))
         }));
         this.setState({ sectionData: updatedSectionData });
+
+        const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+            ...blog,
+            data: blog.data.map(secData => ({
+                ...secData,
+                description: secData.id === sectionId ? content : secData.description
+            }))
+        }));
+        this.setState({ sectionDataPre: updatedSectionDataPre });
     };
     updateRCLink = (content, sectionId) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
@@ -162,6 +195,15 @@ class Page extends Component {
             }))
         }));
         this.setState({ sectionData: updatedSectionData });
+
+        const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+            ...blog,
+            data: blog.data.map(secData => ({
+                ...secData,
+                link: secData.id === sectionId ? content : secData.link
+            }))
+        }));
+        this.setState({ sectionDataPre: updatedSectionDataPre });
     };
     updatetestiDesc = (content, sectionId) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
@@ -172,6 +214,15 @@ class Page extends Component {
             }))
         }));
         this.setState({ sectionData: updatedSectionData });
+
+        const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+            ...blog,
+            data: blog.data.map(secData => ({
+                ...secData,
+                description: secData.id === sectionId ? content : secData.description
+            }))
+        }));
+        this.setState({ sectionDataPre: updatedSectionDataPre });
     }
     updateTestiImg = (e, id) => {
         const file = e.target.files[0];
@@ -187,6 +238,25 @@ class Page extends Component {
         }));
         this.setState({ sectionData: updatedSectionData });
 
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const fileData = reader.result;
+            const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+                ...blog,
+                data: blog.data.map(secData => {
+                    if (secData.id === id) {
+                        return { ...secData, img: fileData }
+                    }
+                    return secData
+                })
+            }));
+            this.setState({ sectionDataPre: updatedSectionDataPre });
+        };
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+
+
     }
     updateTestiName = (content, sectionId) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
@@ -197,6 +267,16 @@ class Page extends Component {
             }))
         }));
         this.setState({ sectionData: updatedSectionData });
+
+        const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+            ...blog,
+            data: blog.data.map(secData => ({
+                ...secData,
+                name: secData.id === sectionId ? content : secData.name
+            }))
+        }));
+        this.setState({ sectionDataPre: updatedSectionDataPre });
+
     }
     updateTestiRole = (content, sectionId) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
@@ -207,6 +287,15 @@ class Page extends Component {
             }))
         }));
         this.setState({ sectionData: updatedSectionData });
+
+        const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+            ...blog,
+            data: blog.data.map(secData => ({
+                ...secData,
+                role: secData.id === sectionId ? content : secData.role
+            }))
+        }));
+        this.setState({ sectionDataPre: updatedSectionDataPre });
     }
     secDataRemoveFaq = (removedSecData) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
@@ -214,6 +303,12 @@ class Page extends Component {
             data: blog.data.filter(secData => secData.id !== removedSecData.id)
         }));
         this.setState({ sectionData: updatedSectionData });
+
+        const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+            ...blog,
+            data: blog.data.filter(secData => secData.id !== removedSecData.id)
+        }));
+        this.setState({ sectionDataPre: updatedSectionDataPre });
     };
     updateSecData = (e, secData) => {
         const regex = /\[(.*?)\]\((.*?)\)/g;
@@ -230,6 +325,17 @@ class Page extends Component {
             })
         }));
         this.setState({ sectionData: updatedSectionData });
+
+        const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+            ...blog,
+            data: blog.data.map(secDataItem => {
+                if (secDataItem.id === secData.id) {
+                    return { ...secDataItem, content: e };
+                }
+                return secDataItem;
+            })
+        }));
+        this.setState({ sectionDataPre: updatedSectionDataPre });
     }
     updateSecButData = (e, secData) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
@@ -242,6 +348,17 @@ class Page extends Component {
             })
         }));
         this.setState({ sectionData: updatedSectionData });
+
+        const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+            ...blog,
+            data: blog.data.map(secDataItem => {
+                if (secDataItem.id === secData.id) {
+                    return { ...secDataItem, link: e.target.value };
+                }
+                return secDataItem;
+            })
+        }));
+        this.setState({ sectionDataPre: updatedSectionDataPre });
     }
     handleFileUpload = (e, id) => {
         const file = e.target.files[0];
@@ -257,6 +374,17 @@ class Page extends Component {
         }));
         this.setState({ sectionData: updatedSectionData });
 
+        const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+            ...blog,
+            data: blog.data.map(secDataItem => {
+                if (secDataItem.id === id) {
+                    return { ...secDataItem, content: file };
+                }
+                return secDataItem;
+            })
+        }));
+        this.setState({ sectionDataPre: updatedSectionDataPre });
+
     };
     altText = (e, secData) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
@@ -269,6 +397,17 @@ class Page extends Component {
             })
         }))
         this.setState({ sectionData: updatedSectionData });
+
+        const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+            ...blog,
+            data: blog.data.map(secDataItem => {
+                if (secDataItem.id === secData.id) {
+                    return { ...secDataItem, alt: e.target.value };
+                }
+                return secDataItem;
+            })
+        }))
+        this.setState({ sectionDataPre: updatedSectionDataPre });
     }
     secDataRemove = (e) => {
         const updatedSectionData = this.state.sectionData.map(blog => ({
@@ -276,6 +415,12 @@ class Page extends Component {
             data: blog.data.filter(secData => secData.id !== e.id)
         }));
         this.setState({ sectionData: updatedSectionData });
+
+        const updatedSectionDataPre = this.state.sectionDataPre.map(blog => ({
+            ...blog,
+            data: blog.data.filter(secData => secData.id !== e.id)
+        }));
+        this.setState({ sectionDataPre: updatedSectionDataPre });
     }
     titleTag = (e, section) => {
         this.state.sectionData.forEach((blog) => {
@@ -295,38 +440,47 @@ class Page extends Component {
     sectionTitle = (e) => {
         e.data.push({ title: "heading", content: '', titleTag: "h2", id: this.generateUniqueId() })
         this.setState({ sectionData: this.state.sectionData })
+        this.setState({ sectionDataPre: this.state.sectionDataPre })
     }
     sectionDesc = (e) => {
         e.data.push({ title: "description", content: '', id: this.generateUniqueId() })
         this.setState({ sectionData: this.state.sectionData })
+        this.setState({ sectionDataPre: this.state.sectionDataPre })
     }
     sectionImg = (e) => {
         e.data.push({ title: "image", content: '', alt: '', id: this.generateUniqueId() })
         this.setState({ sectionData: this.state.sectionData })
+        this.setState({ sectionDataPre: this.state.sectionDataPre })
     }
     sectionVid = (e) => {
         e.data.push({ title: "video", content: '', alt: '', id: this.generateUniqueId() })
         this.setState({ sectionData: this.state.sectionData })
+        this.setState({ sectionDataPre: this.state.sectionDataPre })
     }
     sectionTab = (e) => {
         e.data.push({ title: "table", content: '', id: this.generateUniqueId() })
         this.setState({ sectionData: this.state.sectionData })
+        this.setState({ sectionDataPre: this.state.sectionDataPre })
     }
     sectionButton = (e) => {
         e.data.push({ title: "button", content: '', link: '', id: this.generateUniqueId() })
         this.setState({ sectionData: this.state.sectionData })
+        this.setState({ sectionDataPre: this.state.sectionDataPre })
     }
     sectionCta = (e) => {
         e.data.push({ title: "cta", content: '', id: this.generateUniqueId() })
         this.setState({ sectionData: this.state.sectionData })
+        this.setState({ sectionDataPre: this.state.sectionDataPre })
     }
     sectionFaq = (e) => {
         e.data.push({ question: '', answer: '', id: this.generateUniqueId() })
         this.setState({ sectionData: this.state.sectionData })
+        this.setState({ sectionDataPre: this.state.sectionDataPre })
     }
     sectionRC = (e) => {
         e.data.push({ description: '', link: '', id: this.generateUniqueId() })
         this.setState({ sectionData: this.state.sectionData })
+        this.setState({ sectionDataPre: this.state.sectionDataPre })
     }
     removeField = (e) => {
         const newData = [...this.state.data];
@@ -336,6 +490,8 @@ class Page extends Component {
     removeSecDataField = (e) => {
         const updatedSectionData = this.state.sectionData.filter(item => item.id !== e.id);
         this.setState({ sectionData: updatedSectionData });
+        const updatedSectionDataPre = this.state.sectionDataPre.filter(item => item.id !== e.id);
+        this.setState({ sectionDataPre: updatedSectionDataPre });
     };
     moveItem = (parentId, childId, direction) => {
         this.setState(prevState => {
@@ -357,6 +513,25 @@ class Page extends Component {
             });
             return { sectionData: updatedData };
         });
+        this.setState(prevState => {
+            const updatedDataPre = prevState.sectionDataPre.map(section => {
+                if (section.id === parentId) {
+                    const index = section.data.findIndex(child => child.id === childId);
+                    if (direction === 'up' && index > 0) {
+                        const newData = Array.from(section.data);
+                        [newData[index], newData[index - 1]] = [newData[index - 1], newData[index]];
+                        return { ...section, data: newData };
+                    }
+                    if (direction === 'down' && index < section.data.length - 1) {
+                        const newData = Array.from(section.data);
+                        [newData[index], newData[index + 1]] = [newData[index + 1], newData[index]];
+                        return { ...section, data: newData };
+                    }
+                }
+                return section;
+            });
+            return { sectionDataPre: updatedDataPre };
+        });
     };
     moveParent = (parentId, direction) => {
         this.setState(prevState => {
@@ -370,6 +545,21 @@ class Page extends Component {
                 const newData = Array.from(prevState.sectionData);
                 [newData[index], newData[index + 1]] = [newData[index + 1], newData[index]];
                 return { sectionData: newData };
+            }
+            return null; // No change if index is at the boundaries
+        });
+
+        this.setState(prevState => {
+            const index = prevState.sectionDataPre.findIndex(section => section.id === parentId);
+            if (direction === 'up' && index > 0) {
+                const newData = Array.from(prevState.sectionDataPre);
+                [newData[index], newData[index - 1]] = [newData[index - 1], newData[index]];
+                return { sectionDataPre: newData };
+            }
+            if (direction === 'down' && index < prevState.sectionDataPre.length - 1) {
+                const newData = Array.from(prevState.sectionDataPre);
+                [newData[index], newData[index + 1]] = [newData[index + 1], newData[index]];
+                return { sectionDataPre: newData };
             }
             return null; // No change if index is at the boundaries
         });
@@ -552,6 +742,7 @@ class Page extends Component {
         setBlogTwitterData(null)
         setBlogArtData(null)
         this.setState({ sectionData: [] })
+        this.setState({ sectionDataPre: [] })
         // blog_structure.forEach((e) => {
         //     e.content = ''
         // })
@@ -563,7 +754,7 @@ class Page extends Component {
 
 
 
-        this.state.sectionData.forEach((e) => {
+        this.state.sectionDataPre.forEach((e) => {
             e.data.forEach((lk) => {
                 if (lk.id === blogTableData.id) {
                     lk.content = blogTableData.data
@@ -573,7 +764,7 @@ class Page extends Component {
         })
 
         let blogIntro = {
-            "img": this.state.blog_intro_img,
+            "img": this.state.blog_intro_img_preview,
             "img_alt": this.state.blog_intro_img_alt,
             "description": this.state.blog_intro_desc,
             "blog_title": this.state.blog_intro_title
@@ -596,7 +787,7 @@ class Page extends Component {
             "author": this.context.author,
             "time_to_read": wordCount(this.state),
             "blog_title": this.state.jsondata.blog_title,
-            "blog_data": this.state.sectionData,
+            "blog_data": this.state.sectionDataPre,
             "additional_data": additionalData,
             "blog_intro": blogIntro
         }
@@ -612,6 +803,14 @@ class Page extends Component {
     blog_intro_img = (e) => {
         const file = e.target.files[0];
         this.setState({ blog_intro_img: file });
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            this.setState({ blog_intro_img_preview: reader.result });
+        };
+        if (file) {
+            reader.readAsDataURL(file);
+        }
     }
     blog_intro_img_alt = (e) => {
         this.setState({ blog_intro_img_alt: e });
@@ -1043,11 +1242,11 @@ class Page extends Component {
                                 <button onClick={() => this.submit()} className="rounded-md bg-[#e84c3d] px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover-bg-[#e84c3d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
                                     Submit
                                 </button>
-                                <button onClick={() => this.cancel()} className="rounded-md border border-[#8b8585] bg-white px-3.5 py-2.5 text-center text-sm font-semibold shadow-sm hover-bg-[#e84c3d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
-                                    Cancel
-                                </button>
                                 <button onClick={() => this.preview()} className="rounded-md border border-[#8b8585] bg-white px-3.5 py-2.5 text-center text-sm font-semibold shadow-sm hover-bg-[#e84c3d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
                                     Preview
+                                </button>
+                                <button onClick={() => this.cancel()} className="rounded-md border border-[#8b8585] bg-white px-3.5 py-2.5 text-center text-sm font-semibold shadow-sm hover-bg-[#e84c3d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
+                                    Cancel
                                 </button>
                             </div>
                         </div>

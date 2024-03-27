@@ -5,7 +5,7 @@ import { UserCircleIcon } from '@heroicons/react/24/outline';
 import { Listbox, } from '@headlessui/react';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 import AppStateContext from '../../utils/AppStateContext';
-import axiosInstance from '../../services/apiconfig';
+import { axiosInstance } from '../../services/apiconfig';
 import _ from 'underscore'
 
 const people = [
@@ -356,7 +356,7 @@ class Example extends Component {
                                     <div className="mt-2">
                                         <input
                                             onChange={(e) => this.setState({ bio: e.target.value, bioEdited: true })}
-                                            defaultValue={this.context.editUserData.bio}
+                                            defaultValue={this.context.editUserData.bio === 'null' ? '' : this.context.editUserData.bio}
                                             className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1  ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                                         />
                                     </div>
@@ -369,7 +369,7 @@ class Example extends Component {
                                     <div className="mt-2">
                                         <input
                                             onChange={(e) => this.setState({ twitter: e.target.value, twitterEdited: true })}
-                                            defaultValue={this.context.editUserData.twitter}
+                                            defaultValue={this.context.editUserData.twitter === 'null' ? '' : this.context.editUserData.twitter}
                                             className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1  ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                                         />
                                     </div>
@@ -382,7 +382,7 @@ class Example extends Component {
                                     <div className="mt-2">
                                         <input
                                             onChange={(e) => this.setState({ instagram: e.target.value, instagramEdited: true })}
-                                            defaultValue={this.context.editUserData.instagram}
+                                            defaultValue={this.context.editUserData.instagram === 'null' ? '' : this.context.editUserData.instagram}
                                             className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1  ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                                         />
                                     </div>
@@ -395,7 +395,7 @@ class Example extends Component {
                                     <div className="mt-2">
                                         <input
                                             onChange={(e) => this.setState({ linkedin: e.target.value, linkedinEdited: true })}
-                                            defaultValue={this.context.editUserData.linkedin}
+                                            defaultValue={this.context.editUserData.linkedin === 'null' ? '' : this.context.editUserData.linkedin}
                                             className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1  ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                                         />
                                     </div>
@@ -408,7 +408,7 @@ class Example extends Component {
                                     <div className="mt-2">
                                         <input
                                             onChange={(e) => this.setState({ facebook: e.target.value, facebookEdited: true })}
-                                            defaultValue={this.context.editUserData.facebook}
+                                            defaultValue={this.context.editUserData.facebook === 'null' ? '' : this.context.editUserData.facebook}
                                             className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1  ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                                         />
                                     </div>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Navigate } from 'react-router-dom'
 import _ from 'underscore'
-import axiosInstance from '../../services/apiconfig'
+import { axiosInstance } from '../../services/apiconfig'
 
 export default class login extends Component {
     constructor(props) {

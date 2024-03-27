@@ -15,12 +15,12 @@ exports.login = async (req, res) => {
         const user = await collection.findOne({ email: data.userid, password: data.password });
 
         if (user) {
-            return res.status(200).json({ code: 200, msg: 'User login successful', user: user });
+            return res.send({ code: 200, msg: 'User login successful', user: user, redirect: '/home' });
         } else {
-            return res.status(404).json({ code: 404, msg: 'User not found' });
+            return res.send({ code: 404, msg: 'User not found' });
         }
     } catch (error) {
         console.error('Error during login:', error);
-        return res.status(500).json({ code: 500, msg: 'Internal server error' });
+        return res.send({ code: 500, msg: 'Internal server error' });
     }
 };

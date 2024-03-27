@@ -186,10 +186,10 @@ class Example extends Component {
                                         <div className='w-1/4 flex flex-col items-center justify-end'>
                                             <div className='flex flex-col gap-y-8'>
                                                 <div className='bg-white w-16 h-40 rounded-lg shadow-md flex flex-col justify-evenly items-center'>
-                                                    <img className='w-4 ' src="/soc_twi.webp" alt="twitter" />
-                                                    <img className='w-4' src="/soc_ins.webp" alt="instagram" />
-                                                    <img className='w-4' src="/soc_lin.webp" alt="linkedin" />
-                                                    <img className='w-4' src="/soc_fac.webp" alt="facebook" />
+                                                    <img className='w-4 ' src="/img/soc_twi.webp" alt="twitter" />
+                                                    <img className='w-4' src="/img/soc_ins.webp" alt="instagram" />
+                                                    <img className='w-4' src="/img/soc_lin.webp" alt="linkedin" />
+                                                    <img className='w-4' src="/img/soc_fac.webp" alt="facebook" />
                                                 </div>
                                                 {this.props.previewData.author &&
                                                     <div className='flex flex-col items-center justify-center gap-y-3 bg-white w-32 h-32 rounded-xl shadow-md'>
@@ -265,7 +265,7 @@ class Example extends Component {
                                                     {e.type === 'recommended_reading' &&
                                                         <div className='flex w-full h-36'>
                                                             <div className='bg-gradient-to-br from-[#10d7e2] via-[#45b5e9]  to-[#9358f7] w-[180px] flex flex-col justify-end items-center rounded-l-xl'>
-                                                                <img src="/blog_rec_read.png" className='h-auto w-14' alt="Recommended reading" />
+                                                                <img src="/img/blog_rec_read.png" className='h-auto w-14' alt="Recommended reading" />
                                                             </div>
                                                             <div className='bg-[#2b2e33] flex flex-col justify-center pl-8 gap-y-2 w-full rounded-r-xl'>
                                                                 <div>
@@ -308,7 +308,7 @@ class Example extends Component {
                                                         <div className='flex w-[90%] h-auto py-10 px-5 my-6 gap-x-5 border-t-[2px] border-b-[2px]'>
                                                             <div className='flex items-start'>
                                                                 {/* <AtSymbolIcon className='w-10' /> */}
-                                                                <img src="/testimonial.png" className='w-40' alt="Testimonial" />
+                                                                <img src="/img/testimonial.png" className='w-40' alt="Testimonial" />
                                                             </div>
                                                             <div className='flex flex-col gap-y-5'>
                                                                 <div>

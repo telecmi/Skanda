@@ -1,8 +1,7 @@
 import React, { Component, Fragment } from 'react'
-import { ChevronDownIcon, MagnifyingGlassIcon, UserCircleIcon } from '@heroicons/react/20/solid';
+import { ChevronDownIcon, UserCircleIcon } from '@heroicons/react/20/solid';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 import { Transition, Menu } from '@headlessui/react';
-import { Navigate } from 'react-router-dom'
 import AppStateContext from '../../utils/AppStateContext';
 
 function classNames(...classes) {
@@ -31,8 +30,8 @@ export default class header extends Component {
     }
     menu = (e) => {
         if (e === 'Log out') {
-            this.setState({ navigate: true })
             localStorage.removeItem('user')
+            window.location.href = '/'
         }
     }
     componentDidMount() {
@@ -46,7 +45,7 @@ export default class header extends Component {
 
 
             <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
-                {this.state.navigate && <Navigate to='/' />}
+                
                 <div className="flex h-16 items-center lg:hidden">
                     <img
                         className="h-6 w-auto"
@@ -62,8 +61,8 @@ export default class header extends Component {
                 {/* Separator */}
                 <div className="h-6 w-px bg-gray-200 lg:hidden" aria-hidden="true" />
 
-                <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-                    <form className="relative flex flex-1" action="#" method="GET">
+                <div className="flex flex-1 gap-x-4 justify-end lg:gap-x-6">
+                    {/* <form className="relative flex flex-1" action="#" method="GET">
                         <label htmlFor="search-field" className="sr-only">
                             Search
                         </label>
@@ -78,7 +77,7 @@ export default class header extends Component {
                             type="search"
                             name="search"
                         />
-                    </form>
+                    </form> */}
                     <div className="flex items-center gap-x-4 lg:gap-x-6">
 
                         {/* Separator */}

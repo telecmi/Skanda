@@ -38,13 +38,15 @@ export default class login extends Component {
     autoLogin = () => {
         const userData = JSON.parse(localStorage.getItem('user'));
 
-        if (userData) {
+        if (userData && window.location.pathname !== '/home') {
             let data = { userid: userData.email, password: userData.password }
             axiosInstance.post('/login', data).then((e) => {
                 if (e.data.code === 200) {
+                    window.location.href = '/home'
                     localStorage.setItem('user', JSON.stringify(e.data.user))
+
                 } else {
-                    alert('wrong user ID or Password')
+                    errorNotify('wrong user ID or Password')
                 }
             })
         }
